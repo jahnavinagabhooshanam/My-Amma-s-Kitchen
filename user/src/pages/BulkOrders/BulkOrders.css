@@ -1,0 +1,19 @@
+/* Bulk orders page */
+.bulk-orders-page {
+  background-color: var(--bg-primary);
+  min-height: 80vh;
+}
+
+.benefit-icon {
+  color: var(--primary-color);
+  margin-top: 4px;
+}
+
+.benefit-item h5 {
+  font-size: 0.95rem;
+  color: var(--text-dark);
+}
+
+.benefit-item p {
+  line-height: 1.4;
+}

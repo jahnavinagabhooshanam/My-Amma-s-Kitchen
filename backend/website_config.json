@@ -1,0 +1,27 @@
+{
+    "banner": "\u2728 Amma's Special Deal: 15% Off Your First Artisan Batter Order! Code: AMMA20 \u2728",
+    "headline": "Slow Stone-Ground Heritage Batters",
+    "popup_title": "Festival Special Offer!",
+    "popup_message": "Use Coupon code PONGAL50 for 50% discount on all Millets batter products!",
+    "opening_hours": "Opening Hour: 6am to 10pm",
+    "contact_phone": "+91 98765 43210",
+    "contact_email": "orders@ammaskitchen.com",
+    "social_facebook": "https://facebook.com/ammaskitchen",
+    "social_instagram": "https://instagram.com/ammaskitchen",
+    "social_twitter": "https://twitter.com/ammaskitchen",
+    "featured_products": [
+        1,
+        2,
+        4
+    ],
+    "footer_text": "\u00a9 2026 Hotel Amma's Kitchen. Traditional stone-ground heritage batter and healthy meals.",
+    "categories": "Ready To Eat, Ready To Cook, Batter Products",
+    "hero_cta_label": "Order Now",
+    "hero_cta_link": "/ready-to-eat",
+    "hero_bg_image": "/assets/img/hero-bg.jpg",
+    "show_promo_popup": true,
+    "show_featured_review": true,
+    "show_recipe_suggest": true,
+    "about_us": "Hotel Amma's Kitchen serves traditional stone-ground batters, ready-to-cook delicacies, and hot ready-to-eat vegetarian meals prepared with absolute cleanliness and natural flavor.",
+    "whatsapp_number": "+919876543210"
+}

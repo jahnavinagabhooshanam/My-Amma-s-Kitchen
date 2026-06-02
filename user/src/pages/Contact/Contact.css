@@ -1,0 +1,19 @@
+/* Contact page styling */
+.contact-page {
+  background-color: var(--bg-primary);
+  min-height: 80vh;
+}
+
+.info-icon {
+  color: var(--primary-color);
+  margin-top: 4px;
+}
+
+.info-item h5 {
+  font-size: 0.95rem;
+  color: var(--text-dark);
+}
+
+.info-item p {
+  line-height: 1.4;
+}

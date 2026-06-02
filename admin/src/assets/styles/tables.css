@@ -1,0 +1,305 @@
+/* Data Tables and Grid Controls styling */
+
+.table-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 15px;
+  margin-bottom: 20px;
+  background-color: var(--white-color);
+  padding: 15px 20px;
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+}
+
+.table-controls-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.table-controls-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.search-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.search-wrapper input {
+  height: 38px;
+  padding: 0 15px 0 35px;
+  border-radius: 20px;
+  border: 1px solid var(--border-color);
+  background-color: var(--smoke-color3);
+  font-family: var(--body-font);
+  font-size: 13px;
+  width: 220px;
+  transition: all 0.3s ease;
+}
+
+.search-wrapper input:focus {
+  width: 280px;
+  background-color: #fff;
+  border-color: var(--theme-color);
+  box-shadow: 0 0 0 3px rgba(63, 144, 101, 0.1);
+}
+
+.search-wrapper i {
+  position: absolute;
+  left: 12px;
+  color: #888;
+}
+
+.filter-select {
+  height: 38px;
+  padding: 0 30px 0 15px;
+  border-radius: 20px;
+  border: 1px solid var(--border-color);
+  background-color: var(--smoke-color3);
+  color: var(--title-color);
+  font-family: var(--body-font);
+  font-size: 13px;
+  cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='none' stroke='%23121212' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3E%3C/svg%3E");
+  background-position: right 12px center;
+  background-repeat: no-repeat;
+  background-size: 10px 8px;
+}
+
+.filter-select:focus {
+  border-color: var(--theme-color);
+  outline: none;
+}
+
+.export-btn {
+  height: 38px;
+  padding: 0 18px;
+  border-radius: 20px;
+  border: 1px solid var(--border-color);
+  background-color: #fff;
+  color: #555;
+  font-family: var(--title-font);
+  font-size: 14px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.export-btn:hover {
+  background-color: var(--smoke-color3);
+  color: var(--theme-color2);
+  border-color: var(--theme-color2);
+}
+
+/* Table Style */
+.responsive-table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+  background-color: var(--white-color);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.01);
+}
+
+.responsive-table {
+  width: 100%;
+  border-collapse: collapse;
+  border-spacing: 0;
+  text-align: left;
+  min-width: 800px;
+}
+
+.responsive-table th {
+  background-color: var(--smoke-color3);
+  color: var(--title-color);
+  font-weight: 700;
+  font-family: var(--title-font);
+  font-size: 15px;
+  padding: 14px 18px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-bottom: 2px solid var(--border-color);
+}
+
+.responsive-table td {
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--border-color);
+  color: #555;
+  vertical-align: middle;
+  transition: background-color 0.2s ease;
+}
+
+.responsive-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.responsive-table tbody tr:hover td {
+  background-color: #FAF9F5;
+}
+
+/* Compact thumb images in tables */
+.table-product-thumb {
+  width: 44px;
+  height: 44px;
+  border-radius: 8px;
+  object-fit: cover;
+  border: 1px solid var(--border-color);
+  background-color: var(--smoke-color3);
+}
+
+/* Product detail cells */
+.table-product-cell {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.table-product-name {
+  font-weight: 600;
+  color: var(--title-color);
+}
+
+.table-product-sub {
+  font-size: 11px;
+  color: #888;
+}
+
+/* Action buttons in tables */
+.table-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.table-action-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  border: 1px solid var(--border-color);
+  background-color: #fff;
+  color: #555;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.table-action-btn:hover {
+  background-color: var(--title-color);
+  color: #fff;
+  border-color: var(--title-color);
+}
+
+.table-action-btn.edit:hover {
+  background-color: var(--success-color);
+  color: #fff;
+  border-color: var(--success-color);
+}
+
+.table-action-btn.delete:hover {
+  background-color: var(--danger-color);
+  color: #fff;
+  border-color: var(--danger-color);
+}
+
+.table-action-btn.view:hover {
+  background-color: #2F394A;
+  color: #fff;
+  border-color: #2F394A;
+}
+
+/* Pagination panel */
+.table-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 15px 20px;
+  background-color: var(--white-color);
+  border-top: 1px solid var(--border-color);
+}
+
+.pagination-info {
+  font-size: 13px;
+  color: #666;
+}
+
+.pagination-controls {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.pagination-btn {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 1px solid var(--border-color);
+  background-color: #fff;
+  color: var(--title-color);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.pagination-btn:hover {
+  background-color: var(--theme-color);
+  color: #fff;
+  border-color: var(--theme-color);
+}
+
+.pagination-btn.active {
+  background-color: var(--theme-color);
+  color: #fff;
+  border-color: var(--theme-color);
+}
+
+.pagination-btn:disabled {
+  background-color: var(--smoke-color3);
+  color: #aaa;
+  cursor: not-allowed;
+  border-color: var(--border-color);
+}
+
+/* Variant display blocks */
+.variant-tag {
+  display: inline-block;
+  background-color: var(--smoke-color3);
+  color: var(--title-color);
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  margin: 2px;
+  border: 1px solid var(--border-color);
+}
+
+/* Empty data placeholder */
+.table-empty-state {
+  text-align: center;
+  padding: 40px;
+  color: #888;
+}
+
+.table-empty-state i {
+  font-size: 40px;
+  margin-bottom: 12px;
+  color: #ccc;
+}

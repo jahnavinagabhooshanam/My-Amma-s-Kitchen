@@ -1,0 +1,5 @@
+/* Ready to Cook page */
+.ready-to-cook-page {
+  background-color: var(--bg-primary);
+  min-height: 80vh;
+}

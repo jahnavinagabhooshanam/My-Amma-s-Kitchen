@@ -1,0 +1,109 @@
+mutation SeedData @auth(level: PUBLIC, insecureReason: "This is a seed data mutation for development purposes.") @transaction {
+  user_insertMany(
+    data: [
+      {
+        id: "a1b2c3d4-e5f6-7890-1234-567890abcdef",
+        displayName: "John Doe",
+        email: "john.doe@example.com",
+        createdAt: "2023-01-01T10:00:00Z",
+        address: "123 Main St",
+        phoneNumber: "555-123-4567"
+      },
+      {
+        id: "f1e2d3c4-b5a6-0987-6543-210fedcba987",
+        displayName: "Jane Smith",
+        email: "jane.smith@example.com",
+        createdAt: "2023-01-01T10:05:00Z",
+        address: "456 Oak Ave",
+        phoneNumber: "555-987-6543"
+      }
+    ]
+  )
+  restaurant_insertMany(
+    data: [
+      {
+        id: "1a2b3c4d-5e6f-7890-abcd-ef1234567890",
+        ownerId: "a1b2c3d4-e5f6-7890-1234-567890abcdef",
+        name: "Amma's Kitchen",
+        address: "789 Pine Ln",
+        cuisineType: "Indian",
+        createdAt: "2023-01-02T11:00:00Z",
+        phoneNumber: "555-111-2222",
+        rating: 4.5
+      },
+      {
+        id: "9f8e7d6c-5b4a-3210-fedc-ba9876543210",
+        ownerId: "f1e2d3c4-b5a6-0987-6543-210fedcba987",
+        name: "Pizza Palace",
+        address: "101 Maple Rd",
+        cuisineType: "Italian",
+        createdAt: "2023-01-02T11:10:00Z",
+        phoneNumber: "555-333-4444",
+        rating: 4.0
+      }
+    ]
+  )
+  menuItem_insertMany(
+    data: [
+      {
+        id: "abcde123-4567-8901-2345-6789abcdef01",
+        restaurantId: "1a2b3c4d-5e6f-7890-abcd-ef1234567890",
+        name: "Butter Chicken",
+        description: "Creamy tomato-based chicken curry.",
+        price: 15.99,
+        createdAt: "2023-01-03T12:00:00Z",
+        isAvailable: true
+      },
+      {
+        id: "fghij234-5678-9012-3456-7890abcdef12",
+        restaurantId: "1a2b3c4d-5e6f-7890-abcd-ef1234567890",
+        name: "Garlic Naan",
+        description: "Soft flatbread with garlic.",
+        price: 3.50,
+        createdAt: "2023-01-03T12:05:00Z",
+        isAvailable: true
+      },
+      {
+        id: "klmno345-6789-0123-4567-8901abcdef34",
+        restaurantId: "9f8e7d6c-5b4a-3210-fedc-ba9876543210",
+        name: "Pepperoni Pizza",
+        description: "Classic pepperoni pizza.",
+        price: 18.00,
+        createdAt: "2023-01-03T12:10:00Z",
+        isAvailable: true
+      }
+    ]
+  )
+  order_insertMany(
+    data: [
+      {
+        id: "order123-4567-8901-2345-6789abcdef01",
+        customerId: "a1b2c3d4-e5f6-7890-1234-567890abcdef",
+        restaurantId: "1a2b3c4d-5e6f-7890-abcd-ef1234567890",
+        orderDate: "2023-01-04T13:00:00Z",
+        totalAmount: 19.49,
+        deliveryAddress: "123 Main St",
+        status: "Pending",
+        createdAt: "2023-01-04T13:00:00Z"
+      }
+    ]
+  )
+  orderItem_insertMany(
+    data: [
+      {
+        id: "item123-4567-8901-2345-6789abcdef01",
+        orderId: "order123-4567-8901-2345-6789abcdef01",
+        menuItemId: "abcde123-4567-8901-2345-6789abcdef01",
+        quantity: 1,
+        priceAtTimeOfOrder: 15.99
+      },
+      {
+        id: "item234-5678-9012-3456-7890abcdef12",
+        orderId: "order123-4567-8901-2345-6789abcdef01",
+        menuItemId: "fghij234-5678-9012-3456-7890abcdef12",
+        quantity: 1,
+        priceAtTimeOfOrder: 3.50
+      }
+    ]
+  )
+}

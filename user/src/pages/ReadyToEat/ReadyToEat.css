@@ -1,0 +1,5 @@
+/* Ready to Eat page */
+.ready-to-eat-page {
+  background-color: var(--bg-primary);
+  min-height: 80vh;
+}

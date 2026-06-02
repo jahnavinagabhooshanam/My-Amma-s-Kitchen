@@ -1,0 +1,5 @@
+/* Batter Products page */
+.batter-products-page {
+  background-color: var(--bg-primary);
+  min-height: 80vh;
+}
