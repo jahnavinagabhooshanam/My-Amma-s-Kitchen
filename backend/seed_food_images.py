@@ -149,7 +149,8 @@ def seed_food_images():
                     offer_price=offer_price,
                     image=image_path,
                     stock=random.randint(30, 150),
-                    is_available=True
+                    is_available=True,
+                    diet_type='Veg'
                 )
                 db.session.add(p)
                 print(f"Added Veg product: {display_name} ({category.replace('_', ' ').title()}) - Price: INR {price}")
@@ -172,7 +173,8 @@ def seed_food_images():
                     offer_price=offer_price,
                     image=image_path,
                     stock=random.randint(15, 60),
-                    is_available=True
+                    is_available=True,
+                    diet_type='Non-Veg'
                 )
                 db.session.add(p)
                 print(f"Added Non-veg product: {display_name} (Ready To Eat) - Price: INR {price}")

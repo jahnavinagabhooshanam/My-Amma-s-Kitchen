@@ -9,13 +9,21 @@ import {
   Search, 
   Pencil, 
   Trash2, 
-  MoreVertical, 
   X, 
   CheckCircle, 
   AlertTriangle,
   Save,
   FolderOpen
 } from 'lucide-react';
+
+const CATEGORIES = [
+  { id: 'traditional', label: 'Traditional Batters' },
+  { id: 'millet', label: 'Millet Batters' },
+  { id: 'health', label: 'Health Batters' },
+  { id: 'family_packs', label: 'Family Packs' },
+  { id: 'premium', label: 'Premium Batters' },
+  { id: 'subscription', label: 'Subscription Plans' }
+];
 
 const resolveImagePath = (path) => {
   if (!path) return '/assets/images/placeholder.jpg';
@@ -49,14 +57,15 @@ const BatterProducts = () => {
   const [variants, setVariants] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
-  const [tab, setTab] = useState('variants'); // 'catalogs' or 'variants'
-  const [activeDropdown, setActiveDropdown] = useState(null);
+  const [activeCategory, setActiveCategory] = useState('traditional');
 
   // Modals state
   const [showCatalogModal, setShowCatalogModal] = useState(false);
   const [showVariantModal, setShowVariantModal] = useState(false);
+  const [showManageVariantsModal, setShowManageVariantsModal] = useState(false);
 
-  // Editing state
+  // Selected entities
+  const [selectedProductForVariants, setSelectedProductForVariants] = useState(null);
   const [editingCatalog, setEditingCatalog] = useState(null);
   const [editingVariant, setEditingVariant] = useState(null);
   const [uploadingImage, setUploadingImage] = useState(false);
@@ -72,6 +81,7 @@ const BatterProducts = () => {
     offer_price: '',
     stock: 50,
     is_available: true,
+    category: 'traditional',
     image: '/assets/images/placeholder.jpg'
   });
 
@@ -152,6 +162,7 @@ const BatterProducts = () => {
         offer_price: cat.offer_price || '',
         stock: cat.stock_count || cat.stock || 0,
         is_available: cat.in_stock !== undefined ? cat.in_stock : cat.is_available,
+        category: cat.category ? cat.category.replace('-', '_') : 'traditional',
         image: cat.image
       });
     } else {
@@ -163,6 +174,7 @@ const BatterProducts = () => {
         offer_price: '',
         stock: 50,
         is_available: true,
+        category: activeCategory,
         image: '/assets/images/placeholder.jpg'
       });
     }
@@ -181,7 +193,7 @@ const BatterProducts = () => {
       description: catalogForm.description,
       price: parseFloat(catalogForm.price),
       offer_price: catalogForm.offer_price ? parseFloat(catalogForm.offer_price) : null,
-      category: 'batter_products',
+      category: catalogForm.category,
       image: catalogForm.image,
       stock_count: parseInt(catalogForm.stock),
       in_stock: catalogForm.is_available
@@ -190,30 +202,30 @@ const BatterProducts = () => {
     try {
       if (editingCatalog) {
         await apiClient.put(`/products/${editingCatalog.id}`, payload);
-        setSuccessMsg("Batter product catalog updated!");
+        setSuccessMsg("Catalog item updated!");
       } else {
         await apiClient.post('/products/', payload);
-        setSuccessMsg("New Batter product catalog added!");
+        setSuccessMsg("New catalog item added!");
       }
       setShowCatalogModal(false);
       fetchData();
       setTimeout(() => setSuccessMsg(''), 4000);
     } catch (err) {
       console.error(err);
-      setErrorMsg("Failed to save batter product catalog.");
+      setErrorMsg("Failed to save catalog item.");
     }
   };
 
   const handleDeleteCatalog = async (id) => {
-    if (!window.confirm("Delete this entire batter catalog category?")) return;
+    if (!window.confirm("Delete this catalog item?")) return;
     try {
       await apiClient.delete(`/products/${id}`);
-      setSuccessMsg("Catalog category deleted!");
+      setSuccessMsg("Catalog item deleted!");
       fetchData();
       setTimeout(() => setSuccessMsg(''), 4000);
     } catch (err) {
       console.error(err);
-      setErrorMsg("Failed to delete catalog category.");
+      setErrorMsg("Failed to delete catalog item.");
     }
   };
 
@@ -235,8 +247,8 @@ const BatterProducts = () => {
     } else {
       setEditingVariant(null);
       setVariantForm({
-        product_name: batters[0]?.name || 'Artisan Idli & Dosa Batter',
-        variant: 'Standard Pack',
+        product_name: selectedProductForVariants ? selectedProductForVariants.name : (batters[0]?.name || ''),
+        variant: 'Standard Pouch',
         weight: '1kg',
         price: '',
         offer_price: '',
@@ -271,17 +283,17 @@ const BatterProducts = () => {
     try {
       if (editingVariant) {
         await apiClient.put(`/products/batter-variants/${editingVariant.id}`, payload);
-        setSuccessMsg("Batter size variant updated!");
+        setSuccessMsg("Size variant updated!");
       } else {
         await apiClient.post('/products/batter-variants', payload);
-        setSuccessMsg("New Batter size variant created!");
+        setSuccessMsg("New size variant created!");
       }
       setShowVariantModal(false);
       fetchData();
       setTimeout(() => setSuccessMsg(''), 4000);
     } catch (err) {
       console.error(err);
-      setErrorMsg("Failed to save batter size variant.");
+      setErrorMsg("Failed to save size variant.");
     }
   };
 
@@ -298,14 +310,14 @@ const BatterProducts = () => {
     }
   };
 
-  const filteredCatalogs = batters.filter(b =>
-    b.name.toLowerCase().includes(searchQuery.toLowerCase())
-  );
-
-  const filteredVariants = variants.filter(v =>
-    v.product_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    v.variant.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  // Filter products by selected category and search query
+  const filteredCatalogs = batters.filter(b => {
+    const matchesSearch = b.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
+                          b.description.toLowerCase().includes(searchQuery.toLowerCase());
+    const dbCat = b.category ? b.category.replace('-', '_') : '';
+    const matchesCategory = dbCat === activeCategory;
+    return matchesSearch && matchesCategory;
+  });
 
   return (
     <div className="admin-wrapper">
@@ -316,17 +328,21 @@ const BatterProducts = () => {
         <div className="admin-content">
           <div className="page-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '15px' }}>
             <div className="page-title-area">
-              <h2>Batter Products Management</h2>
-              <p>Manage raw fermented batters, organic millet grains batters, and control packaging variants</p>
+              <h2>Batter Product Catalog</h2>
+              <p>Manage traditional, millet, health batters, subscription plans, and configure pack variants.</p>
             </div>
 
-            <div className="flex gap-1">
-              <button onClick={() => setTab('catalogs')} className={`th-btn ${tab === 'catalogs' ? 'style9' : 'style10'}`} style={{ border: 'none', cursor: 'pointer', padding: '10px 15px', borderRadius: '20px' }}>
-                Batter Types
-              </button>
-              <button onClick={() => setTab('variants')} className={`th-btn ${tab === 'variants' ? 'style9' : 'style10'}`} style={{ border: 'none', cursor: 'pointer', padding: '10px 15px', borderRadius: '20px' }}>
-                Size Variants (500g-5kg)
-              </button>
+            <div className="flex gap-1" style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+              {CATEGORIES.map(cat => (
+                <button 
+                  key={cat.id} 
+                  onClick={() => setActiveCategory(cat.id)} 
+                  className={`th-btn ${activeCategory === cat.id ? 'style9' : 'style10'}`} 
+                  style={{ border: 'none', cursor: 'pointer', padding: '8px 16px', borderRadius: '20px', fontSize: '13px' }}
+                >
+                  {cat.label}
+                </button>
+              ))}
             </div>
           </div>
 
@@ -348,28 +364,31 @@ const BatterProducts = () => {
               <Search size={16} style={{ marginRight: '8px', color: '#888' }} />
               <input
                 type="text"
-                placeholder={`Search batter ${tab}...`}
+                placeholder="Search catalog products..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 style={{ width: '100%' }}
               />
             </div>
 
-            <button className="page-action-btn" onClick={() => tab === 'catalogs' ? handleOpenCatalogModal() : handleOpenVariantModal()} style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
-              <Plus size={16} /> Add {tab === 'catalogs' ? 'Batter Type' : 'Size Variant'}
+            <button className="page-action-btn" onClick={() => handleOpenCatalogModal()} style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+              <Plus size={16} /> Add Product
             </button>
           </div>
 
           {loading ? (
             <div style={{ height: '200px', backgroundColor: '#e2ebd9', borderRadius: '15px', animation: 'pulse 1.5s infinite' }} />
-          ) : tab === 'catalogs' ? (
-            /* Catalogs Grid rendering */
+          ) : (
             <div className="admin-food-grid">
-              {filteredCatalogs.map(b => (
-                <div className="food-standard-card" key={b.id}>
-                  <div className="food-card-image">
+              {filteredCatalogs.map(b => {
+                const inStock = b.in_stock !== undefined ? b.in_stock : b.is_available;
+                return (
+                  <div className={`food-standard-card ${!inStock ? 'unavailable' : ''}`} key={b.id}>
+                    <div className="food-card-image">
                     <img src={resolveImagePath(b.image)} alt={b.name} onError={(e) => { e.target.src = '/assets/images/placeholder.jpg' }} />
-                    <span className="food-badge">Batter Product</span>
+                    <span className="food-badge" style={{ textTransform: 'capitalize' }}>
+                      {b.category?.replace('_', ' ')}
+                    </span>
                     <div className="actions" style={{ display: 'flex', gap: '4px' }}>
                       <button className="icon-btn" onClick={() => handleOpenCatalogModal(b)} style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}>
                         <Pencil size={12} />
@@ -380,108 +399,44 @@ const BatterProducts = () => {
                     </div>
                   </div>
                   <div className="food-card-content">
-                    <div className="food-rating">
+                    <div className="food-rating" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                       <span className={`badge-status ${(b.in_stock !== undefined ? b.in_stock : b.is_available) ? 'active' : 'inactive'}`}>
                         {(b.in_stock !== undefined ? b.in_stock : b.is_available) ? 'In Stock' : 'Out of Stock'}
                       </span>
                     </div>
-                    <h3 className="product-title">{b.name}</h3>
-                    <p className="product-desc">{b.description}</p>
-                    <div className="food-card-footer">
-                      <span className="price">₹{b.price.toFixed(2)}</span>
-                      <span className="stock-badge">Main Catalog ID #{b.id}</span>
+                    <h3 className="product-title" style={{ fontSize: '15px', margin: '8px 0' }}>{b.name}</h3>
+                    <p className="product-desc" style={{ fontSize: '12px', minHeight: '36px' }}>{b.description}</p>
+                    
+                    <div className="food-card-footer" style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginTop: '10px', borderTop: '1px dashed #EAE6DB', paddingTop: '10px' }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
+                        <span className="price" style={{ fontWeight: '700', fontSize: '1.1rem', color: 'var(--primary-color)' }}>
+                          ₹{b.price.toFixed(2)}
+                        </span>
+                        <span className="stock-badge" style={{ fontSize: '11px', color: '#666' }}>
+                          Stock: {b.stock_count}
+                        </span>
+                      </div>
+                      
+                      <button 
+                        onClick={() => {
+                          setSelectedProductForVariants(b);
+                          setShowManageVariantsModal(true);
+                        }}
+                        className="btn-secondary"
+                        style={{ width: '100%', padding: '8px 12px', fontSize: '12px', borderRadius: '20px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', border: '1px solid #C9AB81', color: 'var(--title-color)', cursor: 'pointer', fontWeight: '600' }}
+                      >
+                        <FolderOpen size={14} /> Manage Variants
+                      </button>
                     </div>
                   </div>
                 </div>
-              ))}
-            </div>
-          ) : (
-            /* Variants Table rendering */
-            <div className="premium-card">
-              <div className="responsive-table-wrapper" style={{ border: 'none', boxShadow: 'none' }}>
-                <table className="responsive-table">
-                  <thead>
-                    <tr>
-                      <th>Variant Details</th>
-                      <th>Size / weight</th>
-                      <th>Price</th>
-                      <th>Offer Price</th>
-                      <th>Stock Quantity</th>
-                      <th>Manufacture / Expiry</th>
-                      <th>Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {filteredVariants.map(v => (
-                      <tr key={v.id}>
-                        <td>
-                          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                            <img src={resolveImagePath(v.image)} alt={v.variant} style={{ width: '40px', height: '40px', borderRadius: '6px', objectFit: 'cover' }} onError={(e) => { e.target.src = '/assets/images/placeholder.jpg' }} />
-                            <div>
-                              <strong>{v.product_name}</strong>
-                              <div className="text-muted" style={{ fontSize: '11px' }}>{v.variant}</div>
-                            </div>
-                          </div>
-                        </td>
-                        <td><span className="badge-status approved" style={{ padding: '4px 10px' }}>{v.weight || '1kg'}</span></td>
-                        <td style={{ fontWeight: '700' }}>₹{v.price.toFixed(2)}</td>
-                        <td style={{ fontWeight: '700', color: 'var(--theme-color)' }}>
-                          {v.offer_price ? `₹${v.offer_price.toFixed(2)}` : '-'}
-                        </td>
-                        <td>
-                          <span style={{ fontWeight: '700', color: v.stock < 10 ? 'var(--danger-color)' : 'inherit' }}>
-                            {v.stock} packs
-                          </span>
-                        </td>
-                        <td style={{ fontSize: '12px' }} className="text-muted">
-                          <div>Mfg: {v.manufacture_date || 'N/A'}</div>
-                          <div>Exp: {v.expiry_date || 'N/A'}</div>
-                        </td>
-                        <td>
-                          <div style={{ position: 'relative', display: 'inline-block' }} onMouseLeave={() => setActiveDropdown(null)}>
-                            <button 
-                              onClick={() => setActiveDropdown(activeDropdown === v.id ? null : v.id)}
-                              className="btn-secondary"
-                              style={{ padding: '6px 12px', display: 'flex', alignItems: 'center', gap: '4px', cursor: 'pointer' }}
-                            >
-                              <MoreVertical size={14} /> Actions
-                            </button>
-                            {activeDropdown === v.id && (
-                              <div style={{
-                                position: 'absolute',
-                                right: 0,
-                                top: '30px',
-                                backgroundColor: '#fff',
-                                border: '1px solid #EAE6DB',
-                                borderRadius: '8px',
-                                boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
-                                zIndex: 100,
-                                minWidth: '140px',
-                                display: 'flex',
-                                flexDirection: 'column',
-                                padding: '4px 0'
-                              }}>
-                                <button 
-                                  onClick={() => { handleOpenVariantModal(v); setActiveDropdown(null); }}
-                                  style={{ padding: '8px 12px', textAlign: 'left', background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', fontSize: '12px', color: '#333' }}
-                                >
-                                  <Pencil size={12} /> Edit Variant
-                                </button>
-                                <button 
-                                  onClick={() => { handleDeleteVariant(v.id); setActiveDropdown(null); }}
-                                  style={{ padding: '8px 12px', textAlign: 'left', background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', fontSize: '12px', color: '#78281F', borderTop: '1px solid #FAF8F2' }}
-                                >
-                                  <Trash2 size={12} /> Delete Variant
-                                </button>
-                              </div>
-                            )}
-                          </div>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
+              );
+            })}
+              {filteredCatalogs.length === 0 && (
+                <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '40px', color: '#7E7A6B' }}>
+                  No products found under this category.
+                </div>
+              )}
             </div>
           )}
         </div>
@@ -491,7 +446,7 @@ const BatterProducts = () => {
           <div className="admin-modal show">
             <div className="admin-modal-content">
               <div className="admin-modal-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <h3>{editingCatalog ? 'Edit Batter Category' : 'Create Batter Category'}</h3>
+                <h3>{editingCatalog ? 'Edit Product Item' : 'Create Product Item'}</h3>
                 <button className="admin-modal-close" onClick={() => setShowCatalogModal(false)} style={{ background: 'none', border: 'none', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}>
                   <X size={18} />
                 </button>
@@ -499,20 +454,35 @@ const BatterProducts = () => {
               <form onSubmit={handleCatalogSubmit}>
                 <div className="admin-modal-body">
                   <div className="form-field">
-                    <label>Batter Name *</label>
+                    <label>Product Name *</label>
                     <input
                       type="text"
                       required
                       value={catalogForm.name}
                       onChange={(e) => setCatalogForm({ ...catalogForm, name: e.target.value })}
-                      placeholder="e.g. Traditional Millet Batter"
+                      placeholder="e.g. Millet Dosa Batter"
                     />
                   </div>
+
+                  <div className="form-field">
+                    <label>Category *</label>
+                    <select
+                      value={catalogForm.category}
+                      onChange={(e) => setCatalogForm({ ...catalogForm, category: e.target.value })}
+                      style={{ height: '38px', background: '#fff', border: '1px solid #EAE6DB', borderRadius: '8px', padding: '0 10px', width: '100%' }}
+                    >
+                      {CATEGORIES.map(cat => (
+                        <option key={cat.id} value={cat.id}>{cat.label}</option>
+                      ))}
+                    </select>
+                  </div>
+
                   <div className="form-grid">
                     <div className="form-field">
                       <label>Default Price (₹) *</label>
                       <input
                         type="number"
+                        step="0.01"
                         required
                         value={catalogForm.price}
                         onChange={(e) => setCatalogForm({ ...catalogForm, price: e.target.value })}
@@ -522,11 +492,34 @@ const BatterProducts = () => {
                       <label>Offer Price (₹)</label>
                       <input
                         type="number"
+                        step="0.01"
                         value={catalogForm.offer_price}
                         onChange={(e) => setCatalogForm({ ...catalogForm, offer_price: e.target.value })}
                       />
                     </div>
                   </div>
+
+                  <div className="form-grid">
+                    <div className="form-field">
+                      <label>Stock Count *</label>
+                      <input
+                        type="number"
+                        required
+                        value={catalogForm.stock}
+                        onChange={(e) => setCatalogForm({ ...catalogForm, stock: e.target.value })}
+                      />
+                    </div>
+                    <div className="form-field" style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '30px' }}>
+                      <input
+                        type="checkbox"
+                        id="is_available_chk"
+                        checked={catalogForm.is_available}
+                        onChange={(e) => setCatalogForm({ ...catalogForm, is_available: e.target.checked })}
+                      />
+                      <label htmlFor="is_available_chk" style={{ margin: 0, cursor: 'pointer' }}>Available in Store</label>
+                    </div>
+                  </div>
+
                   <div className="form-field">
                     <label>Description *</label>
                     <textarea
@@ -536,6 +529,7 @@ const BatterProducts = () => {
                       onChange={(e) => setCatalogForm({ ...catalogForm, description: e.target.value })}
                     />
                   </div>
+
                   <div className="form-field">
                     <label>Image</label>
                     <div style={{ display: 'flex', gap: '15px', alignItems: 'center' }}>
@@ -547,7 +541,7 @@ const BatterProducts = () => {
                 <div className="admin-modal-footer">
                   <button type="button" className="btn-secondary" onClick={() => setShowCatalogModal(false)}>Cancel</button>
                   <button type="submit" className="page-action-btn" style={{ borderRadius: '20px', display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
-                    <Save size={16} /> Save Category
+                    <Save size={16} /> Save Product
                   </button>
                 </div>
               </form>
@@ -555,9 +549,137 @@ const BatterProducts = () => {
           </div>
         )}
 
+        {/* Manage Variants Modal */}
+        {showManageVariantsModal && selectedProductForVariants && (
+          <div className="admin-modal show">
+            <div className="admin-modal-content" style={{ maxWidth: '800px', width: '90%' }}>
+              <div className="admin-modal-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <div>
+                  <h3 style={{ margin: 0 }}>Variants for {selectedProductForVariants.name}</h3>
+                  <p className="text-muted" style={{ fontSize: '12px', margin: '4px 0 0 0' }}>Manage packaging sizes (500g, 1kg, 2kg, 5kg) and pricing</p>
+                </div>
+                <button 
+                  className="admin-modal-close" 
+                  onClick={() => {
+                    setShowManageVariantsModal(false);
+                    setSelectedProductForVariants(null);
+                  }}
+                  style={{ background: 'none', border: 'none', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}
+                >
+                  <X size={18} />
+                </button>
+              </div>
+              <div className="admin-modal-body">
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '15px' }}>
+                  <span style={{ fontSize: '13px', fontWeight: '600' }}>Active Pack Sizes</span>
+                  <button 
+                    type="button" 
+                    className="page-action-btn"
+                    onClick={() => handleOpenVariantModal()}
+                    style={{ padding: '6px 12px', fontSize: '12px', display: 'inline-flex', alignItems: 'center', gap: '4px' }}
+                  >
+                    <Plus size={14} /> Add Size Variant
+                  </button>
+                </div>
+
+                <div className="responsive-table-wrapper" style={{ border: 'none', boxShadow: 'none' }}>
+                  <table className="responsive-table" style={{ fontSize: '13px' }}>
+                    <thead>
+                      <tr>
+                        <th>Pack Type</th>
+                        <th>Size</th>
+                        <th>Price</th>
+                        <th>Offer Price</th>
+                        <th>Stock</th>
+                        <th>Mfg / Exp</th>
+                        <th>Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {variants.filter(v => v.product_name === selectedProductForVariants.name).length > 0 ? (
+                        variants
+                          .filter(v => v.product_name === selectedProductForVariants.name)
+                          .map(v => (
+                            <tr key={v.id}>
+                              <td>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                  <img 
+                                    src={resolveImagePath(v.image)} 
+                                    alt={v.variant} 
+                                    style={{ width: '30px', height: '30px', borderRadius: '4px', objectFit: 'cover' }} 
+                                    onError={(e) => { e.target.src = '/assets/images/placeholder.jpg' }} 
+                                  />
+                                  <strong>{v.variant}</strong>
+                                </div>
+                              </td>
+                              <td><span className="badge-status approved" style={{ padding: '3px 8px' }}>{v.weight || '1kg'}</span></td>
+                              <td style={{ fontWeight: '700' }}>₹{v.price.toFixed(2)}</td>
+                              <td style={{ fontWeight: '700', color: 'var(--theme-color)' }}>
+                                {v.offer_price ? `₹${v.offer_price.toFixed(2)}` : '-'}
+                              </td>
+                              <td>
+                                <span style={{ fontWeight: '700', color: v.stock < 10 ? 'var(--danger-color)' : 'inherit' }}>
+                                  {v.stock} packs
+                                </span>
+                              </td>
+                              <td style={{ fontSize: '11px' }} className="text-muted">
+                                <div>Mfg: {v.manufacture_date || 'N/A'}</div>
+                                <div>Exp: {v.expiry_date || 'N/A'}</div>
+                              </td>
+                              <td>
+                                <div style={{ display: 'flex', gap: '5px' }}>
+                                  <button 
+                                    type="button"
+                                    onClick={() => handleOpenVariantModal(v)}
+                                    className="icon-btn" 
+                                    style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', padding: '6px' }}
+                                    title="Edit Variant"
+                                  >
+                                    <Pencil size={12} />
+                                  </button>
+                                  <button 
+                                    type="button"
+                                    onClick={() => handleDeleteVariant(v.id)}
+                                    className="icon-btn danger" 
+                                    style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', padding: '6px' }}
+                                    title="Delete Variant"
+                                  >
+                                    <Trash2 size={12} />
+                                  </button>
+                                </div>
+                              </td>
+                            </tr>
+                          ))
+                      ) : (
+                        <tr>
+                          <td colSpan="7" style={{ textAlign: 'center', padding: '20px' }} className="text-muted">
+                            No size packaging variants configured for this product.
+                          </td>
+                        </tr>
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              <div className="admin-modal-footer">
+                <button 
+                  type="button" 
+                  className="btn-secondary" 
+                  onClick={() => {
+                    setShowManageVariantsModal(false);
+                    setSelectedProductForVariants(null);
+                  }}
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Variant Modal */}
         {showVariantModal && (
-          <div className="admin-modal show">
+          <div className="admin-modal show" style={{ zIndex: 1100 }}>
             <div className="admin-modal-content">
               <div className="admin-modal-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <h3>{editingVariant ? 'Edit Size Variant' : 'Add Size Variant'}</h3>
@@ -568,17 +690,14 @@ const BatterProducts = () => {
               <form onSubmit={handleVariantSubmit}>
                 <div className="admin-modal-body">
                   <div className="form-field">
-                    <label>Select Batter Category *</label>
-                    <select
+                    <label>Selected Product *</label>
+                    <input
+                      type="text"
+                      readOnly
+                      disabled
                       value={variantForm.product_name}
-                      onChange={(e) => setVariantForm({ ...variantForm, product_name: e.target.value })}
-                      style={{ height: '38px', background: '#fff' }}
-                    >
-                      {batters.map(b => (
-                        <option key={b.id} value={b.name}>{b.name}</option>
-                      ))}
-                      {batters.length === 0 && <option value="Artisan Idli & Dosa Batter">Artisan Idli & Dosa Batter</option>}
-                    </select>
+                      style={{ height: '38px', background: '#eee', cursor: 'not-allowed', width: '100%', border: '1px solid #EAE6DB', borderRadius: '8px', padding: '0 10px' }}
+                    />
                   </div>
 
                   <div className="form-grid">
@@ -597,7 +716,7 @@ const BatterProducts = () => {
                       <select
                         value={variantForm.weight}
                         onChange={(e) => setVariantForm({ ...variantForm, weight: e.target.value })}
-                        style={{ height: '38px', background: '#fff' }}
+                        style={{ height: '38px', background: '#fff', border: '1px solid #EAE6DB', borderRadius: '8px', padding: '0 10px', width: '100%' }}
                       >
                         <option value="500g">500g</option>
                         <option value="1kg">1kg</option>

@@ -31,8 +31,12 @@ def get_products():
     query = Product.query
     if category and category.lower() != 'all':
         db_category = category.replace('-', '_')
-        # Support both hyphenated and underscore formats
-        query = query.filter(Product.category.in_([db_category, category]))
+        if db_category == 'batter_products':
+            # Include all batter sub-categories
+            query = query.filter(Product.category.in_(['traditional', 'millet', 'health', 'family_packs', 'premium', 'subscription', 'batter_products']))
+        else:
+            # Support both hyphenated and underscore formats
+            query = query.filter(Product.category.in_([db_category, category]))
 
     if search:
         query = query.filter(Product.name.ilike(f"%{search}%"))
@@ -62,7 +66,8 @@ def get_products():
             "in_stock": p.stock > 0 if p.stock is not None else p.is_available,
             "stock_count": p.stock or 0,
             "unit": "1kg Pouch" if "batter" in p.name.lower() else "Plate",
-            "type": getattr(p, 'diet_type', 'Veg')
+            "type": getattr(p, 'diet_type', 'Veg'),
+            "diet_type": getattr(p, 'diet_type', 'Veg')
         })
         
     set_cached_data(cache_key, (results, total_count, total_pages), ttl_seconds=15)
@@ -90,7 +95,8 @@ def get_product(product_id):
             "in_stock": p.stock > 0 if p.stock is not None else p.is_available,
             "stock_count": p.stock or 0,
             "unit": "1kg Pouch" if "batter" in p.name.lower() else "Plate",
-            "type": getattr(p, 'diet_type', 'Veg')
+            "type": getattr(p, 'diet_type', 'Veg'),
+            "diet_type": getattr(p, 'diet_type', 'Veg')
         }), 200
     return jsonify({"error": "Product not found"}), 404
 

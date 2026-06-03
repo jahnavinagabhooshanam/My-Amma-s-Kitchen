@@ -83,10 +83,10 @@ def seed_homepage_config():
             "seasonal_special": {"name": "Keema Samosa", "price": 70, "img": "/assets/Food images/Veg/Keema Samosa.webp"}
         },
         trending_today=[
-            {"name": "Masala Dosa", "price": 90, "img": "/assets/Food images/Veg/Onion Dosa.webp"},
-            {"name": "Paneer Biryani", "price": 220, "img": "/assets/Food images/Non-veg/Hyderabad Dum Biriyani.webp"},
-            {"name": "Ragi Batter", "price": 95, "img": "/assets/Food images/Batters/Appam Batter.webp"},
-            {"name": "Mini Tiffin", "price": 130, "img": "/assets/Food images/Veg/Edli Vada.webp"}
+            {"name": "Onion Dosa", "price": 110, "img": "/assets/Food images/Veg/Onion Dosa.webp"},
+            {"name": "Hyderabad Dum Biriyani", "price": 260, "img": "/assets/Food images/Non-veg/Hyderabad Dum Biriyani.webp"},
+            {"name": "Appam Batter", "price": 90, "img": "/assets/Food images/Batters/Appam Batter.webp"},
+            {"name": "Edli Vada", "price": 110, "img": "/assets/Food images/Veg/Edli Vada.webp"}
         ],
         festivals={
             "tag": "Upcoming",

@@ -35,7 +35,6 @@ const AdminLoader = () => (
 // Admin Pages (Lazy Loaded)
 const Dashboard = lazy(() => import('../pages/Dashboard/Dashboard'));
 const ReadyToEat = lazy(() => import('../pages/ReadyToEat/ReadyToEat'));
-const ReadyToCook = lazy(() => import('../pages/ReadyToCook/ReadyToCook'));
 const BatterProducts = lazy(() => import('../pages/BatterProducts/BatterProducts'));
 const BulkOrders = lazy(() => import('../pages/BulkOrders/BulkOrders'));
 const Orders = lazy(() => import('../pages/Orders/Orders'));
@@ -44,23 +43,11 @@ const Inventory = lazy(() => import('../pages/Inventory/Inventory'));
 const Products = lazy(() => import('../pages/Products/Products'));
 const Reports = lazy(() => import('../pages/Reports/Reports'));
 const Coupons = lazy(() => import('../pages/Coupons/Coupons'));
-const Reviews = lazy(() => import('../pages/Reviews/Reviews'));
-const Notifications = lazy(() => import('../pages/Notifications/Notifications'));
 const WebsiteManagement = lazy(() => import('../pages/WebsiteManagement/WebsiteManagement'));
-const HomepageManagement = lazy(() => import('../pages/HomepageManagement/HomepageManagement'));
 const Settings = lazy(() => import('../pages/Settings/Settings'));
 const BatterProduction = lazy(() => import('../pages/BatterProduction/BatterProduction'));
 const DeliveryManagement = lazy(() => import('../pages/DeliveryManagement/DeliveryManagement'));
 const KitchenManagement = lazy(() => import('../pages/KitchenManagement/KitchenManagement'));
-
-// New Upgraded ERP pages (Lazy Loaded)
-const UserManagement = lazy(() => import('../pages/UserManagement/UserManagement'));
-const Finance = lazy(() => import('../pages/Finance/Finance'));
-const ReadyToEatOrders = lazy(() => import('../pages/Orders/ReadyToEatOrders'));
-const ReadyToCookOrders = lazy(() => import('../pages/Orders/ReadyToCookOrders'));
-const AssignedOrders = lazy(() => import('../pages/Orders/AssignedOrders'));
-const DeliveryRoutes = lazy(() => import('../pages/Orders/DeliveryRoutes'));
-const CustomerContacts = lazy(() => import('../pages/Orders/CustomerContacts'));
 
 const AdminRoutes = () => {
   const staffAndOps = ['admin', 'manager', 'kitchen_staff', 'delivery_staff'];
@@ -91,7 +78,7 @@ const AdminRoutes = () => {
           path="/ready-to-cook" 
           element={
             <ProtectedRoute allowedRoles={mgmtRoles}>
-              <ReadyToCook />
+              <Navigate to="/admin/batter-products" replace />
             </ProtectedRoute>
           } 
         />
@@ -163,7 +150,7 @@ const AdminRoutes = () => {
           path="/reviews" 
           element={
             <ProtectedRoute allowedRoles={mgmtRoles}>
-              <Reviews />
+              <Navigate to="/admin/customers?tab=reviews" replace />
             </ProtectedRoute>
           } 
         />
@@ -171,7 +158,7 @@ const AdminRoutes = () => {
           path="/notifications" 
           element={
             <ProtectedRoute allowedRoles={mgmtRoles}>
-              <Notifications />
+              <Navigate to="/admin/dashboard" replace />
             </ProtectedRoute>
           } 
         />
@@ -180,14 +167,6 @@ const AdminRoutes = () => {
           element={
             <ProtectedRoute allowedRoles={mgmtRoles}>
               <WebsiteManagement />
-            </ProtectedRoute>
-          } 
-        />
-        <Route 
-          path="/homepage-management" 
-          element={
-            <ProtectedRoute allowedRoles={mgmtRoles}>
-              <HomepageManagement />
             </ProtectedRoute>
           } 
         />
@@ -211,7 +190,7 @@ const AdminRoutes = () => {
         <Route 
           path="/delivery-management" 
           element={
-            <ProtectedRoute allowedRoles={mgmtRoles}>
+            <ProtectedRoute allowedRoles={deliveryOps}>
               <DeliveryManagement />
             </ProtectedRoute>
           } 
@@ -225,12 +204,12 @@ const AdminRoutes = () => {
           } 
         />
 
-        {/* New Upgraded ERP Paths */}
+        {/* New Upgraded ERP Paths - Redirects to Consolidated Views */}
         <Route 
           path="/user-management" 
           element={
             <ProtectedRoute allowedRoles={['admin']}>
-              <UserManagement />
+              <Navigate to="/admin/settings?tab=staff" replace />
             </ProtectedRoute>
           } 
         />
@@ -238,7 +217,7 @@ const AdminRoutes = () => {
           path="/finance" 
           element={
             <ProtectedRoute allowedRoles={['admin']}>
-              <Finance />
+              <Navigate to="/admin/reports?tab=export" replace />
             </ProtectedRoute>
           } 
         />
@@ -246,7 +225,7 @@ const AdminRoutes = () => {
           path="/ready-to-eat-orders" 
           element={
             <ProtectedRoute allowedRoles={kitchenOps}>
-              <ReadyToEatOrders />
+              <Navigate to="/admin/orders?tab=rte" replace />
             </ProtectedRoute>
           } 
         />
@@ -254,7 +233,7 @@ const AdminRoutes = () => {
           path="/ready-to-cook-orders" 
           element={
             <ProtectedRoute allowedRoles={kitchenOps}>
-              <ReadyToCookOrders />
+              <Navigate to="/admin/orders?tab=rtc" replace />
             </ProtectedRoute>
           } 
         />
@@ -262,7 +241,7 @@ const AdminRoutes = () => {
           path="/assigned-orders" 
           element={
             <ProtectedRoute allowedRoles={deliveryOps}>
-              <AssignedOrders />
+              <Navigate to="/admin/delivery-management?tab=queue" replace />
             </ProtectedRoute>
           } 
         />
@@ -270,7 +249,7 @@ const AdminRoutes = () => {
           path="/delivery-routes" 
           element={
             <ProtectedRoute allowedRoles={deliveryOps}>
-              <DeliveryRoutes />
+              <Navigate to="/admin/delivery-management?tab=routes" replace />
             </ProtectedRoute>
           } 
         />
@@ -278,7 +257,7 @@ const AdminRoutes = () => {
           path="/customer-contacts" 
           element={
             <ProtectedRoute allowedRoles={deliveryOps}>
-              <CustomerContacts />
+              <Navigate to="/admin/delivery-management?tab=contacts" replace />
             </ProtectedRoute>
           } 
         />

@@ -64,11 +64,12 @@ const ReadyToEat = () => {
     image: '/assets/images/placeholder.jpg'
   });
 
+  const [activeFilter, setActiveFilter] = useState('All');
+
   const fetchProducts = async () => {
     setLoading(true);
     try {
       const response = await apiClient.get('/products?category=ready_to_eat');
-      // Ensure results are mapped properly
       setProducts(response.data);
     } catch (err) {
       console.error("Failed to load ready to eat items:", err);
@@ -104,7 +105,7 @@ const ReadyToEat = () => {
       description: product.description,
       price: product.price,
       offer_price: product.offer_price || '',
-      diet_type: product.type || 'Veg',
+      diet_type: product.diet_type || 'Veg',
       is_available: product.in_stock !== undefined ? product.in_stock : product.is_available,
       image: product.image
     });
@@ -208,13 +209,15 @@ const ReadyToEat = () => {
     }
   };
 
-  const [activeFilter, setActiveFilter] = useState('All');
-
   const filteredProducts = products.filter(p => {
     const matchesSearch = p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                          p.description.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesCategory = activeFilter === 'All' || p.type === activeFilter;
-    return matchesSearch && matchesCategory;
+                          (p.description && p.description.toLowerCase().includes(searchQuery.toLowerCase()));
+    
+    let matchesFilter = true;
+    if (activeFilter === 'Veg') matchesFilter = (p.diet_type === 'Veg' || !p.diet_type);
+    else if (activeFilter === 'Non-Veg') matchesFilter = p.diet_type === 'Non-Veg';
+
+    return matchesSearch && matchesFilter;
   });
 
   return (
@@ -249,6 +252,18 @@ const ReadyToEat = () => {
 
           {/* Table Toolbar Search and Filters */}
           <div className="premium-card" style={{ padding: '15px 25px', marginBottom: '25px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '15px' }}>
+            <div style={{ display: 'flex', gap: '10px' }}>
+              {['All', 'Veg', 'Non-Veg'].map(filter => (
+                <button 
+                  key={filter}
+                  onClick={() => setActiveFilter(filter)}
+                  className={`th-btn ${activeFilter === filter ? 'style9' : 'style10'}`} 
+                  style={{ border: 'none', cursor: 'pointer', padding: '8px 16px', borderRadius: '20px', fontSize: '13px' }}
+                >
+                  {filter}
+                </button>
+              ))}
+            </div>
             <div className="navbar-search" style={{ margin: 0, width: '320px', border: '1px solid #EAE6DB', borderRadius: '10px', display: 'flex', alignItems: 'center' }}>
               <Search size={16} style={{ marginRight: '8px', color: '#888' }} />
               <input
@@ -259,31 +274,8 @@ const ReadyToEat = () => {
                 style={{ width: '100%' }}
               />
             </div>
-            <div style={{ display: 'flex', gap: '10px' }}>
-              <button 
-                className={`btn-outline ${activeFilter === 'All' ? 'active' : ''}`}
-                onClick={() => setActiveFilter('All')}
-                style={{ backgroundColor: activeFilter === 'All' ? 'var(--theme-color)' : 'transparent', color: activeFilter === 'All' ? 'white' : 'var(--theme-color)', padding: '6px 14px', borderRadius: '20px', border: '1px solid var(--theme-color)' }}
-              >
-                All Items
-              </button>
-              <button 
-                className={`btn-outline ${activeFilter === 'Veg' ? 'active' : ''}`}
-                onClick={() => setActiveFilter('Veg')}
-                style={{ backgroundColor: activeFilter === 'Veg' ? '#2F8A5A' : 'transparent', color: activeFilter === 'Veg' ? 'white' : '#2F8A5A', padding: '6px 14px', borderRadius: '20px', border: '1px solid #2F8A5A' }}
-              >
-                Veg
-              </button>
-              <button 
-                className={`btn-outline ${activeFilter === 'Non-Veg' ? 'active' : ''}`}
-                onClick={() => setActiveFilter('Non-Veg')}
-                style={{ backgroundColor: activeFilter === 'Non-Veg' ? 'var(--primary-color)' : 'transparent', color: activeFilter === 'Non-Veg' ? 'white' : 'var(--primary-color)', padding: '6px 14px', borderRadius: '20px', border: '1px solid var(--primary-color)' }}
-              >
-                Non-Veg
-              </button>
-            </div>
             <div style={{ fontSize: '13px', fontWeight: '600', color: 'var(--body-color)' }}>
-              Showing {filteredProducts.length} Ready-to-Eat Items
+              Showing {filteredProducts.length} Items
             </div>
           </div>
 
@@ -298,7 +290,7 @@ const ReadyToEat = () => {
               {filteredProducts.map((p) => {
                 const inStock = p.in_stock !== undefined ? p.in_stock : p.is_available;
                 return (
-                  <div className="food-standard-card" key={p.id}>
+                  <div className={`food-standard-card ${!inStock ? 'unavailable' : ''}`} key={p.id}>
                     <div className="food-card-image">
                       <img src={resolveImagePath(p.image)} alt={p.name} onError={(e) => { e.target.src = '/assets/images/placeholder.jpg' }} />
                       <span className="food-badge">{p.unit || '1 Portion'}</span>
@@ -317,14 +309,14 @@ const ReadyToEat = () => {
                         <span className={`badge-status ${inStock ? 'active' : 'inactive'}`}>
                           {inStock ? 'Available' : 'Out of Stock'}
                         </span>
-                        <label className="switch" style={{ position: 'relative', display: 'inline-block', width: '34px', height: '20px' }}>
+                        <label className="switch" style={{ position: 'relative', display: 'inline-block', width: '34px', height: '20px', cursor: 'pointer' }}>
                           <input
                             type="checkbox"
                             checked={inStock}
                             onChange={() => handleToggleAvailability(p)}
-                            style={{ opacity: 0, width: 0, height: 0 }}
+                            style={{ position: 'absolute', opacity: 0, width: '100%', height: '100%', cursor: 'pointer', zIndex: 5, margin: 0 }}
                           />
-                          <span className="slider round" style={{ position: 'absolute', cursor: 'pointer', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: inStock ? 'var(--theme-color)' : '#ccc', transition: '.4s', borderRadius: '34px' }}>
+                          <span className="slider round" style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: inStock ? 'var(--theme-color)' : '#ccc', transition: '.4s', borderRadius: '34px', pointerEvents: 'none' }}>
                             <span style={{ position: 'absolute', content: '""', height: '14px', width: '14px', left: inStock ? '16px' : '4px', bottom: '3px', backgroundColor: 'white', transition: '.4s', borderRadius: '50%' }} />
                           </span>
                         </label>
@@ -339,7 +331,7 @@ const ReadyToEat = () => {
                           {p.offer_price && <del>₹{p.offer_price.toFixed(2)}</del>}
                         </div>
                         <div className="stock-badge">
-                          {p.type || 'Veg'}
+                          Stock: {p.stock_count || p.stock || 0}
                         </div>
                       </div>
                     </div>
@@ -406,11 +398,11 @@ const ReadyToEat = () => {
 
                   <div className="form-grid">
                     <div className="form-field">
-                      <label>Diet Type</label>
+                      <label>Diet Type *</label>
                       <select
                         value={formData.diet_type}
                         onChange={(e) => setFormData({ ...formData, diet_type: e.target.value })}
-                        style={{ height: '38px', background: '#fff' }}
+                        style={{ height: '38px', background: '#fff', border: '1px solid #EAE6DB', borderRadius: '8px', padding: '0 10px', width: '100%' }}
                       >
                         <option value="Veg">Veg</option>
                         <option value="Non-Veg">Non-Veg</option>

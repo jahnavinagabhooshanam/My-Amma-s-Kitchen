@@ -320,7 +320,7 @@
 
 /* Form Container Tweaks */
 .bulk-form-container {
-  max-width: 900px;
+  max-width: 1100px;
   margin: 40px auto 60px;
   background: white;
   padding: 50px;
@@ -358,5 +358,58 @@
 
   .bulk-form-container {
     padding: 30px 20px;
+  }
+}
+
+/* Form Layout Alignment Fixes */
+.bulk-form-container form.flex.flex-col {
+  gap: 20px;
+}
+
+.bulk-form-container .row {
+  display: flex;
+  gap: 24px;
+  margin-bottom: 0;
+  margin-left: 0;
+  margin-right: 0;
+}
+
+.bulk-form-container .form-group {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  flex: 1;
+  margin-bottom: 20px;
+}
+
+.bulk-form-container .form-label {
+  margin-bottom: 8px;
+  font-size: 0.95rem;
+  color: #2C1A0E;
+  display: block;
+  width: 100%;
+  text-align: left;
+}
+
+.bulk-form-container .form-control {
+  width: 100%;
+  padding: 14px 16px;
+  border-radius: 8px;
+  border: 1px solid #EAE6DB;
+  background-color: #FDFBF7;
+  transition: all 0.3s ease;
+}
+
+.bulk-form-container .form-control:focus {
+  outline: none;
+  border-color: #8B1A10;
+  box-shadow: 0 0 0 3px rgba(139, 26, 16, 0.1);
+  background-color: #fff;
+}
+
+@media (max-width: 768px) {
+  .bulk-form-container .row {
+    flex-direction: column;
+    gap: 0;
   }
 }

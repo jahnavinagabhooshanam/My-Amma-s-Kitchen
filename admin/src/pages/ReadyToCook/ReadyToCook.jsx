@@ -62,10 +62,12 @@ const ReadyToCook = () => {
     shelf_life: '',
     price: '',
     offer_price: '',
-    stock: 0,
+    diet_type: 'Veg',
     is_available: true,
     image: '/assets/images/placeholder.jpg'
   });
+
+  const [activeFilter, setActiveFilter] = useState('All');
 
   const parseDescription = (desc) => {
     try {
@@ -110,7 +112,7 @@ const ReadyToCook = () => {
       shelf_life: '',
       price: '',
       offer_price: '',
-      stock: 30,
+      diet_type: 'Veg',
       is_available: true,
       image: '/assets/images/placeholder.jpg'
     });
@@ -128,7 +130,7 @@ const ReadyToCook = () => {
       shelf_life: parsedDesc.shelf_life,
       price: product.price,
       offer_price: product.offer_price || '',
-      stock: product.stock_count || product.stock || 0,
+      diet_type: product.diet_type || 'Veg',
       is_available: product.in_stock !== undefined ? product.in_stock : product.is_available,
       image: product.image
     });
@@ -184,7 +186,8 @@ const ReadyToCook = () => {
       offer_price: formData.offer_price ? parseFloat(formData.offer_price) : null,
       category: 'ready_to_cook',
       image: formData.image,
-      stock_count: parseInt(formData.stock),
+      diet_type: formData.diet_type,
+      stock_count: 50,
       in_stock: formData.is_available
     };
 
@@ -218,9 +221,15 @@ const ReadyToCook = () => {
     }
   };
 
-  const filteredProducts = products.filter(p =>
-    p.name.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const filteredProducts = products.filter(p => {
+    const matchesSearch = p.name.toLowerCase().includes(searchQuery.toLowerCase());
+    
+    let matchesFilter = true;
+    if (activeFilter === 'Veg') matchesFilter = p.diet_type === 'Veg' || !p.diet_type;
+    else if (activeFilter === 'Non-Veg') matchesFilter = p.diet_type === 'Non-Veg';
+
+    return matchesSearch && matchesFilter;
+  });
 
   return (
     <div className="admin-wrapper">
@@ -254,6 +263,18 @@ const ReadyToCook = () => {
 
           {/* Table Toolbar */}
           <div className="premium-card" style={{ padding: '15px 25px', marginBottom: '25px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '15px' }}>
+            <div style={{ display: 'flex', gap: '10px' }}>
+              {['All', 'Veg', 'Non-Veg'].map(filter => (
+                <button 
+                  key={filter}
+                  onClick={() => setActiveFilter(filter)}
+                  className={`th-btn ${activeFilter === filter ? 'style9' : 'style10'}`} 
+                  style={{ border: 'none', cursor: 'pointer', padding: '8px 16px', borderRadius: '20px', fontSize: '13px' }}
+                >
+                  {filter}
+                </button>
+              ))}
+            </div>
             <div className="navbar-search" style={{ margin: 0, width: '320px', border: '1px solid #EAE6DB', borderRadius: '10px', display: 'flex', alignItems: 'center' }}>
               <Search size={16} style={{ marginRight: '8px', color: '#888' }} />
               <input
@@ -265,7 +286,7 @@ const ReadyToCook = () => {
               />
             </div>
             <div style={{ fontSize: '13px', fontWeight: '600', color: 'var(--body-color)' }}>
-              Showing {filteredProducts.length} Ready-to-Cook Products
+              Showing {filteredProducts.length} Products
             </div>
           </div>
 
@@ -389,14 +410,15 @@ const ReadyToCook = () => {
 
                   <div className="form-grid">
                     <div className="form-field">
-                      <label>Stock Quantity *</label>
-                      <input
-                        type="number"
-                        required
-                        value={formData.stock}
-                        onChange={(e) => setFormData({ ...formData, stock: e.target.value })}
-                        placeholder="30"
-                      />
+                      <label>Diet Type *</label>
+                      <select
+                        value={formData.diet_type}
+                        onChange={(e) => setFormData({ ...formData, diet_type: e.target.value })}
+                        style={{ height: '38px', background: '#fff', border: '1px solid #EAE6DB', borderRadius: '8px', padding: '0 10px', width: '100%' }}
+                      >
+                        <option value="Veg">Veg</option>
+                        <option value="Non-Veg">Non-Veg</option>
+                      </select>
                     </div>
                     <div className="form-field">
                       <label>Shelf Life</label>

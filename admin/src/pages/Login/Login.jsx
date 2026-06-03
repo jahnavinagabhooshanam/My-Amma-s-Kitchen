@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import logoImg from '../../assets/img/logo.png';
+import logoImg from '../../assets/img/logo-login.png';
 import loginBg from '../../assets/img/login-bg.webp';
 import { AlertCircle, Mail, Lock, Eye, EyeOff, LogIn } from 'lucide-react';
 
@@ -71,7 +71,7 @@ const Login = () => {
               src={logoImg}
               alt="My Amma's Kitchen Logo"
               style={{
-                height: '95px',
+                height: '135px',
                 objectFit: 'contain',
                 transition: 'transform 0.3s ease',
                 cursor: 'pointer'

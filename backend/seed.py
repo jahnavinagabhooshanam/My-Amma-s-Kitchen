@@ -89,32 +89,34 @@ def seed_database():
             Product(
                 id=1,
                 name="Artisan Idli & Dosa Batter",
-                category="batter_products",
+                category="traditional",
                 description="Stone-ground parboiled rice and urad dal batter, perfectly fermented for fluffy idlis and crispy dosas. 100% natural, no preservatives.",
-                price=60.00,
-                offer_price=50.00,
+                price=85.00,
+                offer_price=75.00,
                 image="/assets/Food images/Batters/Dosa Batter.webp",
                 stock=50,
-                is_available=True
+                is_available=True,
+                diet_type="Veg"
             ),
             Product(
                 id=2,
                 name="Artisan Ragi (Finger Millet) Batter",
-                category="batter_products",
-                description="Healthy finger millet blended with ground urad dal. Rich in calcium and iron, perfect for high-nutrient breakfast dosas.",
-                price=75.00,
-                offer_price=65.00,
+                category="millet",
+                description="Healthy, iron-rich finger millet and urad dal batter. Ideal for diabetic-friendly, nutritious breakfasts.",
+                price=95.00,
+                offer_price=85.00,
                 image="/assets/Food images/Batters/Idli Batter.webp",
-                stock=30,
-                is_available=True
+                stock=40,
+                is_available=True,
+                diet_type="Veg"
             ),
             Product(
                 id=3,
                 name="Crispy Medu Vada Batter",
-                category="batter_products",
+                category="traditional",
                 description="Specially ground premium black gram batter with a touch of peppercorn, curry leaves, and ginger. Ready to shape and deep fry.",
-                price=90.00,
-                offer_price=80.00,
+                price=110.00,
+                offer_price=100.00,
                 image="/assets/Food images/Batters/Urid Vada Batter.webp",
                 stock=20,
                 is_available=True

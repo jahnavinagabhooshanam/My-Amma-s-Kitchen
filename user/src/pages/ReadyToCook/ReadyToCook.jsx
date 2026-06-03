@@ -65,7 +65,7 @@ const ReadyToCook = () => {
   const [loading, setLoading] = useState(true);
   const [activeCategory, setActiveCategory] = useState('All');
 
-  const CATEGORIES = ['All', 'Ready To Cook', 'Batter', 'Breakfast', 'Snacks', 'Popular'];
+  const CATEGORIES = ['All', 'Ready To Cook', 'Batter', 'Breakfast', 'Snacks', 'Popular', 'Veg', 'Non-Veg'];
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -73,12 +73,13 @@ const ReadyToCook = () => {
         setLoading(true);
         const res = await apiClient.get('/products/');
         const all = res.data;
-        const rtcs = all.filter(p => p.category === 'ready-to-cook' || p.category === 'ready_to_cook');
+        const rtcs = all.filter(p => {
+          const isRtc = p.category === 'ready-to-cook' || p.category === 'ready_to_cook';
+          const isBatter = ['traditional', 'millet', 'health', 'batter_products', 'family_packs', 'premium'].includes(p.category);
+          return isRtc || isBatter;
+        });
         
-        // Use local mock data as fallback if DB is empty for demo purposes
-        if (rtcs.length > 0) {
-          setProducts(rtcs);
-        }
+        setProducts(rtcs);
       } catch (err) {
         console.error(err);
       } finally {
@@ -91,11 +92,13 @@ const ReadyToCook = () => {
   // Filtering logic
   const getFilteredProducts = () => {
     if (activeCategory === 'All') return products;
-    if (activeCategory === 'Batter') return products.filter(p => p.name.toLowerCase().includes('batter') || p.name.toLowerCase().includes('dosa'));
-    if (activeCategory === 'Ready To Cook') return products.filter(p => !(p.name.toLowerCase().includes('batter') || p.name.toLowerCase().includes('dosa')));
+    if (activeCategory === 'Batter') return products.filter(p => ['traditional', 'millet', 'health', 'batter_products', 'family_packs', 'premium'].includes(p.category) || p.name.toLowerCase().includes('batter') || p.name.toLowerCase().includes('dosa'));
+    if (activeCategory === 'Ready To Cook') return products.filter(p => p.category === 'ready_to_cook' || p.category === 'ready-to-cook');
     if (activeCategory === 'Breakfast') return products.filter(p => p.name.toLowerCase().includes('batter') || p.name.toLowerCase().includes('idli'));
-    if (activeCategory === 'Snacks') return products.filter(p => p.name.toLowerCase().includes('tikka'));
+    if (activeCategory === 'Snacks') return products.filter(p => p.name.toLowerCase().includes('tikka') || p.name.toLowerCase().includes('snack'));
     if (activeCategory === 'Popular') return products.filter(p => p.id === 'bat-1' || p.id === 'rtc-2' || p.name.includes('Premium') || p.name.includes('Sambar'));
+    if (activeCategory === 'Veg') return products.filter(p => p.diet_type === 'Veg' || !p.diet_type);
+    if (activeCategory === 'Non-Veg') return products.filter(p => p.diet_type === 'Non-Veg');
     return products;
   };
 

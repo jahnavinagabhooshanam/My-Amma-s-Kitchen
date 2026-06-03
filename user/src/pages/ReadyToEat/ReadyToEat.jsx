@@ -106,7 +106,7 @@ const ReadyToEat = () => {
   const [loading, setLoading] = useState(true);
   const [quickViewProduct, setQuickViewProduct] = useState(null);
 
-  const CATEGORIES = ['All', 'Breakfast', 'Main Course', 'Snacks', 'Beverages', 'Veg', 'Non-Veg'];
+  const CATEGORIES = ['All', 'Veg', 'Non-Veg', 'Breakfast', 'Main Course', 'Snacks'];
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -116,7 +116,7 @@ const ReadyToEat = () => {
         if (res.data && res.data.length > 0) {
           const mapped = res.data.map(p => ({
             ...p,
-            type: p.name.toLowerCase().includes('chicken') || p.name.toLowerCase().includes('mutton') ? 'Non-Veg' : 'Veg',
+            type: p.diet_type || 'Veg',
             category: p.name.toLowerCase().includes('biryani') || p.name.toLowerCase().includes('parotta') ? 'Main Course' : 'Breakfast'
           }));
           setProducts(mapped);
