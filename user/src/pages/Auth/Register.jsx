@@ -82,6 +82,7 @@ const Register = () => {
             placeholder="Email Address" 
             value={formData.email}
             onChange={handleChange}
+            autoComplete="new-email"
           />
           <input 
             type="text" 
@@ -90,6 +91,7 @@ const Register = () => {
             placeholder="Mobile Number" 
             value={formData.phone}
             onChange={handleChange}
+            autoComplete="new-password"
           />
         </div>
         
@@ -101,6 +103,7 @@ const Register = () => {
             placeholder="Password"
             value={formData.password}
             onChange={handleChange}
+            autoComplete="new-password"
           />
           <button 
             type="button" 

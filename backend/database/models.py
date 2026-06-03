@@ -29,6 +29,9 @@ class User(db.Model):
     alternate_mobile = db.Column(db.String(50), nullable=True)
     preference = db.Column(db.String(50), nullable=True)
 
+    def __init__(self, **kwargs):
+        super(User, self).__init__(**kwargs)
+
     def to_dict(self):
         return {
             "id": self.id,
@@ -66,6 +69,7 @@ class Product(db.Model):
     image = db.Column(db.String(255), nullable=True)
     stock = db.Column(db.Integer, default=0, nullable=False)
     is_available = db.Column(db.Boolean, default=True, nullable=False)
+    diet_type = db.Column(db.String(50), default='Veg', nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
 
     def to_dict(self):
@@ -79,6 +83,7 @@ class Product(db.Model):
             "image": self.image,
             "stock": self.stock,
             "is_available": self.is_available,
+            "diet_type": self.diet_type,
             "created_at": self.created_at.isoformat() if self.created_at else None
         }
 
@@ -345,4 +350,26 @@ class KitchenStaff(db.Model):
             "specialty": self.specialty,
             "assigned_tasks": self.assigned_tasks,
             "status": self.status
+        }
+
+class HomepageConfig(db.Model):
+    __tablename__ = 'homepage_config'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    hero_banner = db.Column(db.JSON, nullable=True)
+    kitchen_pulse = db.Column(db.JSON, nullable=True)
+    trending_today = db.Column(db.JSON, nullable=True)
+    festivals = db.Column(db.JSON, nullable=True)
+    amma_recommends = db.Column(db.JSON, nullable=True)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "hero_banner": self.hero_banner or {},
+            "kitchen_pulse": self.kitchen_pulse or {},
+            "trending_today": self.trending_today or [],
+            "festivals": self.festivals or {},
+            "amma_recommends": self.amma_recommends or {},
+            "updated_at": self.updated_at.isoformat() if self.updated_at else None
         }

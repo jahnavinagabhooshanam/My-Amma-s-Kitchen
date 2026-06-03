@@ -1,7 +1,7 @@
 import React from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import logoImg from '../assets/img/cropped-logo.webp';
+import logoImg from '../assets/img/logo.png';
 import { 
   Home, 
   UtensilsCrossed, 
@@ -69,6 +69,7 @@ const AdminSidebar = () => {
     { to: '/admin/reports', icon: BarChart3, label: 'Reports', roles: ['admin', 'manager'] },
     { to: '/admin/notifications', icon: Bell, label: 'Notifications', roles: ['admin', 'manager'] },
     { to: '/admin/website-management', icon: Globe, label: 'Website Control Center', roles: ['admin', 'manager'] },
+    { to: '/admin/homepage-management', icon: Globe, label: 'Homepage CMS', roles: ['admin', 'manager'] },
     
     // Super Admin Modules
     { to: '/admin/user-management', icon: UserCog, label: 'User Management', roles: ['admin'] },

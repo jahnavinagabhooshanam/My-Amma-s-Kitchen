@@ -1,670 +1,622 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
+import {
+  LogOut, Edit2, Package, Heart, ShoppingCart, Star,
+  MapPin, Phone, Mail, Calendar, Award, TrendingUp, Utensils,
+  CheckCircle, Clock, Truck, CreditCard, Lock, Save, ChevronRight, Zap
+} from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { useCart } from '../../context/CartContext';
-import authService from '../../services/authService';
-import orderService from '../../services/orderService';
-import { 
-  LogOut, Package, Heart, MapPin, Edit3, User as UserIcon, 
-  Lock, ShoppingCart, CheckCircle, ArrowRight, ShieldCheck, 
-  Upload, Tag
-} from 'lucide-react';
-import './Auth.css';
-import DashboardCards from '../../components/DashboardCards';
+import apiClient from '../../services/api';
+import './CustomerHub.css';
+
+/* ─── Tier meta ─── */
+const TIER_META = {
+  Bronze:   { icon: '🥉', color: '#CD7F32', perks: ['Early Access to Offers', 'Birthday Bonus'] },
+  Silver:   { icon: '🥈', color: '#A8A9AD', perks: ['5% Loyalty Discount', 'Free Delivery above ₹300', 'Priority Support'] },
+  Gold:     { icon: '🥇', color: '#FFD700', perks: ['10% Loyalty Discount', 'Free Delivery always', 'Chef Specials Access', 'Priority Delivery'] },
+  Platinum: { icon: '💎', color: '#E5E4E2', perks: ['15% Loyalty Discount', 'Free Delivery always', 'Exclusive Recipes', 'Personal Amma Service', 'Festival Hampers'] },
+};
+
+const STATUS_ICON = {
+  Pending:           <Clock size={14} />,
+  Confirmed:         <CheckCircle size={14} />,
+  Preparing:         <Utensils size={14} />,
+  'Out For Delivery': <Truck size={14} />,
+  Delivered:         <CheckCircle size={14} />,
+  Cancelled:         <span>✕</span>,
+};
+
+/* ─── Helpers ─── */
+const formatDate = (iso) => {
+  if (!iso) return '—';
+  return new Date(iso).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
+};
+
+const resolveImage = (path) => {
+  if (!path) return null;
+  if (path.startsWith('http')) return path;
+  const clean = path.replace(/^\/?(api\/)?assets\//, '');
+  return `http://localhost:5000/assets/${clean}`;
+};
+
+const fade = { hidden: { opacity: 0, y: 16 }, visible: { opacity: 1, y: 0 } };
+
+/* ══════════════════════════════════════════════════════════ */
 
 const UserProfile = () => {
   const { user, logout, refreshUser } = useAuth();
-  const { cartItems, cartTotal } = useCart();
+  const { cartItems } = useCart();
   const navigate = useNavigate();
 
-  const [activeTab, setActiveTab] = useState('dashboard');
-  const [orders, setOrders] = useState([]);
-  const [ordersLoading, setOrdersLoading] = useState(false);
+  const [activeTab, setActiveTab] = useState('overview');
+  const [hub, setHub] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [saveMsg, setSaveMsg] = useState('');
 
-  // Edit Profile Form State
-  const [profileData, setProfileData] = useState({
-    name: '',
-    email: '',
-    phone: '',
-    door_number: '',
-    street_name: '',
-    area: '',
-    city: '',
-    state: '',
-    pincode: '',
-    landmark: '',
-    alternate_mobile: '',
-    preference: 'Both'
+  // Edit-profile form state
+  const [form, setForm] = useState({
+    name: '', phone: '', door_number: '', street_name: '',
+    area: '', city: '', state: '', pincode: '', landmark: '',
   });
-  const [profileImage, setProfileImage] = useState('');
-  const [uploading, setUploading] = useState(false);
-  const [profileError, setProfileError] = useState('');
-  const [profileSuccess, setProfileSuccess] = useState('');
-
-  // Password Form State
-  const [passwordData, setPasswordData] = useState({
-    current_password: '',
-    new_password: '',
-    confirm_password: ''
-  });
-  const [passwordError, setPasswordError] = useState('');
-  const [passwordSuccess, setPasswordSuccess] = useState('');
-
-  // Mock Wishlist matching the global layout
-  const [wishlist, setWishlist] = useState([
-    { id: 'bat-01', name: 'Premium Mini Tiffin', price: 274.00, image: '🍶', unit: 'Combo Box' },
-    { id: 'bat-02', name: 'Premium Idli Dosa Batter', price: 80.00, image: '🍶', unit: '1 kg Tub' }
-  ]);
 
   useEffect(() => {
-    if (user) {
-      setProfileData({
-        name: user.name || '',
-        email: user.email || '',
-        phone: user.phone || '',
-        door_number: user.door_number || '',
-        street_name: user.street_name || '',
-        area: user.area || '',
-        city: user.city || '',
-        state: user.state || '',
-        pincode: user.pincode || '',
-        landmark: user.landmark || '',
-        alternate_mobile: user.alternate_mobile || '',
-        preference: user.preference || 'Both'
-      });
-      setProfileImage(user.profile_image || '');
-    }
-  }, [user]);
-
-  // Load orders when relevant tab is selected AND user has a token
-  useEffect(() => {
-    if ((activeTab === 'orders' || activeTab === 'dashboard') && user && user.id) {
-      const loadOrders = async () => {
-        setOrdersLoading(true);
-        try {
-          console.log('Loading orders for user:', user.id);
-          const response = await orderService.getAll();
-          console.log('Orders loaded:', response.data);
-          setOrders(response.data || []);
-        } catch (err) {
-          console.error("Failed to load orders:", err.response?.status, err.response?.data);
-          // Fallback to mock orders
-          setOrders([
-            { id: '9419', created_at: '2026-05-28T10:00:00', total_amount: 274.00, status: 'Completed' },
-            { id: '9412', created_at: '2026-05-15T12:00:00', total_amount: 377.00, status: 'Completed' }
-          ]);
-        } finally {
-          setOrdersLoading(false);
+    const fetchHub = async () => {
+      setLoading(true);
+      try {
+        const res = await apiClient.get('/auth/dashboard-stats');
+        setHub(res.data);
+        // Pre-fill form
+        if (res.data?.profile) {
+          const p = res.data.profile;
+          setForm({
+            name:        p.name || '',
+            phone:       p.phone || '',
+            door_number: user?.door_number || '',
+            street_name: user?.street_name || '',
+            area:        user?.area || '',
+            city:        user?.city || '',
+            state:       user?.state || '',
+            pincode:     user?.pincode || '',
+            landmark:    user?.landmark || '',
+          });
         }
-      };
-      loadOrders();
-    }
-  }, [activeTab, user]);
+      } catch (err) {
+        console.error('Dashboard stats error', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchHub();
+    // eslint-disable-next-line
+  }, []);
 
-  const handleLogout = () => {
-    logout();
-    navigate('/auth');
-  };
+  const handleLogout = () => { logout(); navigate('/auth'); };
 
-  const handleProfileSubmit = async (e) => {
+  const handleFormChange = (e) => setForm(f => ({ ...f, [e.target.name]: e.target.value }));
+
+  const handleSaveProfile = async (e) => {
     e.preventDefault();
-    setProfileError('');
-    setProfileSuccess('');
-
+    setSaving(true);
+    setSaveMsg('');
     try {
-      const payload = {
-        ...profileData,
-        profile_image: profileImage
-      };
-      await authService.completeProfile(payload);
+      await apiClient.post('/auth/complete-profile', form);
       await refreshUser();
-      setProfileSuccess('Profile updated successfully!');
+      setSaveMsg('Profile saved successfully!');
+      const res = await apiClient.get('/auth/dashboard-stats');
+      setHub(res.data);
     } catch (err) {
-      setProfileError(err.response?.data?.error || 'Failed to update profile.');
-    }
-  };
-
-  const handleImageUpload = async (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-
-    const imgFormData = new FormData();
-    imgFormData.append('file', file);
-
-    setUploading(true);
-    setProfileError('');
-    setProfileSuccess('');
-
-    try {
-      const response = await authService.uploadAvatar(imgFormData);
-      setProfileImage(response.data.profile_image);
-      setProfileSuccess('Profile picture uploaded! Save changes to apply.');
-    } catch (err) {
-      setProfileError(err.response?.data?.error || 'Failed to upload image.');
+      setSaveMsg('Failed to save. Please try again.');
     } finally {
-      setUploading(false);
-    }
-  };
-
-  const handlePasswordSubmit = async (e) => {
-    e.preventDefault();
-    setPasswordError('');
-    setPasswordSuccess('');
-
-    if (passwordData.new_password !== passwordData.confirm_password) {
-      setPasswordError('New passwords do not match.');
-      return;
-    }
-
-    try {
-      await authService.changePassword({
-        current_password: passwordData.current_password,
-        new_password: passwordData.new_password
-      });
-      setPasswordSuccess('Password changed successfully!');
-      setPasswordData({
-        current_password: '',
-        new_password: '',
-        confirm_password: ''
-      });
-    } catch (err) {
-      setPasswordError(err.response?.data?.error || 'Failed to change password.');
+      setSaving(false);
     }
   };
 
   if (!user) return null;
 
+  const tier = hub?.membership?.tier || 'Bronze';
+  const tierMeta = TIER_META[tier] || TIER_META.Bronze;
+
+  const TABS = [
+    { id: 'overview',  label: 'My Journey',     icon: <TrendingUp size={18} /> },
+    { id: 'orders',    label: 'Order History',   icon: <Package size={18} /> },
+    { id: 'favorites', label: 'My Favorites',    icon: <Heart size={18} /> },
+    { id: 'profile',   label: 'Edit Profile',    icon: <Edit2 size={18} /> },
+    { id: 'password',  label: 'Change Password', icon: <Lock size={18} /> },
+  ];
+
   return (
-    <div style={{ backgroundColor: '#FCFBF7', minHeight: '90vh', padding: '60px 0' }}>
-      <div className="container">
-        
-        {/* Profile Banner */}
-        <div className="profile-header" style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '24px', backgroundColor: 'var(--primary-dark)', borderRadius: '15px', padding: '40px', color: 'white', marginBottom: '40px' }}>
-          <div style={{ width: '100px', height: '100px', borderRadius: '50%', backgroundColor: 'white', overflow: 'hidden', border: '3px solid rgba(255,255,255,0.2)' }}>
-            {profileImage ? (
-              <img src={profileImage} alt="Avatar" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-            ) : (
-              <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--primary-color)', fontSize: '2.5rem', fontWeight: 'bold' }}>
-                {user.name?.charAt(0).toUpperCase()}
-              </div>
-            )}
-          </div>
-          <div>
-            <h2 style={{ margin: 0, fontFamily: 'var(--font-serif)', fontSize: '2.2rem' }}>{user.name}</h2>
-            <p style={{ margin: '4px 0 0', opacity: 0.9 }}>{user.email} &bull; {user.phone}</p>
-            <div style={{ display: 'flex', gap: '10px', marginTop: '12px' }}>
-              <span className="badge" style={{ backgroundColor: 'rgba(255,255,255,0.15)', color: 'white', padding: '5px 12px', borderRadius: '20px', fontSize: '0.8rem' }}>
-                Preference: {user.preference || 'Both'}
-              </span>
-              <span className="badge" style={{ backgroundColor: '#4CAF50', color: 'white', padding: '5px 12px', borderRadius: '20px', fontSize: '0.8rem', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                <ShieldCheck size={12} /> Profile Complete
-              </span>
+    <div className="hub-page">
+
+      {/* ════════════════════════ HERO ════════════════════════ */}
+      <div className="hub-hero">
+        <div className="hub-hero-inner">
+          {/* Avatar */}
+          <div className="hub-avatar-wrap">
+            <div className="hub-avatar">
+              {user.profile_image
+                ? <img src={user.profile_image} alt="avatar" />
+                : (user.name || 'U').charAt(0).toUpperCase()}
+            </div>
+            <div className="hub-avatar-edit" title="Change photo">
+              <Edit2 size={14} color="#fff" />
             </div>
           </div>
-          <button 
-            onClick={handleLogout} 
-            className="social-btn" 
-            style={{ marginLeft: 'auto', backgroundColor: 'rgba(255,255,255,0.1)', color: 'white', border: '1px solid rgba(255,255,255,0.2)', padding: '12px 20px' }}
+
+          {/* Info */}
+          <div className="hub-profile-info">
+            <h1 className="hub-profile-name">{user.name || 'Welcome!'}</h1>
+            <div className="hub-profile-meta">
+              <span><Mail size={13} /> {user.email}</span>
+              {user.phone && <span><Phone size={13} /> {user.phone}</span>}
+              <span><Calendar size={13} /> Member since {formatDate(user.created_at)}</span>
+            </div>
+            <span className={`hub-tier-badge ${tier}`}>
+              {tierMeta.icon} &nbsp;{tier} Member
+            </span>
+          </div>
+
+          {/* Logout */}
+          <button
+            style={{ background: 'rgba(255,255,255,0.12)', border: '1px solid rgba(255,255,255,0.25)', color: '#fff', padding: '10px 20px', borderRadius: '50px', cursor: 'pointer', fontWeight: 600, display: 'flex', alignItems: 'center', gap: 8, marginBottom: '32px', flexShrink: 0 }}
+            onClick={handleLogout}
           >
             <LogOut size={16} /> Logout
           </button>
         </div>
 
-        {/* Dashboard grid */}
-        <div style={{ display: 'flex', gap: '30px', flexDirection: 'row', flexWrap: 'wrap' }} className="profile-dashboard-wrapper">
-          
-          {/* Sidebar Menu */}
-          <div style={{ flex: '1', minWidth: '250px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
-            <div style={{ backgroundColor: 'white', border: '1px solid #EAE6DB', borderRadius: '12px', padding: '15px', display: 'flex', flexDirection: 'column', gap: '4px' }}>
-              {[
-                { id: 'dashboard', label: 'Dashboard Overview', icon: <UserIcon size={18} /> },
-                { id: 'orders', label: 'My Order History', icon: <Package size={18} /> },
-                { id: 'wishlist', label: 'My Saved Wishlist', icon: <Heart size={18} /> },
-                { id: 'cart', label: 'My Shopping Basket', icon: <ShoppingCart size={18} /> },
-                { id: 'edit-profile', label: 'Edit Profile & Details', icon: <Edit3 size={18} /> },
-                { id: 'change-password', label: 'Change Password', icon: <Lock size={18} /> }
-              ].map((tab) => (
-                <button
-                  key={tab.id}
-                  onClick={() => setActiveTab(tab.id)}
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '12px',
-                    width: '100%',
-                    padding: '12px 16px',
-                    border: 'none',
-                    borderRadius: '8px',
-                    textAlign: 'left',
-                    fontWeight: '600',
-                    cursor: 'pointer',
-                    backgroundColor: activeTab === tab.id ? 'rgba(200, 75, 49, 0.08)' : 'transparent',
-                    color: activeTab === tab.id ? 'var(--primary-color)' : 'var(--text-dark)',
-                    transition: 'all 0.2s'
-                  }}
-                >
-                  {tab.icon}
-                  {tab.label}
-                </button>
-              ))}
+        {/* Hero Stats Strip */}
+        <div className="hub-hero-stats">
+          <div className="hub-hero-stat">
+            <span className="hub-hero-stat-val">{hub?.stats?.total_orders ?? '—'}</span>
+            <span className="hub-hero-stat-label">Total Orders</span>
+          </div>
+          <div className="hub-hero-stat">
+            <span className="hub-hero-stat-val">₹{hub?.stats?.total_spent?.toLocaleString('en-IN') ?? '—'}</span>
+            <span className="hub-hero-stat-label">Lifetime Spent</span>
+          </div>
+          <div className="hub-hero-stat">
+            <span className="hub-hero-stat-val">{hub?.stats?.reward_points ?? '—'}</span>
+            <span className="hub-hero-stat-label">Reward Points</span>
+          </div>
+          <div className="hub-hero-stat">
+            <span className="hub-hero-stat-val">{cartItems?.length ?? 0}</span>
+            <span className="hub-hero-stat-label">Basket Items</span>
+          </div>
+        </div>
+      </div>
+
+      <div className="hub-container">
+
+        {/* ── Active Order Banner ── */}
+        {hub?.active_order && (
+          <motion.div
+            className="hub-active-order"
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+          >
+            <div className="hub-active-order-icon">
+              <Truck size={26} color="#fff" />
+            </div>
+            <div className="hub-active-order-info">
+              <p className="hub-active-order-title">
+                {STATUS_ICON[hub.active_order.status]} &nbsp; Order #{hub.active_order.id} — {hub.active_order.status}
+              </p>
+              <p className="hub-active-order-sub">
+                {hub.active_order.items?.join(', ') || 'Your delicious order is on its way!'}
+              </p>
+            </div>
+            <button className="hub-track-btn" onClick={() => navigate('/orders')}>
+              Track Order <ChevronRight size={16} />
+            </button>
+          </motion.div>
+        )}
+
+        {/* ════════════════════════ MAIN GRID ════════════════════════ */}
+        <div className="hub-grid">
+
+          {/* ══ LEFT SIDEBAR ══ */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+
+            {/* Navigation */}
+            <div className="hub-card">
+              <div style={{ padding: '8px' }}>
+                {TABS.map(tab => (
+                  <button
+                    key={tab.id}
+                    onClick={() => setActiveTab(tab.id)}
+                    style={{
+                      display: 'flex', alignItems: 'center', gap: '12px', width: '100%',
+                      padding: '13px 16px', border: 'none', borderRadius: '12px',
+                      background: activeTab === tab.id ? 'rgba(128,0,32,0.07)' : 'transparent',
+                      color: activeTab === tab.id ? 'var(--hub-accent)' : 'var(--hub-muted)',
+                      fontWeight: activeTab === tab.id ? 700 : 500,
+                      textAlign: 'left', cursor: 'pointer', fontSize: '0.92rem',
+                      fontFamily: "'Inter', sans-serif", transition: 'all 0.15s',
+                      borderLeft: activeTab === tab.id ? '3px solid var(--hub-accent)' : '3px solid transparent',
+                    }}
+                  >
+                    {tab.icon} {tab.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Membership Card */}
+            <div className="hub-card">
+              <div className="hub-card-header">
+                <h3 className="hub-card-title"><Award size={20} /> Membership</h3>
+              </div>
+              <div className="membership-card-body">
+                <div className="membership-tier-display">
+                  <div className="membership-tier-icon">{tierMeta.icon}</div>
+                  <div className="membership-tier-name">{tier}</div>
+                  <div className="membership-tier-sub">
+                    {hub?.stats?.reward_points ?? 0} Reward Points
+                  </div>
+                </div>
+
+                {hub?.membership?.next_tier && (
+                  <div className="tier-progress-section">
+                    <div className="tier-progress-header">
+                      <span>{tier}</span>
+                      <span>{hub.membership.points_to_next} pts to {hub.membership.next_tier}</span>
+                    </div>
+                    <div className="tier-progress-bar">
+                      <div
+                        className="tier-progress-fill"
+                        style={{ width: `${hub.membership.progress}%` }}
+                      />
+                    </div>
+                  </div>
+                )}
+
+                <div style={{ marginTop: '16px' }}>
+                  <p style={{ fontSize: '0.8rem', color: 'var(--hub-muted)', textTransform: 'uppercase', letterSpacing: '0.8px', fontWeight: 600, marginBottom: '10px' }}>
+                    Your Perks
+                  </p>
+                  {tierMeta.perks.map((perk, i) => (
+                    <div key={i} className="tier-benefit-row">
+                      <CheckCircle size={14} />
+                      <span>{perk}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
           </div>
 
-          {/* Main Content Area */}
-          <div style={{ flex: '3', minWidth: '300px' }}>
-            <div style={{ backgroundColor: 'white', border: '1px solid #EAE6DB', borderRadius: '12px', padding: '30px', minHeight: '400px' }}>
-              
-              {/* TAB 1: DASHBOARD OVERVIEW */}
-              {activeTab === 'dashboard' && (
-                <div>
-                  <h3 style={{ fontFamily: 'var(--font-serif)', color: 'var(--primary-dark)', fontSize: '1.6rem', marginBottom: '20px' }}>Dashboard Overview</h3>
-                  <div style={{ marginBottom: '16px' }}>
-                    <DashboardCards stats={[
-                      { icon: 'fa-solid fa-basket-shopping', trendValue: null, trendType: 'up', value: cartItems.length, label: 'Items in Basket', colorClass: 'red' },
-                      { icon: 'fa-solid fa-heart', trendValue: null, trendType: 'up', value: wishlist.length, label: 'Saved Products', colorClass: 'orange' },
-                      { icon: 'fa-solid fa-box-open', trendValue: null, trendType: 'up', value: orders.length, label: 'Total Orders', colorClass: 'blue' },
-                    ]} />
+          {/* ══ RIGHT CONTENT ══ */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+
+            {/* ── OVERVIEW TAB ── */}
+            {activeTab === 'overview' && (
+              <motion.div variants={fade} initial="hidden" animate="visible" style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+
+                {/* Stats Grid */}
+                <div className="hub-stats-grid">
+                  <div className="hub-stat-card">
+                    <div className="hub-stat-icon orders"><Package size={22} /></div>
+                    <div className="hub-stat-val">{hub?.stats?.total_orders ?? '—'}</div>
+                    <div className="hub-stat-label">Orders Placed</div>
                   </div>
-
-                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '25px' }}>
-                    {/* Primary Address */}
-                    <div style={{ border: '1px solid #EAE6DB', borderRadius: '10px', padding: '20px' }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '10px', borderBottom: '1px solid var(--border-color)', paddingBottom: '10px', marginBottom: '15px' }}>
-                        <MapPin size={18} style={{ color: 'var(--primary-color)' }} />
-                        <strong style={{ fontSize: '1.1rem', color: 'var(--primary-dark)' }}>Primary Delivery Address</strong>
-                      </div>
-                      <div style={{ lineHeight: '1.6', color: 'var(--text-dark)' }}>
-                        <div>{user.door_number}, {user.street_name}</div>
-                        <div>{user.area}</div>
-                        <div>{user.city} - {user.pincode}</div>
-                        <div>{user.state}</div>
-                        {user.landmark && <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginTop: '6px' }}>Landmark: {user.landmark}</div>}
-                        {user.alternate_mobile && <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>Alt Mobile: {user.alternate_mobile}</div>}
-                      </div>
-                    </div>
-
-                    {/* Recent Order Summary */}
-                    <div style={{ border: '1px solid #EAE6DB', borderRadius: '10px', padding: '20px' }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '10px', borderBottom: '1px solid var(--border-color)', paddingBottom: '10px', marginBottom: '15px' }}>
-                        <Package size={18} style={{ color: 'var(--primary-color)' }} />
-                        <strong style={{ fontSize: '1.1rem', color: 'var(--primary-dark)' }}>Latest Order</strong>
-                      </div>
-                      {orders.length > 0 ? (
-                        <div>
-                          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
-                            <span>Order #{orders[0].id}</span>
-                            <span style={{ color: 'var(--success)', fontWeight: 'bold' }}>{orders[0].status}</span>
-                          </div>
-                          <div style={{ fontSize: '1.2rem', fontWeight: 'bold', color: 'var(--primary-color)', marginBottom: '15px' }}>
-                            ₹{Number(orders[0].total_amount).toFixed(2)}
-                          </div>
-                          <button onClick={() => setActiveTab('orders')} className="social-btn" style={{ width: '100%', fontSize: '0.9rem' }}>
-                            Track All Orders <ArrowRight size={14} />
-                          </button>
-                        </div>
-                      ) : (
-                        <div style={{ color: 'var(--text-muted)', textAlign: 'center', padding: '20px 0' }}>
-                          No orders placed yet.
-                        </div>
-                      )}
-                    </div>
+                  <div className="hub-stat-card">
+                    <div className="hub-stat-icon spent"><CreditCard size={22} /></div>
+                    <div className="hub-stat-val">₹{hub?.stats?.total_spent?.toLocaleString('en-IN') ?? '—'}</div>
+                    <div className="hub-stat-label">Total Spent</div>
+                  </div>
+                  <div className="hub-stat-card">
+                    <div className="hub-stat-icon points"><Zap size={22} /></div>
+                    <div className="hub-stat-val">{hub?.stats?.reward_points ?? '—'}</div>
+                    <div className="hub-stat-label">Reward Points</div>
+                  </div>
+                  <div className="hub-stat-card">
+                    <div className="hub-stat-icon cart"><ShoppingCart size={22} /></div>
+                    <div className="hub-stat-val">{cartItems?.length ?? 0}</div>
+                    <div className="hub-stat-label">In My Basket</div>
                   </div>
                 </div>
-              )}
 
-              {/* TAB 2: ORDER HISTORY */}
-              {activeTab === 'orders' && (
-                <div>
-                  <h3 style={{ fontFamily: 'var(--font-serif)', color: 'var(--primary-dark)', fontSize: '1.6rem', marginBottom: '20px' }}>Order History</h3>
-                  {ordersLoading ? (
-                    <p className="text-muted">Loading your orders...</p>
-                  ) : orders.length === 0 ? (
-                    <div style={{ textAlign: 'center', padding: '40px 0' }}>
-                      <Package size={48} style={{ color: 'var(--text-muted)', opacity: '0.4', marginBottom: '15px' }} />
-                      <h4>No Orders Found</h4>
-                      <p className="text-muted">Browse our delicious South Indian kitchen menu to place your first order.</p>
+                {/* Food Journey */}
+                <div className="hub-card">
+                  <div className="hub-card-header">
+                    <h3 className="hub-card-title"><TrendingUp size={20} /> My Food Journey</h3>
+                  </div>
+                  <div className="journey-grid">
+                    <div className="journey-item">
+                      <div className="journey-item-icon">🍽️</div>
+                      <span className="journey-item-val">{hub?.stats?.completed_orders ?? 0}</span>
+                      <span className="journey-item-label">Meals Enjoyed</span>
                     </div>
-                  ) : (
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
-                      {orders.map((order) => (
-                        <div key={order.id} style={{ border: '1px solid #EAE6DB', borderRadius: '10px', padding: '20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '15px' }}>
-                          <div>
-                            <strong style={{ fontSize: '1.1rem', color: 'var(--primary-dark)' }}>Order #{order.id}</strong>
-                            <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginTop: '4px' }}>
-                              Placed on: {new Date(order.created_at || Date.now()).toLocaleDateString()}
-                            </div>
-                            <div style={{ marginTop: '8px' }}>
-                              <span className="badge" style={{ backgroundColor: 'rgba(76, 175, 80, 0.1)', color: '#4CAF50', padding: '4px 10px', borderRadius: '12px', fontSize: '0.75rem', fontWeight: 'bold' }}>
-                                {order.status}
-                              </span>
-                            </div>
-                          </div>
-                          <div style={{ textAlign: 'right' }}>
-                            <div style={{ fontSize: '1.3rem', fontWeight: 'bold', color: 'var(--primary-color)' }}>₹{Number(order.total_amount).toFixed(2)}</div>
-                            <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>Payment: Paid</span>
-                          </div>
-                        </div>
-                      ))}
+                    <div className="journey-item">
+                      <div className="journey-item-icon">❤️</div>
+                      <span className="journey-item-val">
+                        {hub?.favorite_dishes?.[0]?.name?.split(' ')[0] || '—'}
+                      </span>
+                      <span className="journey-item-label">Favorite Dish</span>
                     </div>
-                  )}
+                    <div className="journey-item">
+                      <div className="journey-item-icon">🏆</div>
+                      <span className="journey-item-val">{tier}</span>
+                      <span className="journey-item-label">Member Tier</span>
+                    </div>
+                    <div className="journey-item">
+                      <div className="journey-item-icon">📅</div>
+                      <span className="journey-item-val">{formatDate(user.created_at)}</span>
+                      <span className="journey-item-label">Member Since</span>
+                    </div>
+                    <div className="journey-item">
+                      <div className="journey-item-icon">⭐</div>
+                      <span className="journey-item-val">{hub?.stats?.reward_points ?? 0} pts</span>
+                      <span className="journey-item-label">Reward Balance</span>
+                    </div>
+                    <div className="journey-item">
+                      <div className="journey-item-icon">🍴</div>
+                      <span className="journey-item-val">
+                        {hub?.favorite_category
+                          ? hub.favorite_category.replace('_', ' ').replace(/\b\w/g, c => c.toUpperCase())
+                          : '—'}
+                      </span>
+                      <span className="journey-item-label">Fav Category</span>
+                    </div>
+                  </div>
                 </div>
-              )}
 
-              {/* TAB 3: WISHLIST */}
-              {activeTab === 'wishlist' && (
-                <div>
-                  <h3 style={{ fontFamily: 'var(--font-serif)', color: 'var(--primary-dark)', fontSize: '1.6rem', marginBottom: '20px' }}>My Saved Products</h3>
-                  {wishlist.length === 0 ? (
-                    <p className="text-muted">Your wishlist is empty.</p>
-                  ) : (
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: '20px' }}>
-                      {wishlist.map((item) => (
-                        <div key={item.id} style={{ border: '1px solid #EAE6DB', borderRadius: '10px', padding: '15px', backgroundColor: 'white', display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                          <div style={{ height: '140px', backgroundColor: '#F5F4EE', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '3rem' }}>
-                            {item.image}
-                          </div>
-                          <div>
-                            <strong style={{ fontSize: '1rem', color: 'var(--primary-dark)' }}>{item.name}</strong>
-                            <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>{item.unit}</div>
-                          </div>
-                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 'auto' }}>
-                            <span style={{ fontWeight: 'bold', color: 'var(--primary-color)' }}>₹{item.price.toFixed(2)}</span>
-                            <button 
-                              onClick={() => {
-                                setWishlist(wishlist.filter(w => w.id !== item.id));
-                              }} 
-                              className="btn-text" 
-                              style={{ color: 'red', border: 'none', background: 'none', cursor: 'pointer', fontWeight: 'bold', fontSize: '0.8rem' }}
-                            >
-                              Remove
-                            </button>
-                          </div>
+                {/* Recent Orders */}
+                <div className="hub-card">
+                  <div className="hub-card-header">
+                    <h3 className="hub-card-title"><Package size={20} /> Recent Orders</h3>
+                    <button className="hub-card-action" onClick={() => setActiveTab('orders')}>
+                      View All <ChevronRight size={14} />
+                    </button>
+                  </div>
+                  {loading ? (
+                    <div className="hub-loading"><div className="hub-spinner" /></div>
+                  ) : hub?.recent_orders?.length > 0 ? (
+                    hub.recent_orders.map(order => (
+                      <div key={order.id} className="order-item-row">
+                        <div className="order-id-badge">
+                          <span>Order</span>
+                          <strong>#{order.id}</strong>
                         </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              )}
-
-              {/* TAB 4: CART */}
-              {activeTab === 'cart' && (
-                <div>
-                  <h3 style={{ fontFamily: 'var(--font-serif)', color: 'var(--primary-dark)', fontSize: '1.6rem', marginBottom: '20px' }}>My Shopping Basket</h3>
-                  {cartItems.length === 0 ? (
-                    <div style={{ textAlign: 'center', padding: '30px 0' }}>
-                      <ShoppingCart size={48} style={{ color: 'var(--text-muted)', opacity: '0.4', marginBottom: '15px' }} />
-                      <p className="text-muted">Your shopping basket is currently empty.</p>
-                    </div>
+                        <div className="order-item-info">
+                          <p className="order-item-name">
+                            {order.items?.join(', ') || 'Order items'}
+                            {order.item_count > 2 && ` +${order.item_count - 2} more`}
+                          </p>
+                          <p className="order-item-meta">{formatDate(order.created_at)}</p>
+                        </div>
+                        <span className={`order-status-chip status-${order.status?.replace(/\s+/g, '-')}`}>
+                          {STATUS_ICON[order.status]} &nbsp;{order.status}
+                        </span>
+                        <span className="order-amount">₹{order.total}</span>
+                      </div>
+                    ))
                   ) : (
-                    <div>
-                      <div style={{ display: 'flex', flexDirection: 'column', gap: '15px', marginBottom: '25px' }}>
-                        {cartItems.map((item) => (
-                          <div key={item.id} style={{ display: 'flex', justifyItems: 'center', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1px solid var(--border-color)', paddingBottom: '12px' }}>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
-                              <div style={{ width: '40px', height: '40px', backgroundColor: '#F5F4EE', borderRadius: '6px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>🍶</div>
-                              <div>
-                                <strong style={{ color: 'var(--primary-dark)' }}>{item.name}</strong>
-                                <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>₹{Number(item.price).toFixed(2)} x {item.quantity}</div>
-                              </div>
-                            </div>
-                            <strong style={{ color: 'var(--primary-color)' }}>₹{(item.price * item.quantity).toFixed(2)}</strong>
-                          </div>
-                        ))}
-                      </div>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: '2px solid #EAE6DB', paddingTop: '15px' }}>
-                        <strong>Basket Total:</strong>
-                        <strong style={{ fontSize: '1.4rem', color: 'var(--primary-color)' }}>₹{Number(cartTotal).toFixed(2)}</strong>
-                      </div>
-                      <button onClick={() => navigate('/cart')} className="auth-submit-btn" style={{ marginTop: '20px' }}>
-                        Go to Checkout
+                    <div className="hub-empty">
+                      <Package size={48} />
+                      <p>No orders yet. Start your food journey today!</p>
+                      <button className="hub-btn-primary" style={{ marginTop: 12 }} onClick={() => navigate('/menu')}>
+                        Explore Menu
                       </button>
                     </div>
                   )}
                 </div>
-              )}
+              </motion.div>
+            )}
 
-              {/* TAB 5: EDIT PROFILE */}
-              {activeTab === 'edit-profile' && (
-                <div>
-                  <h3 style={{ fontFamily: 'var(--font-serif)', color: 'var(--primary-dark)', fontSize: '1.6rem', marginBottom: '20px' }}>Edit Profile & Delivery Details</h3>
-                  <form onSubmit={handleProfileSubmit}>
-                    {profileError && <div className="alert alert-danger">{profileError}</div>}
-                    {profileSuccess && <div className="alert alert-success">{profileSuccess}</div>}
+            {/* ── ORDERS TAB ── */}
+            {activeTab === 'orders' && (
+              <motion.div variants={fade} initial="hidden" animate="visible">
+                <div className="hub-card">
+                  <div className="hub-card-header">
+                    <h3 className="hub-card-title"><Package size={20} /> Order History</h3>
+                  </div>
+                  {loading ? (
+                    <div className="hub-loading"><div className="hub-spinner" /></div>
+                  ) : hub?.recent_orders?.length > 0 ? (
+                    hub.recent_orders.map(order => (
+                      <div key={order.id} className="order-item-row">
+                        <div className="order-id-badge">
+                          <span>Order</span>
+                          <strong>#{order.id}</strong>
+                        </div>
+                        <div className="order-item-info">
+                          <p className="order-item-name">
+                            {order.items?.join(', ') || 'Order items'}
+                            {order.item_count > 2 && ` +${order.item_count - 2} more`}
+                          </p>
+                          <p className="order-item-meta">{formatDate(order.created_at)}</p>
+                        </div>
+                        <span className={`order-status-chip status-${order.status?.replace(/\s+/g, '-')}`}>
+                          {order.status}
+                        </span>
+                        <span className="order-amount">₹{order.total}</span>
+                      </div>
+                    ))
+                  ) : (
+                    <div className="hub-empty">
+                      <Package size={48} />
+                      <p>No orders yet. Your Amma's Kitchen journey starts here!</p>
+                      <button className="hub-btn-primary" style={{ marginTop: 12 }} onClick={() => navigate('/menu')}>
+                        Browse Menu
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </motion.div>
+            )}
 
-                    {/* Photo upload */}
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '20px', marginBottom: '25px', backgroundColor: '#FAF9F6', padding: '15px', borderRadius: '8px' }}>
-                      <div style={{ width: '70px', height: '70px', borderRadius: '50%', backgroundColor: 'white', overflow: 'hidden', border: '2px solid var(--primary-color)' }}>
-                        {profileImage ? (
-                          <img src={profileImage} alt="Avatar" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                        ) : (
-                          <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--primary-color)', fontSize: '1.8rem', fontWeight: 'bold' }}>
-                            {user.name?.charAt(0).toUpperCase()}
+            {/* ── FAVORITES TAB ── */}
+            {activeTab === 'favorites' && (
+              <motion.div variants={fade} initial="hidden" animate="visible" style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+                <div className="hub-card">
+                  <div className="hub-card-header">
+                    <h3 className="hub-card-title"><Heart size={20} /> My Favorite Dishes</h3>
+                    <span style={{ fontSize: '0.82rem', color: 'var(--hub-muted)' }}>Based on your orders</span>
+                  </div>
+                  {hub?.favorite_dishes?.length > 0 ? (
+                    <div className="fav-dishes-grid">
+                      {hub.favorite_dishes.map((dish, i) => (
+                        <div key={dish.id || i} className="fav-dish-card" onClick={() => navigate('/menu')}>
+                          {dish.image
+                            ? <img src={resolveImage(dish.image)} alt={dish.name} className="fav-dish-img" />
+                            : <div className="fav-dish-img-placeholder">🍽️</div>
+                          }
+                          <div className="fav-dish-info">
+                            <p className="fav-dish-name">{dish.name}</p>
+                            <p className="fav-dish-count">Ordered {dish.times_ordered}×</p>
                           </div>
-                        )}
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="hub-empty">
+                      <Heart size={48} />
+                      <p>No favorites yet! Order some dishes to see them here.</p>
+                      <button className="hub-btn-primary" style={{ marginTop: 12 }} onClick={() => navigate('/menu')}>
+                        Discover Dishes
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </motion.div>
+            )}
+
+            {/* ── PROFILE/EDIT TAB ── */}
+            {activeTab === 'profile' && (
+              <motion.div variants={fade} initial="hidden" animate="visible">
+                <div className="hub-card">
+                  <div className="hub-card-header">
+                    <h3 className="hub-card-title"><Edit2 size={20} /> Edit Profile & Address</h3>
+                  </div>
+                  <form onSubmit={handleSaveProfile}>
+                    <div className="hub-form-grid">
+                      <div className="hub-form-group">
+                        <label className="hub-form-label">Full Name</label>
+                        <input className="hub-form-input" name="name" value={form.name} onChange={handleFormChange} placeholder="Your full name" />
                       </div>
-                      <div>
-                        <label style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '8px 16px', backgroundColor: 'var(--primary-color)', color: 'white', borderRadius: '6px', fontSize: '0.85rem', fontWeight: 'bold', cursor: 'pointer' }}>
-                          <Upload size={14} />
-                          {uploading ? 'Uploading...' : 'Upload New Photo'}
-                          <input type="file" accept="image/*" style={{ display: 'none' }} onChange={handleImageUpload} disabled={uploading} />
-                        </label>
-                        <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '5px' }}>Allowed formats: PNG, JPG, JPEG, GIF</div>
+                      <div className="hub-form-group">
+                        <label className="hub-form-label">Phone Number</label>
+                        <input className="hub-form-input" name="phone" value={form.phone} onChange={handleFormChange} placeholder="+91 XXXXX XXXXX" />
+                      </div>
+                      <div className="hub-form-group">
+                        <label className="hub-form-label">Door / Flat Number</label>
+                        <input className="hub-form-input" name="door_number" value={form.door_number} onChange={handleFormChange} placeholder="e.g. 4B" />
+                      </div>
+                      <div className="hub-form-group">
+                        <label className="hub-form-label">Street Name</label>
+                        <input className="hub-form-input" name="street_name" value={form.street_name} onChange={handleFormChange} placeholder="Street / Colony" />
+                      </div>
+                      <div className="hub-form-group">
+                        <label className="hub-form-label">Area / Locality</label>
+                        <input className="hub-form-input" name="area" value={form.area} onChange={handleFormChange} placeholder="Area" />
+                      </div>
+                      <div className="hub-form-group">
+                        <label className="hub-form-label">City</label>
+                        <input className="hub-form-input" name="city" value={form.city} onChange={handleFormChange} placeholder="Chennai" />
+                      </div>
+                      <div className="hub-form-group">
+                        <label className="hub-form-label">State</label>
+                        <input className="hub-form-input" name="state" value={form.state} onChange={handleFormChange} placeholder="Tamil Nadu" />
+                      </div>
+                      <div className="hub-form-group">
+                        <label className="hub-form-label">Pincode</label>
+                        <input className="hub-form-input" name="pincode" value={form.pincode} onChange={handleFormChange} placeholder="600001" />
+                      </div>
+                      <div className="hub-form-group full-width">
+                        <label className="hub-form-label">Landmark</label>
+                        <input className="hub-form-input" name="landmark" value={form.landmark} onChange={handleFormChange} placeholder="Near temple / bus stop" />
                       </div>
                     </div>
-
-                    <div style={{ display: 'flex', gap: '15px' }}>
-                      <div className="form-group" style={{ flex: 1 }}>
-                        <label style={{ fontSize: '0.85rem', color: 'var(--text-dark)', fontWeight: '600', marginBottom: '6px', display: 'block' }}>Full Name</label>
-                        <input 
-                          type="text" 
-                          className="form-control" 
-                          value={profileData.name} 
-                          onChange={(e) => setProfileData({...profileData, name: e.target.value})} 
-                        />
-                      </div>
-                      <div className="form-group" style={{ flex: 1 }}>
-                        <label style={{ fontSize: '0.85rem', color: 'var(--text-dark)', fontWeight: '600', marginBottom: '6px', display: 'block' }}>Mobile Number</label>
-                        <input 
-                          type="text" 
-                          className="form-control" 
-                          value={profileData.phone} 
-                          onChange={(e) => setProfileData({...profileData, phone: e.target.value})} 
-                        />
-                      </div>
+                    <div className="hub-form-actions">
+                      <button type="submit" className="hub-btn-primary" disabled={saving}>
+                        <Save size={16} /> &nbsp;{saving ? 'Saving…' : 'Save Profile'}
+                      </button>
+                      {saveMsg && (
+                        <span style={{ color: saveMsg.includes('success') ? 'var(--hub-success)' : 'red', fontSize: '0.9rem', alignSelf: 'center' }}>
+                          {saveMsg}
+                        </span>
+                      )}
                     </div>
-
-                    <div className="form-group">
-                      <label style={{ fontSize: '0.85rem', color: 'var(--text-dark)', fontWeight: '600', marginBottom: '6px', display: 'block' }}>Email Address</label>
-                      <input 
-                        type="email" 
-                        className="form-control" 
-                        value={profileData.email} 
-                        onChange={(e) => setProfileData({...profileData, email: e.target.value})} 
-                      />
-                    </div>
-
-                    <div style={{ borderTop: '1px solid var(--border-color)', margin: '20px 0', paddingTop: '15px' }}>
-                      <strong style={{ display: 'block', marginBottom: '15px', color: 'var(--primary-dark)', fontSize: '1.05rem' }}>Delivery Address Details</strong>
-                    </div>
-
-                    <div style={{ display: 'flex', gap: '15px' }}>
-                      <div className="form-group" style={{ flex: 1 }}>
-                        <label style={{ fontSize: '0.85rem', color: 'var(--text-dark)', fontWeight: '600', marginBottom: '6px', display: 'block' }}>Door Number</label>
-                        <input 
-                          type="text" 
-                          className="form-control" 
-                          value={profileData.door_number} 
-                          onChange={(e) => setProfileData({...profileData, door_number: e.target.value})} 
-                        />
-                      </div>
-                      <div className="form-group" style={{ flex: 2 }}>
-                        <label style={{ fontSize: '0.85rem', color: 'var(--text-dark)', fontWeight: '600', marginBottom: '6px', display: 'block' }}>Street Name</label>
-                        <input 
-                          type="text" 
-                          className="form-control" 
-                          value={profileData.street_name} 
-                          onChange={(e) => setProfileData({...profileData, street_name: e.target.value})} 
-                        />
-                      </div>
-                    </div>
-
-                    <div style={{ display: 'flex', gap: '15px' }}>
-                      <div className="form-group" style={{ flex: 1 }}>
-                        <label style={{ fontSize: '0.85rem', color: 'var(--text-dark)', fontWeight: '600', marginBottom: '6px', display: 'block' }}>Area / Locality</label>
-                        <input 
-                          type="text" 
-                          className="form-control" 
-                          value={profileData.area} 
-                          onChange={(e) => setProfileData({...profileData, area: e.target.value})} 
-                        />
-                      </div>
-                      <div className="form-group" style={{ flex: 1 }}>
-                        <label style={{ fontSize: '0.85rem', color: 'var(--text-dark)', fontWeight: '600', marginBottom: '6px', display: 'block' }}>City</label>
-                        <input 
-                          type="text" 
-                          className="form-control" 
-                          value={profileData.city} 
-                          onChange={(e) => setProfileData({...profileData, city: e.target.value})} 
-                        />
-                      </div>
-                    </div>
-
-                    <div style={{ display: 'flex', gap: '15px' }}>
-                      <div className="form-group" style={{ flex: 1 }}>
-                        <label style={{ fontSize: '0.85rem', color: 'var(--text-dark)', fontWeight: '600', marginBottom: '6px', display: 'block' }}>State</label>
-                        <input 
-                          type="text" 
-                          className="form-control" 
-                          value={profileData.state} 
-                          onChange={(e) => setProfileData({...profileData, state: e.target.value})} 
-                        />
-                      </div>
-                      <div className="form-group" style={{ flex: 1 }}>
-                        <label style={{ fontSize: '0.85rem', color: 'var(--text-dark)', fontWeight: '600', marginBottom: '6px', display: 'block' }}>Pincode</label>
-                        <input 
-                          type="text" 
-                          className="form-control" 
-                          value={profileData.pincode} 
-                          onChange={(e) => setProfileData({...profileData, pincode: e.target.value})} 
-                        />
-                      </div>
-                    </div>
-
-                    <div style={{ display: 'flex', gap: '15px' }}>
-                      <div className="form-group" style={{ flex: 1 }}>
-                        <label style={{ fontSize: '0.85rem', color: 'var(--text-dark)', fontWeight: '600', marginBottom: '6px', display: 'block' }}>Landmark</label>
-                        <input 
-                          type="text" 
-                          className="form-control" 
-                          value={profileData.landmark} 
-                          onChange={(e) => setProfileData({...profileData, landmark: e.target.value})} 
-                        />
-                      </div>
-                      <div className="form-group" style={{ flex: 1 }}>
-                        <label style={{ fontSize: '0.85rem', color: 'var(--text-dark)', fontWeight: '600', marginBottom: '6px', display: 'block' }}>Alternate Mobile</label>
-                        <input 
-                          type="text" 
-                          className="form-control" 
-                          value={profileData.alternate_mobile} 
-                          onChange={(e) => setProfileData({...profileData, alternate_mobile: e.target.value})} 
-                        />
-                      </div>
-                    </div>
-
-                    <div className="form-group">
-                      <label style={{ fontSize: '0.85rem', color: 'var(--text-dark)', fontWeight: '600', marginBottom: '6px', display: 'block' }}>Food Preference</label>
-                      <div style={{ display: 'flex', gap: '15px' }}>
-                        {['Veg', 'Non-Veg', 'Both'].map((pref) => (
-                          <label 
-                            key={pref} 
-                            style={{ 
-                              flex: '1', 
-                              display: 'flex', 
-                              alignItems: 'center', 
-                              justifyContent: 'center', 
-                              gap: '8px', 
-                              padding: '12px', 
-                              border: `1px solid ${profileData.preference === pref ? 'var(--primary-color)' : 'var(--border-color)'}`, 
-                              backgroundColor: profileData.preference === pref ? 'rgba(200, 75, 49, 0.05)' : 'var(--bg-secondary)', 
-                              borderRadius: 'var(--radius-sm)', 
-                              cursor: 'pointer', 
-                              fontWeight: '600', 
-                              color: profileData.preference === pref ? 'var(--primary-color)' : 'var(--text-dark)',
-                              transition: 'all 0.2s'
-                            }}
-                          >
-                            <input 
-                              type="radio" 
-                              name="preference" 
-                              value={pref} 
-                              checked={profileData.preference === pref} 
-                              onChange={(e) => setProfileData({...profileData, preference: e.target.value})} 
-                              style={{ accentColor: 'var(--primary-color)' }} 
-                            />
-                            {pref}
-                          </label>
-                        ))}
-                      </div>
-                    </div>
-
-                    <button type="submit" className="auth-submit-btn" style={{ marginTop: '10px' }}>
-                      Save Changes
-                    </button>
                   </form>
                 </div>
-              )}
+              </motion.div>
+            )}
 
-              {/* TAB 6: CHANGE PASSWORD */}
-              {activeTab === 'change-password' && (
-                <div>
-                  <h3 style={{ fontFamily: 'var(--font-serif)', color: 'var(--primary-dark)', fontSize: '1.6rem', marginBottom: '20px' }}>Change Password</h3>
-                  <form onSubmit={handlePasswordSubmit} style={{ maxWidth: '500px' }}>
-                    {passwordError && <div className="alert alert-danger">{passwordError}</div>}
-                    {passwordSuccess && <div className="alert alert-success">{passwordSuccess}</div>}
+            {/* ── PASSWORD TAB ── */}
+            {activeTab === 'password' && (
+              <motion.div variants={fade} initial="hidden" animate="visible">
+                <ChangePasswordPanel />
+              </motion.div>
+            )}
 
-                    <div className="form-group">
-                      <label style={{ fontSize: '0.85rem', color: 'var(--text-dark)', fontWeight: '600', marginBottom: '6px', display: 'block' }}>Current Password</label>
-                      <input 
-                        type="password" 
-                        className="form-control" 
-                        value={passwordData.current_password} 
-                        onChange={(e) => setPasswordData({...passwordData, current_password: e.target.value})} 
-                        required
-                      />
-                    </div>
-                    <div className="form-group">
-                      <label style={{ fontSize: '0.85rem', color: 'var(--text-dark)', fontWeight: '600', marginBottom: '6px', display: 'block' }}>New Password</label>
-                      <input 
-                        type="password" 
-                        className="form-control" 
-                        value={passwordData.new_password} 
-                        onChange={(e) => setPasswordData({...passwordData, new_password: e.target.value})} 
-                        required
-                      />
-                    </div>
-                    <div className="form-group">
-                      <label style={{ fontSize: '0.85rem', color: 'var(--text-dark)', fontWeight: '600', marginBottom: '6px', display: 'block' }}>Confirm New Password</label>
-                      <input 
-                        type="password" 
-                        className="form-control" 
-                        value={passwordData.confirm_password} 
-                        onChange={(e) => setPasswordData({...passwordData, confirm_password: e.target.value})} 
-                        required
-                      />
-                    </div>
-
-                    <button type="submit" className="auth-submit-btn" style={{ marginTop: '10px' }}>
-                      Change Password
-                    </button>
-                  </form>
-                </div>
-              )}
-
-            </div>
           </div>
-
         </div>
       </div>
+    </div>
+  );
+};
+
+/* ── Sub-component: Change Password ── */
+const ChangePasswordPanel = () => {
+  const [form, setForm] = useState({ current_password: '', new_password: '', confirm: '' });
+  const [msg, setMsg] = useState('');
+  const [saving, setSaving] = useState(false);
+
+  const handleChange = (e) => setForm(f => ({ ...f, [e.target.name]: e.target.value }));
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (form.new_password !== form.confirm) { setMsg('New passwords do not match.'); return; }
+    setSaving(true); setMsg('');
+    try {
+      await apiClient.post('/auth/change-password', {
+        current_password: form.current_password,
+        new_password: form.new_password,
+      });
+      setMsg('Password changed successfully!');
+      setForm({ current_password: '', new_password: '', confirm: '' });
+    } catch (err) {
+      setMsg(err?.response?.data?.error || 'Failed to change password.');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  return (
+    <div className="hub-card">
+      <div className="hub-card-header">
+        <h3 className="hub-card-title"><Lock size={20} /> Change Password</h3>
+      </div>
+      <form onSubmit={handleSubmit}>
+        <div className="hub-form-grid" style={{ gridTemplateColumns: '1fr' }}>
+          <div className="hub-form-group">
+            <label className="hub-form-label">Current Password</label>
+            <input type="password" className="hub-form-input" name="current_password" value={form.current_password} onChange={handleChange} required />
+          </div>
+          <div className="hub-form-group">
+            <label className="hub-form-label">New Password</label>
+            <input type="password" className="hub-form-input" name="new_password" value={form.new_password} onChange={handleChange} required />
+          </div>
+          <div className="hub-form-group">
+            <label className="hub-form-label">Confirm New Password</label>
+            <input type="password" className="hub-form-input" name="confirm" value={form.confirm} onChange={handleChange} required />
+          </div>
+        </div>
+        <div className="hub-form-actions">
+          <button type="submit" className="hub-btn-primary" disabled={saving}>
+            <Lock size={16} /> &nbsp;{saving ? 'Updating…' : 'Update Password'}
+          </button>
+          {msg && (
+            <span style={{ color: msg.includes('success') ? 'var(--hub-success)' : 'red', fontSize: '0.9rem', alignSelf: 'center' }}>
+              {msg}
+            </span>
+          )}
+        </div>
+      </form>
     </div>
   );
 };

@@ -59,7 +59,7 @@ const ReadyToEat = () => {
     description: '',
     price: '',
     offer_price: '',
-    stock: 0,
+    diet_type: 'Veg',
     is_available: true,
     image: '/assets/images/placeholder.jpg'
   });
@@ -89,7 +89,7 @@ const ReadyToEat = () => {
       description: '',
       price: '',
       offer_price: '',
-      stock: 50,
+      diet_type: 'Veg',
       is_available: true,
       image: '/assets/images/placeholder.jpg'
     });
@@ -104,7 +104,7 @@ const ReadyToEat = () => {
       description: product.description,
       price: product.price,
       offer_price: product.offer_price || '',
-      stock: product.stock_count || product.stock || 0,
+      diet_type: product.type || 'Veg',
       is_available: product.in_stock !== undefined ? product.in_stock : product.is_available,
       image: product.image
     });
@@ -154,7 +154,8 @@ const ReadyToEat = () => {
       offer_price: formData.offer_price ? parseFloat(formData.offer_price) : null,
       category: 'ready_to_eat',
       image: formData.image,
-      stock_count: parseInt(formData.stock),
+      diet_type: formData.diet_type,
+      stock_count: 50,
       in_stock: formData.is_available
     };
 
@@ -207,10 +208,14 @@ const ReadyToEat = () => {
     }
   };
 
-  const filteredProducts = products.filter(p =>
-    p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    p.description.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const [activeFilter, setActiveFilter] = useState('All');
+
+  const filteredProducts = products.filter(p => {
+    const matchesSearch = p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                          p.description.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesCategory = activeFilter === 'All' || p.type === activeFilter;
+    return matchesSearch && matchesCategory;
+  });
 
   return (
     <div className="admin-wrapper">
@@ -253,6 +258,29 @@ const ReadyToEat = () => {
                 onChange={(e) => setSearchQuery(e.target.value)}
                 style={{ width: '100%' }}
               />
+            </div>
+            <div style={{ display: 'flex', gap: '10px' }}>
+              <button 
+                className={`btn-outline ${activeFilter === 'All' ? 'active' : ''}`}
+                onClick={() => setActiveFilter('All')}
+                style={{ backgroundColor: activeFilter === 'All' ? 'var(--theme-color)' : 'transparent', color: activeFilter === 'All' ? 'white' : 'var(--theme-color)', padding: '6px 14px', borderRadius: '20px', border: '1px solid var(--theme-color)' }}
+              >
+                All Items
+              </button>
+              <button 
+                className={`btn-outline ${activeFilter === 'Veg' ? 'active' : ''}`}
+                onClick={() => setActiveFilter('Veg')}
+                style={{ backgroundColor: activeFilter === 'Veg' ? '#2F8A5A' : 'transparent', color: activeFilter === 'Veg' ? 'white' : '#2F8A5A', padding: '6px 14px', borderRadius: '20px', border: '1px solid #2F8A5A' }}
+              >
+                Veg
+              </button>
+              <button 
+                className={`btn-outline ${activeFilter === 'Non-Veg' ? 'active' : ''}`}
+                onClick={() => setActiveFilter('Non-Veg')}
+                style={{ backgroundColor: activeFilter === 'Non-Veg' ? 'var(--primary-color)' : 'transparent', color: activeFilter === 'Non-Veg' ? 'white' : 'var(--primary-color)', padding: '6px 14px', borderRadius: '20px', border: '1px solid var(--primary-color)' }}
+              >
+                Non-Veg
+              </button>
             </div>
             <div style={{ fontSize: '13px', fontWeight: '600', color: 'var(--body-color)' }}>
               Showing {filteredProducts.length} Ready-to-Eat Items
@@ -311,7 +339,7 @@ const ReadyToEat = () => {
                           {p.offer_price && <del>₹{p.offer_price.toFixed(2)}</del>}
                         </div>
                         <div className="stock-badge">
-                          Stock: {p.stock_count || p.stock || 0}
+                          {p.type || 'Veg'}
                         </div>
                       </div>
                     </div>
@@ -378,13 +406,15 @@ const ReadyToEat = () => {
 
                   <div className="form-grid">
                     <div className="form-field">
-                      <label>Current Stock Count</label>
-                      <input
-                        type="number"
-                        value={formData.stock}
-                        onChange={(e) => setFormData({ ...formData, stock: e.target.value })}
-                        placeholder="50"
-                      />
+                      <label>Diet Type</label>
+                      <select
+                        value={formData.diet_type}
+                        onChange={(e) => setFormData({ ...formData, diet_type: e.target.value })}
+                        style={{ height: '38px', background: '#fff' }}
+                      >
+                        <option value="Veg">Veg</option>
+                        <option value="Non-Veg">Non-Veg</option>
+                      </select>
                     </div>
                     <div className="form-field">
                       <label>Availability</label>

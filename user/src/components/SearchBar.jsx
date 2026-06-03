@@ -107,7 +107,7 @@ const SearchBar = ({ value, onChange, placeholder = "Search for warm dishes or b
       className="search-bar-container" 
       style={{ 
         width: '100%', 
-        maxWidth: '600px', 
+        maxWidth: '100%', 
         margin: '0 auto 30px', 
         position: 'relative',
         zIndex: 500

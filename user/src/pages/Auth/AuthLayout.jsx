@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import logoImg from '../../assets/img/logo.webp';
+import logoImg from '../../assets/img/logo.png';
 import img1 from '../../assets/img/hero/new_hero_1.webp';
 import img2 from '../../assets/img/hero/new_hero_2.webp';
 import img3 from '../../assets/img/hero/new_hero_3.webp';
@@ -43,7 +43,7 @@ const AuthLayout = ({ children, title, subtitle }) => {
           <div className="auth-glass-card">
             <div className="auth-header" style={{ textAlign: 'center' }}>
               <Link to="/" style={{ display: 'inline-flex', flexDirection: 'column', alignItems: 'center', marginBottom: '24px', textDecoration: 'none' }}>
-                <img src={logoImg} alt="Amma's Kitchen Logo" style={{ maxHeight: '120px', width: 'auto', marginBottom: '8px' }} />
+                <img src={logoImg} alt="Amma's Kitchen Logo" style={{ maxHeight: '200px', width: 'auto', marginBottom: '8px' }} />
               </Link>
               <h1 className="auth-title" style={{ textAlign: 'left' }}>{title}</h1>
               <p className="auth-subtitle" style={{ textAlign: 'left' }}>{subtitle}</p>

@@ -123,7 +123,7 @@ const WebsiteManagement = () => {
         // Fallback to static mock images if backend fails
         setMediaList([
           { name: 'Artisan Batter Hero', url: '/assets/img/hero-bg.jpg' },
-          { name: 'Hotel Amma Logo', url: '/assets/img/cropped-logo.webp' },
+          { name: 'Hotel Amma Logo', url: '/assets/img/logo.png' },
           { name: 'Idli Batter Tub', url: '/assets/img/batter-idli.jpg' },
           { name: 'Paneer Butter Masala RTE', url: '/assets/img/paneer-rte.jpg' }
         ]);

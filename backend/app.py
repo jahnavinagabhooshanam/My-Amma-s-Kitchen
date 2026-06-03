@@ -22,7 +22,7 @@ db.init_app(app)
 migrate.init_app(app, db)
 
 # Import models to ensure they are registered for migrations
-from database.models import User, Product, BatterProduct, Order, OrderItem, CartItem, BulkOrder, Review, Coupon, Inventory, BatterProduction, DeliveryPartner, WebsiteActivity, KitchenStaff
+from database.models import User, Product, BatterProduct, Order, OrderItem, CartItem, BulkOrder, Review, Coupon, Inventory, BatterProduction, DeliveryPartner, WebsiteActivity, KitchenStaff, HomepageConfig
 
 # Create upload folder if it doesn't exist
 if not os.path.exists(app.config['UPLOAD_FOLDER']):
@@ -43,6 +43,7 @@ from routes.batter_production import batter_production_bp
 from routes.delivery_management import delivery_management_bp
 from routes.user_management import user_management_bp
 from routes.kitchen_management import kitchen_management_bp
+from routes.homepage import homepage_bp
 
 # Register Blueprints under standard prefix /api
 app.register_blueprint(auth_bp, url_prefix='/api/auth')
@@ -59,6 +60,7 @@ app.register_blueprint(batter_production_bp, url_prefix='/api/batter-production'
 app.register_blueprint(delivery_management_bp, url_prefix='/api/delivery-management')
 app.register_blueprint(user_management_bp, url_prefix='/api/user-management')
 app.register_blueprint(kitchen_management_bp, url_prefix='/api/kitchen-management')
+app.register_blueprint(homepage_bp, url_prefix='/api/homepage')
 
 @app.route('/api/health', methods=['GET'])
 def health_check():

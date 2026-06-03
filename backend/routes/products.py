@@ -9,11 +9,12 @@ products_bp = Blueprint('products', __name__)
 @products_bp.route('/', methods=['GET'])
 def get_products():
     category = request.args.get('category')
+    search = request.args.get('search')
     page = request.args.get('page', type=int)
     limit = request.args.get('limit', type=int)
 
     # Check cache first
-    cache_key = f"products_{category}_{page}_{limit}"
+    cache_key = f"products_{category}_{search}_{page}_{limit}"
     from app import get_cached_data, set_cached_data
     cached = get_cached_data(cache_key)
     if cached is not None:
@@ -28,10 +29,13 @@ def get_products():
         return res, 200
 
     query = Product.query
-    if category:
+    if category and category.lower() != 'all':
         db_category = category.replace('-', '_')
         # Support both hyphenated and underscore formats
         query = query.filter(Product.category.in_([db_category, category]))
+
+    if search:
+        query = query.filter(Product.name.ilike(f"%{search}%"))
 
     if page and limit:
         # Use SQLAlchemy pagination
@@ -57,7 +61,8 @@ def get_products():
             "image": p.image or '/assets/images/placeholder.jpg',
             "in_stock": p.stock > 0 if p.stock is not None else p.is_available,
             "stock_count": p.stock or 0,
-            "unit": "1kg Pouch" if "batter" in p.name.lower() else "Plate"
+            "unit": "1kg Pouch" if "batter" in p.name.lower() else "Plate",
+            "type": getattr(p, 'diet_type', 'Veg')
         })
         
     set_cached_data(cache_key, (results, total_count, total_pages), ttl_seconds=15)
@@ -84,7 +89,8 @@ def get_product(product_id):
             "image": p.image or '/assets/images/placeholder.jpg',
             "in_stock": p.stock > 0 if p.stock is not None else p.is_available,
             "stock_count": p.stock or 0,
-            "unit": "1kg Pouch" if "batter" in p.name.lower() else "Plate"
+            "unit": "1kg Pouch" if "batter" in p.name.lower() else "Plate",
+            "type": getattr(p, 'diet_type', 'Veg')
         }), 200
     return jsonify({"error": "Product not found"}), 404
 
@@ -110,7 +116,8 @@ def create_product():
         category=category,
         image=data.get('image', '/assets/images/placeholder.jpg'),
         stock=int(data.get('stock_count') or data.get('stock') or 10),
-        is_available=bool(data.get('in_stock', True))
+        is_available=bool(data.get('in_stock', True)),
+        diet_type=data.get('diet_type') or data.get('type') or 'Veg'
     )
     db.session.add(new_prod)
     db.session.commit()
@@ -149,6 +156,8 @@ def update_product(product_id):
         p.is_available = bool(data['in_stock'])
     if 'stock_count' in data or 'stock' in data:
         p.stock = int(data.get('stock_count') or data.get('stock'))
+    if 'diet_type' in data or 'type' in data:
+        p.diet_type = data.get('diet_type') or data.get('type')
 
     db.session.commit()
     return jsonify({

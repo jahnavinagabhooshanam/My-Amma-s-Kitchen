@@ -103,8 +103,49 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const loginWithGoogle = async () => {
+    setLoading(true);
+    try {
+      const { signInWithPopup } = await import('firebase/auth');
+      const { auth, googleProvider } = await import('../config/firebase');
+      
+      // 1. Sign in with Google Popup
+      const result = await signInWithPopup(auth, googleProvider);
+      const user = result.user;
+      
+      // 2. Get the Firebase ID Token
+      const idToken = await user.getIdToken();
+      
+      // 3. Exchange it with our backend to get our own JWT token and user record
+      const response = await authService.exchangeFirebaseToken(idToken);
+      
+      const newToken = response.data.token;
+      const userData = response.data.user;
+      
+      // 4. Store and set state
+      localStorage.setItem('auth_provider', 'google');
+      localStorage.setItem('amma_token', newToken);
+      
+      setToken(newToken);
+      setUser(userData);
+      
+      return { success: true, user: userData };
+    } catch (err) {
+      console.error("Firebase Login Error:", err);
+      let errorMessage = "Google login failed.";
+      if (err.code === 'auth/popup-closed-by-user') {
+        errorMessage = "Login cancelled.";
+      } else if (err.response?.data?.error) {
+        errorMessage = err.response.data.error;
+      }
+      return { success: false, error: errorMessage };
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
-    <AuthContext.Provider value={{ user, token, loading, login, register, logout, refreshUser }}>
+    <AuthContext.Provider value={{ user, token, loading, login, register, logout, refreshUser, loginWithGoogle }}>
       {children}
     </AuthContext.Provider>
   );

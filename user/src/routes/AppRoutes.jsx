@@ -41,6 +41,7 @@ const ForgotPassword = lazy(() => import('../pages/Auth/ForgotPassword'));
 const OTPVerification = lazy(() => import('../pages/Auth/OTPVerification'));
 const CompleteProfile = lazy(() => import('../pages/Auth/CompleteProfile'));
 const UserProfile = lazy(() => import('../pages/Auth/UserProfile'));
+const CustomerHome = lazy(() => import('../pages/Auth/CustomerHome'));
 
 // Customer Pages (Lazy Loaded)
 const Home = lazy(() => import('../pages/Home/Home'));
@@ -52,6 +53,7 @@ const Contact = lazy(() => import('../pages/Contact/Contact'));
 const Cart = lazy(() => import('../pages/Cart/Cart'));
 const Wishlist = lazy(() => import('../pages/Wishlist/Wishlist'));
 const CustomerOrders = lazy(() => import('../pages/CustomerOrders/CustomerOrders'));
+const Menu = lazy(() => import('../pages/Menu/Menu'));
 
 const AppRoutes = () => {
   return (
@@ -65,8 +67,9 @@ const AppRoutes = () => {
         <Route path="/verify-otp" element={<PublicRoute><OTPVerification /></PublicRoute>} />
 
         {/* Protected Customer Routes */}
-        <Route path="/" element={<ProtectedRoute><Home /></ProtectedRoute>} />
+        <Route path="/" element={<ProtectedRoute><CustomerHome /></ProtectedRoute>} />
         <Route path="/home" element={<ProtectedRoute><Navigate to="/" replace /></ProtectedRoute>} />
+        <Route path="/menu" element={<ProtectedRoute><Menu /></ProtectedRoute>} />
         <Route path="/ready-to-eat" element={<ProtectedRoute><ReadyToEat /></ProtectedRoute>} />
         <Route path="/ready-to-cook" element={<ProtectedRoute><ReadyToCook /></ProtectedRoute>} />
         <Route path="/bulk-orders" element={<ProtectedRoute><BulkOrders /></ProtectedRoute>} />
@@ -89,7 +92,8 @@ const AppRoutes = () => {
         />
 
         {/* Fallback route */}
-        <Route path="*" element={<ProtectedRoute><Home /></ProtectedRoute>} />
+        {/* Fallback route */}
+        <Route path="*" element={<ProtectedRoute><CustomerHome /></ProtectedRoute>} />
       </Routes>
     </Suspense>
   );

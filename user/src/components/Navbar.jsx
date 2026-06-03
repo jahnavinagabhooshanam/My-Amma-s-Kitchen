@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
-import logoImg from '../assets/img/logo.webp';
+import logoImg from '../assets/img/logo.png';
 import apiClient from '../services/api';
 
 const Navbar = () => {
@@ -111,7 +111,7 @@ const Navbar = () => {
                 <div className="col-auto">
                   <div className="header-logo">
                     <Link to="/">
-                      <img src={logoImg} alt="Amma's Kitchen Logo" style={{ maxHeight: '85px', width: 'auto' }} />
+                      <img src={logoImg} alt="Amma's Kitchen Logo" style={{ maxHeight: '180px', width: 'auto' }} />
                     </Link>
                   </div>
                 </div>
@@ -121,6 +121,7 @@ const Navbar = () => {
                   <nav className="main-menu">
                     <ul style={{ whiteSpace: 'nowrap' }}>
                       <li><NavLink to="/" end>HOME</NavLink></li>
+                      <li><NavLink to="/menu">MENU</NavLink></li>
                       <li><NavLink to="/ready-to-eat">READY TO EAT</NavLink></li>
                       <li><NavLink to="/ready-to-cook">READY TO COOK</NavLink></li>
                       <li><NavLink to="/bulk-orders">BULK ORDERS</NavLink></li>
@@ -196,12 +197,13 @@ const Navbar = () => {
           <button className="th-menu-toggle" onClick={handleToggleMobileMenu}><i className="fal fa-times"></i></button>
           <div className="mobile-logo">
             <Link to="/" onClick={handleToggleMobileMenu}>
-              <img src={logoImg} alt="Amma Logo" style={{ maxHeight: '60px', width: 'auto' }} />
+              <img src={logoImg} alt="Amma Logo" style={{ maxHeight: '110px', width: 'auto' }} />
             </Link>
           </div>
           <div className="th-mobile-menu">
             <ul>
               <li><Link to="/" onClick={handleToggleMobileMenu}>HOME</Link></li>
+              <li><Link to="/menu" onClick={handleToggleMobileMenu}>MENU</Link></li>
               <li><Link to="/ready-to-eat" onClick={handleToggleMobileMenu}>READY TO EAT</Link></li>
               <li><Link to="/ready-to-cook" onClick={handleToggleMobileMenu}>READY TO COOK</Link></li>
               <li><Link to="/bulk-orders" onClick={handleToggleMobileMenu}>BULK ORDERS</Link></li>

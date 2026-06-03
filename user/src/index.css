@@ -889,9 +889,8 @@ img {
 
 /* Centered Food Grid for Ready To Eat / Ready To Cook */
 .centered-food-grid {
-  display: flex !important;
-  flex-wrap: wrap !important;
-  justify-content: center !important;
+  display: grid !important;
+  grid-template-columns: repeat(4, 1fr) !important;
   gap: 30px !important;
   width: 100% !important;
   margin: 0 auto !important;
@@ -900,8 +899,27 @@ img {
 
 .centered-food-grid > * {
   width: 100%;
-  max-width: 290px;
-  flex: 0 0 auto;
+  max-width: none;
+}
+
+@media (max-width: 1200px) {
+  .centered-food-grid {
+    grid-template-columns: repeat(3, 1fr) !important;
+  }
+}
+
+@media (max-width: 992px) {
+  .centered-food-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 20px !important;
+  }
+}
+
+@media (max-width: 576px) {
+  .centered-food-grid {
+    grid-template-columns: 1fr !important;
+    gap: 24px !important;
+  }
 }
 /* 5. Hero Area Redesign */
 .hero-style10 {
@@ -1221,7 +1239,7 @@ img {
 .admin-food-img {
   position: relative;
   width: 100%;
-  height: 180px;
+  height: 220px;
   overflow: hidden;
   background: #F8F7F3;
 }

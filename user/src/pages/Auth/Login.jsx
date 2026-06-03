@@ -41,27 +41,17 @@ const Login = () => {
       <form className="auth-form" onSubmit={handleSubmit}>
         {error && <div className="alert alert-danger">{error}</div>}
         
-        <div style={{
-          backgroundColor: 'rgba(200, 75, 49, 0.05)',
-          border: '1px solid rgba(200, 75, 49, 0.2)',
-          borderRadius: '8px',
-          padding: '12px 16px',
-          marginBottom: '24px',
-          fontSize: '0.9rem',
-          color: 'var(--text-dark)'
-        }}>
-          <strong>Demo Credentials:</strong><br/>
-          Email: <code style={{color: 'var(--primary-color)', fontSize: '0.9rem'}}>customer@test.com</code><br/>
-          Password: <code style={{color: 'var(--primary-color)', fontSize: '0.9rem'}}>Customer@123</code>
-        </div>
+
 
         <div className="form-group">
           <input 
-            type="text" 
+            type="email" 
             className="form-control" 
             placeholder="Email / Mobile Number" 
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            autoComplete="new-email"
+            name="amma_email_login"
           />
         </div>
         
@@ -72,6 +62,8 @@ const Login = () => {
             placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            autoComplete="new-password"
+            name="amma_password_login"
           />
           <button 
             type="button" 

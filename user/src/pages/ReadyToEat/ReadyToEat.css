@@ -1,5 +1,416 @@
-/* Ready to Eat page */
-.ready-to-eat-page {
-  background-color: var(--bg-primary);
-  min-height: 80vh;
+/* ReadyToEat.css - Premium Visual Redesign */
+
+.rte-page {
+  background-color: #FDFBF7;
+  min-height: 100vh;
+  padding-bottom: 80px;
+  font-family: 'Inter', sans-serif;
+}
+
+/* Premium Hero */
+.rte-hero {
+  position: relative;
+  background: url('../../../assets/img/bg/hero_bg_5_1.jpg') center/cover no-repeat;
+  height: 280px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.rte-hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, rgba(44, 26, 14, 0.7), rgba(44, 26, 14, 0.4));
+}
+
+.rte-hero-content {
+  position: relative;
+  z-index: 1;
+  color: white;
+  max-width: 800px;
+  padding: 0 20px;
+}
+
+.rte-hero-subtitle {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.5rem;
+  letter-spacing: 3px;
+  color: var(--gold);
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+
+.rte-hero-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 4rem;
+  font-weight: 700;
+  margin-bottom: 20px;
+  text-shadow: 0 4px 12px rgba(0,0,0,0.3);
+}
+
+/* Section Titles */
+.rte-section-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 2.2rem;
+  color: #2C1A0E;
+  margin-bottom: 30px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.rte-section-title::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(to right, #EAE6DB, transparent);
+  margin-left: 15px;
+}
+
+/* Category Filters */
+.rte-filters {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 30px;
+}
+
+.rte-filter-chip {
+  padding: 10px 24px;
+  border-radius: 30px;
+  border: 1px solid #EAE6DB;
+  background: white;
+  color: #666;
+  font-weight: 500;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.rte-filter-chip:hover {
+  border-color: #8B1A10;
+  color: #8B1A10;
+}
+
+.rte-filter-chip.active {
+  background: #8B1A10;
+  color: white;
+  border-color: #8B1A10;
+  box-shadow: 0 4px 12px rgba(139, 26, 16, 0.2);
+}
+
+/* Grid */
+.rte-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 30px;
+  margin-bottom: 60px;
+}
+
+/* Premium Card */
+.rte-card {
+  background: white;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid #EAE6DB;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  cursor: pointer;
+}
+
+.rte-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 15px 35px rgba(0,0,0,0.08);
+}
+
+.rte-card-img-wrapper {
+  height: 240px;
+  overflow: hidden;
+  position: relative;
+}
+
+.rte-card-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s ease;
+}
+
+.rte-card:hover .rte-card-img {
+  transform: scale(1.08);
+}
+
+/* Badges */
+.rte-card-badges {
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  z-index: 2;
+}
+
+.rte-badge {
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  backdrop-filter: blur(4px);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.rte-badge.bestseller { background: rgba(255,255,255,0.95); color: #B8860B; }
+.rte-badge.trending { background: rgba(255, 235, 238, 0.95); color: #D32F2F; }
+.rte-badge.new { background: rgba(232, 245, 233, 0.95); color: #2E7D32; }
+.rte-badge.chef { background: rgba(255, 255, 255, 0.95); color: #8B1A10; }
+
+.rte-diet-icon {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  z-index: 2;
+  background: white;
+  padding: 4px;
+  border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+/* Card Content */
+.rte-card-content {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.rte-card-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.3rem;
+  color: #2C1A0E;
+  margin-bottom: 8px;
+  line-height: 1.2;
+}
+
+.rte-card-desc {
+  font-size: 0.85rem;
+  color: #666;
+  line-height: 1.4;
+  margin-bottom: 20px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Card Footer */
+.rte-card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: auto;
+  border-top: 1px solid #EAE6DB;
+  padding-top: 15px;
+}
+
+.rte-card-price {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #8B1A10;
+}
+
+.rte-add-btn {
+  background: white;
+  border: 1.5px solid #8B1A10;
+  color: #8B1A10;
+  padding: 6px 14px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.rte-card:hover .rte-add-btn {
+  background: #8B1A10;
+  color: white;
+}
+
+/* Quick View Overlay */
+.rte-quickview-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: 3;
+}
+
+.rte-card:hover .rte-quickview-overlay {
+  opacity: 1;
+}
+
+.rte-quickview-btn {
+  background: white;
+  color: #2C1A0E;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 30px;
+  font-weight: 600;
+  font-size: 0.85rem;
+  transform: translateY(20px);
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+.rte-card:hover .rte-quickview-btn {
+  transform: translateY(0);
+}
+
+.rte-quickview-btn:hover {
+  background: #8B1A10;
+  color: white;
+}
+
+/* Modal */
+.rte-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.7);
+  backdrop-filter: blur(5px);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  animation: fadeIn 0.3s ease;
+}
+
+.rte-modal-content {
+  background: white;
+  border-radius: 24px;
+  width: 100%;
+  max-width: 900px;
+  display: flex;
+  overflow: hidden;
+  position: relative;
+  animation: slideUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  box-shadow: 0 20px 50px rgba(0,0,0,0.2);
+}
+
+.rte-modal-close {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: white;
+  border: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  z-index: 10;
+  transition: all 0.2s;
+}
+
+.rte-modal-close:hover {
+  background: #f5f5f5;
+  transform: scale(1.1);
+}
+
+.rte-modal-img {
+  flex: 1;
+  max-width: 50%;
+  object-fit: cover;
+}
+
+.rte-modal-details {
+  flex: 1;
+  padding: 50px 40px;
+  display: flex;
+  flex-direction: column;
+}
+
+.rte-modal-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 2.2rem;
+  color: #2C1A0E;
+  margin-bottom: 15px;
+  line-height: 1.2;
+}
+
+.rte-modal-desc {
+  font-size: 1rem;
+  color: #666;
+  line-height: 1.6;
+  margin-bottom: 30px;
+}
+
+.rte-modal-price {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #8B1A10;
+  margin-bottom: 30px;
+}
+
+.rte-modal-btn {
+  background: #8B1A10;
+  color: white;
+  border: none;
+  padding: 16px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: auto;
+}
+
+.rte-modal-btn:hover {
+  background: #6D140C;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(139, 26, 16, 0.3);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(40px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 768px) {
+  .rte-modal-content {
+    flex-direction: column;
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+  .rte-modal-img {
+    max-width: 100%;
+    height: 300px;
+  }
+  .rte-modal-details {
+    padding: 30px 20px;
+  }
+  .rte-hero-title {
+    font-size: 2.5rem;
+  }
 }

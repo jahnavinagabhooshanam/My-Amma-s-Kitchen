@@ -102,7 +102,7 @@ def seed_food_images():
                 # Create main catalog product
                 p = Product(
                     name=display_name,
-                    category='batter_products',
+                    category='ready_to_cook',
                     description=desc,
                     price=price,
                     offer_price=offer_price,
@@ -139,9 +139,7 @@ def seed_food_images():
                 display_name, desc, price, offer_price = get_product_details(f, 'ready_to_eat')
                 image_path = f"assets/Food images/Veg/{f}"
                 
-                # Smartly separate into RTE or RTC based on name
-                is_rtc = "Mushroom" in display_name or "Manchurian" in display_name or "Tikka" in display_name or "Pasanda" in display_name or "Nuggets" in display_name or "Keema" in display_name
-                category = 'ready_to_cook' if is_rtc else 'ready_to_eat'
+                category = 'ready_to_eat'
                 
                 p = Product(
                     name=display_name,

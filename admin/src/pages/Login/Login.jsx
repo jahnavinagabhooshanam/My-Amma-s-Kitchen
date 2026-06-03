@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import logoImg from '../../assets/img/cropped-logo.webp';
+import logoImg from '../../assets/img/logo.png';
 import loginBg from '../../assets/img/login-bg.webp';
 import { AlertCircle, Mail, Lock, Eye, EyeOff, LogIn } from 'lucide-react';
 

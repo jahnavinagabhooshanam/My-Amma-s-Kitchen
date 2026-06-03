@@ -1,5 +1,329 @@
-/* Ready to Cook page */
-.ready-to-cook-page {
-  background-color: var(--bg-primary);
-  min-height: 80vh;
+/* ReadyToCook.css - Premium Visual Redesign */
+
+.rtc-page-container {
+  background-color: #FCFBF7;
+  min-height: 100vh;
+  padding-top: 40px;
+  padding-bottom: 80px;
+  font-family: 'Inter', sans-serif;
+}
+
+.rtc-header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.rtc-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 3rem;
+  color: #2C1A0E;
+  margin-bottom: 15px;
+}
+
+/* Category Chips */
+.rtc-filters {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 50px;
+}
+
+.rtc-filter-chip {
+  padding: 10px 24px;
+  border-radius: 30px;
+  border: 1px solid #EAE6DB;
+  background: white;
+  color: #666;
+  font-weight: 500;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.rtc-filter-chip:hover {
+  border-color: #8B1A10;
+  color: #8B1A10;
+}
+
+.rtc-filter-chip.active {
+  background: #8B1A10;
+  color: white;
+  border-color: #8B1A10;
+  box-shadow: 0 4px 12px rgba(139, 26, 16, 0.2);
+}
+
+/* Featured Section */
+.rtc-featured-section {
+  max-width: 1200px;
+  margin: 0 auto 60px;
+  background: white;
+  border-radius: 24px;
+  overflow: hidden;
+  display: flex;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.04);
+  border: 1px solid #EAE6DB;
+  align-items: center;
+}
+
+.rtc-featured-img-wrapper {
+  flex: 1;
+  height: 400px;
+  overflow: hidden;
+  position: relative;
+}
+
+.rtc-featured-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s ease;
+}
+
+.rtc-featured-section:hover .rtc-featured-img {
+  transform: scale(1.05);
+}
+
+.rtc-featured-content {
+  flex: 1;
+  padding: 50px;
+}
+
+.rtc-featured-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(212, 175, 55, 0.15);
+  color: #B8860B;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  margin-bottom: 20px;
+}
+
+.rtc-featured-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 2.5rem;
+  color: #2C1A0E;
+  margin-bottom: 10px;
+  line-height: 1.2;
+}
+
+.rtc-featured-highlight {
+  font-size: 1.1rem;
+  color: #666;
+  font-style: italic;
+  margin-bottom: 25px;
+}
+
+.rtc-featured-price {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #8B1A10;
+  margin-bottom: 30px;
+}
+
+.rtc-featured-btn {
+  background: #8B1A10;
+  color: white;
+  border: none;
+  padding: 16px 36px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(139, 26, 16, 0.2);
+}
+
+.rtc-featured-btn:hover {
+  background: #6D140C;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(139, 26, 16, 0.3);
+}
+
+/* Section Titles */
+.rtc-section-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 2rem;
+  color: #2C1A0E;
+  margin-bottom: 30px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Product Grid */
+.rtc-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 30px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* RTC Product Card */
+.rtc-card {
+  background: white;
+  border-radius: 20px;
+  overflow: hidden;
+  border: 1px solid #EAE6DB;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.rtc-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 15px 35px rgba(0,0,0,0.08);
+}
+
+.rtc-card-img-wrapper {
+  height: 240px;
+  overflow: hidden;
+  position: relative;
+}
+
+.rtc-card-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s ease;
+}
+
+.rtc-card:hover .rtc-card-img {
+  transform: scale(1.08);
+}
+
+/* Badges on Image */
+.rtc-card-badges {
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  z-index: 2;
+}
+
+.rtc-badge {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  backdrop-filter: blur(4px);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.rtc-badge.bestseller { background: rgba(255,255,255,0.9); color: #B8860B; }
+.rtc-badge.trending { background: rgba(255, 235, 238, 0.9); color: #D32F2F; }
+.rtc-badge.new { background: rgba(232, 245, 233, 0.9); color: #2E7D32; }
+.rtc-badge.favorite { background: rgba(255, 255, 255, 0.9); color: #E91E63; }
+
+/* Ratings */
+.rtc-rating {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: rgba(255,255,255,0.95);
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #333;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  z-index: 2;
+}
+
+.rtc-rating-star { color: #FFC107; font-size: 0.9rem; }
+
+/* Card Content */
+.rtc-card-content {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.rtc-card-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.3rem;
+  color: #2C1A0E;
+  margin-bottom: 12px;
+  line-height: 1.3;
+}
+
+/* Quick Info Chips */
+.rtc-quick-info {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.rtc-info-chip {
+  background: #F5F3ED;
+  color: #666;
+  padding: 4px 10px;
+  border-radius: 8px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* Card Footer */
+.rtc-card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: auto;
+  border-top: 1px solid #EAE6DB;
+  padding-top: 20px;
+}
+
+.rtc-card-price {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #8B1A10;
+}
+
+.rtc-add-btn {
+  background: white;
+  border: 1.5px solid #8B1A10;
+  color: #8B1A10;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.rtc-card:hover .rtc-add-btn {
+  background: #8B1A10;
+  color: white;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .rtc-featured-section {
+    flex-direction: column;
+  }
+  .rtc-featured-img-wrapper {
+    width: 100%;
+    height: 300px;
+  }
+  .rtc-featured-content {
+    padding: 30px;
+  }
 }

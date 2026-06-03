@@ -15,6 +15,8 @@ const Filters = ({ activeFilter, onFilterChange, options }) => {
           className={`filter-btn ${activeFilter === opt.value ? 'active' : ''}`}
           onClick={() => onFilterChange(opt.value)}
           style={{
+            display: 'flex',
+            alignItems: 'center',
             padding: '10px 24px',
             backgroundColor: activeFilter === opt.value ? '#C84B31' : '#FFFFFF',
             color: activeFilter === opt.value ? '#FFFFFF' : '#2B2A27',
@@ -27,6 +29,7 @@ const Filters = ({ activeFilter, onFilterChange, options }) => {
             transition: 'all 0.3s ease'
           }}
         >
+          {opt.icon && <span style={{ marginRight: '8px', display: 'flex', alignItems: 'center' }}>{opt.icon}</span>}
           {opt.label}
         </button>
       ))}

@@ -47,6 +47,7 @@ const Coupons = lazy(() => import('../pages/Coupons/Coupons'));
 const Reviews = lazy(() => import('../pages/Reviews/Reviews'));
 const Notifications = lazy(() => import('../pages/Notifications/Notifications'));
 const WebsiteManagement = lazy(() => import('../pages/WebsiteManagement/WebsiteManagement'));
+const HomepageManagement = lazy(() => import('../pages/HomepageManagement/HomepageManagement'));
 const Settings = lazy(() => import('../pages/Settings/Settings'));
 const BatterProduction = lazy(() => import('../pages/BatterProduction/BatterProduction'));
 const DeliveryManagement = lazy(() => import('../pages/DeliveryManagement/DeliveryManagement'));
@@ -179,6 +180,14 @@ const AdminRoutes = () => {
           element={
             <ProtectedRoute allowedRoles={mgmtRoles}>
               <WebsiteManagement />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/homepage-management" 
+          element={
+            <ProtectedRoute allowedRoles={mgmtRoles}>
+              <HomepageManagement />
             </ProtectedRoute>
           } 
         />
