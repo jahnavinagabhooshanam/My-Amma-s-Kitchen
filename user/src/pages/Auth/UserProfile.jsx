@@ -93,7 +93,7 @@ const UserProfile = () => {
     // eslint-disable-next-line
   }, []);
 
-  const handleLogout = () => { logout(); navigate('/auth'); };
+  const handleLogout = () => { logout(); navigate('/login'); };
 
   const handleFormChange = (e) => setForm(f => ({ ...f, [e.target.name]: e.target.value }));
 

@@ -34,7 +34,6 @@ const PageLoader = () => (
 );
 
 // Auth Pages (Lazy Loaded)
-const AuthSplash = lazy(() => import('../pages/Auth/AuthSplash'));
 const Login = lazy(() => import('../pages/Auth/Login'));
 const Register = lazy(() => import('../pages/Auth/Register'));
 const ForgotPassword = lazy(() => import('../pages/Auth/ForgotPassword'));
@@ -60,7 +59,6 @@ const AppRoutes = () => {
     <Suspense fallback={<PageLoader />}>
       <Routes>
         {/* Public Auth Routes */}
-        <Route path="/auth" element={<PublicRoute><AuthSplash /></PublicRoute>} />
         <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
         <Route path="/register" element={<PublicRoute><Register /></PublicRoute>} />
         <Route path="/forgot-password" element={<PublicRoute><ForgotPassword /></PublicRoute>} />

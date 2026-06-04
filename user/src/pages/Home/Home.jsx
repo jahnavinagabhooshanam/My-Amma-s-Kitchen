@@ -27,36 +27,7 @@ const HERO_SLIDES = [
   }
 ];
 
-// Featured Ready-to-Eat Menu
-const READY_TO_EAT_ITEMS = [
-  { id: "rte-1", name: "Mysore Masala Dosa", price: 149.00, image: "assets/img/product/product_1_1.png", rating: 5, unit: "Plate", description: "Crispy dosa with red garlic chutney and spiced potato masala." },
-  { id: "rte-2", name: "Ghee Roast Dosa", price: 169.00, image: "assets/img/product/product_1_2.png", rating: 5, unit: "Plate", description: "Golden crispy dosa prepared with pure home-churned ghee." },
-  { id: "rte-3", name: "Idli Vada Combo", price: 129.00, image: "assets/img/product/product_1_3.png", rating: 5, unit: "Plate", description: "Two steaming soft idlis and one crispy medu vada served with sambar." },
-  { id: "rte-4", name: "Premium Mini Tiffin", price: 179.00, image: "assets/img/product/product_1_5.png", rating: 5, unit: "Plate", description: "Sampler plate containing one idli, mini pongal, mini kesari, and one mini dosa." },
-  { id: "rte-5", name: "Traditional Meals Combo", price: 180.00, image: "assets/img/product/product_details_1_1.png", rating: 5, unit: "Portion", description: "Authentic full South Indian feast with rice, sambar, rasam, kootu, and sweets." },
-  { id: "rte-6", name: "Signature Chicken Biryani", price: 239.00, image: "assets/img/product/product_1_7.png", rating: 5, unit: "Portion", description: "Homestyle basmati chicken biryani slow-cooked with fresh mint and spices." },
-  { id: "rte-7", name: "Malabar Parotta Veg Combo", price: 140.00, image: "assets/img/product/product_1_9.png", rating: 5, unit: "Portion", description: "Two flaky parottas served with a rich coconut gravy packed with garden fresh vegetables." },
-  { id: "rte-8", name: "Mylapore Filter Coffee", price: 60.00, image: "assets/img/product/product_1_10.png", rating: 5, unit: "Cup", description: "Traditional chicory-blended frothy South Indian filter coffee." }
-];
-
-// Featured Batter Products
-const BATTER_ITEMS = [
-  { id: "bat-1", name: "Classic Idli Batter", basePrice: 80.00, image: "assets/img/product/product_1_12.png", description: "Slow stone-ground parboiled rice & premium black gram. Formulated for perfectly fluffy and soft idlis." },
-  { id: "bat-2", name: "Premium Dosa Batter", basePrice: 90.00, image: "assets/img/product/product_1_11.png", description: "Smooth ground batter with higher fenugreek blend to yield golden, extra-crispy homestyle dosas." },
-  { id: "bat-3", name: "Stone-Ground Ragi Batter", basePrice: 95.00, image: "assets/img/product/product_1_9.png", description: "Nutritious finger millet ground slowly with split black gram. Probiotic-rich and high in iron." },
-  { id: "bat-4", name: "Healthy Millet Batter", basePrice: 110.00, image: "assets/img/product/product_1_5.png", description: "Superfood batter featuring kodo, barnyard, and foxtail millets. Light, high-fiber, and highly digestible." },
-  { id: "bat-5", name: "Traditional Adai Batter", basePrice: 120.00, image: "assets/img/product/product_1_1.png", description: "Coarsely ground mixed lentils (chana, toor, moong) seasoned with red chillies, ginger, and curry leaves." },
-  { id: "bat-6", name: "Crispy Paniyaram Batter", basePrice: 100.00, image: "assets/img/product/product_1_3.png", description: "Specifically formulated sour-fermented batter with added seasoning notes, perfect for making round paniyarams." }
-];
-
-// Ready-to-Cook Meal Kits
-const READY_TO_COOK_ITEMS = [
-  { id: "rtc-1", name: "Ready Dosa Kit", price: 150.00, image: "assets/img/product/product_1_12.png", unit: "Kit", description: "1kg Dosa batter + 100g premium gun powder (podi) + 50ml pure ghee. Everything to cook the perfect podi dosa.", cookingTime: "5 mins", servingSize: "12 Dosas", shelfLife: "3 Days" },
-  { id: "rtc-2", name: "Chapati Dough", price: 80.00, image: "assets/img/product/product_details_1_1.png", unit: "10 Pcs", description: "100% whole wheat ready-rolled flatbread discs. No chemical softeners. Just cook on tawa for 30s.", cookingTime: "3 mins", servingSize: "4-5 People", shelfLife: "5 Days" },
-  { id: "rtc-3", name: "Parotta Pack", price: 110.00, image: "assets/img/product/product_1_9.png", unit: "5 Pcs", description: "Layered flaky Malabar parottas, half-cooked on iron tawa. Pan-fry for 1 minute on each side and fluff up.", cookingTime: "2 mins", servingSize: "2-3 People", shelfLife: "7 Days" },
-  { id: "rtc-4", name: "Amma's Breakfast Kit", price: 210.00, image: "assets/img/product/product_1_3.png", unit: "Kit", description: "1kg Classic batter + 250ml authentic sambar concentrate + 150g fresh coconut chutney paste.", cookingTime: "10 mins", servingSize: "4-5 People", shelfLife: "2 Days" },
-  { id: "rtc-5", name: "Family Cooking Combo", price: 340.00, image: "assets/img/product/product_1_1.png", unit: "Combo", description: "Includes 1kg Dosa batter, 500g Ragi batter, 150g Sambar paste, and 10 ready chapatis. Complete convenience.", cookingTime: "15 mins", servingSize: "5-6 People", shelfLife: "4 Days" }
-];
+// Removed mock arrays to enforce DB connection
 
 // Testimonials Patrons
 const TESTIMONIALS = [
@@ -72,9 +43,9 @@ const Home = () => {
   const [activeSlide, setActiveSlide] = useState(0);
   const [activeTesti, setActiveTesti] = useState(0);
 
-  const [readyToEatItems, setReadyToEatItems] = useState(READY_TO_EAT_ITEMS);
-  const [batterItems, setBatterItems] = useState(BATTER_ITEMS);
-  const [readyToCookItems, setReadyToCookItems] = useState(READY_TO_COOK_ITEMS);
+  const [readyToEatItems, setReadyToEatItems] = useState([]);
+  const [batterItems, setBatterItems] = useState([]);
+  const [readyToCookItems, setReadyToCookItems] = useState([]);
 
   const [config, setConfig] = useState({
     headline: "Slow Stone-Ground Heritage Batters",
@@ -145,9 +116,9 @@ const Home = () => {
           shelfLife: "3 Days"
         }));
 
-      if (rtesMapped.length > 0) setReadyToEatItems(rtesMapped);
-      if (battersMapped.length > 0) setBatterItems(battersMapped);
-      if (rtcsMapped.length > 0) setReadyToCookItems(rtcsMapped);
+      setReadyToEatItems(rtesMapped);
+      setBatterItems(battersMapped);
+      setReadyToCookItems(rtcsMapped);
     } catch (err) {
       console.error("Failed to load dynamic data for homepage:", err);
     }
@@ -369,7 +340,7 @@ const Home = () => {
               const handleAddBatter = (e) => {
                 e.preventDefault();
                 addToCart({
-                  id: `${item.id}-${selectedSize}`,
+                  id: item.id, // Do not append selectedSize to ID because backend needs integer DB ID
                   name: `${item.name} (${selectedSize})`,
                   price: finalPrice,
                   image: item.image,

@@ -11,7 +11,7 @@ import './App.css';
 function AppContent() {
   const location = useLocation();
   const { token, user } = useAuth();
-  const authRoutes = ['/auth', '/login', '/register', '/forgot-password', '/verify-otp', '/complete-profile'];
+  const authRoutes = ['/login', '/register', '/forgot-password', '/verify-otp', '/complete-profile'];
   const isAuthPage = authRoutes.includes(location.pathname);
   const showMainLayout = !isAuthPage && token && user && user.profile_completed;
 

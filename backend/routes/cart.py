@@ -54,8 +54,19 @@ def add_to_cart():
         
     # Check if already in cart
     existing = CartItem.query.filter_by(user_id=user_id, product_id=product_id).first()
+    
+    current_qty = existing.quantity if existing else 0
+    new_qty = current_qty + int(quantity)
+    
+    # Stock Validation (Phase 3 strict stock)
+    if int(quantity) > 0 and prod.stock is not None:
+        if prod.stock <= 0:
+            return jsonify({"error": f"Product '{prod.name}' is completely out of stock."}), 400
+        if new_qty > prod.stock:
+            return jsonify({"error": f"Cannot add {quantity} more to cart. Only {prod.stock} items left in stock."}), 400
+
     if existing:
-        existing.quantity += int(quantity)
+        existing.quantity = new_qty
         if existing.quantity <= 0:
             db.session.delete(existing)
             db.session.commit()

@@ -505,19 +505,60 @@ const Dashboard = () => {
             </div>
           ) : activeTab === 'overview' ? (
             <>
-              {/* Premium 10 KPI Cards Grid */}
+              {/* Premium 5 KPI Cards Grid (Phase 5) */}
               <div style={{ display: 'grid', gridTemplateColumns: isStaff ? 'repeat(4, 1fr)' : 'repeat(5, 1fr)', gap: '15px', marginBottom: '25px' }}>
                 
+                {!isStaff && (
+                  <div className="stats-card">
+                    <div className="stats-card-top">
+                      <div className="stats-card-icon yellow" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        <ShoppingBag size={20} />
+                      </div>
+                      <span className="stats-card-trend up">Today</span>
+                    </div>
+                    <div className="stats-card-value">{stats.today_orders}</div>
+                    <div className="stats-card-label">Today's Orders</div>
+                  </div>
+                )}
+
                 {!isStaff && (
                   <div className="stats-card">
                     <div className="stats-card-top">
                       <div className="stats-card-icon teal" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                         <IndianRupee size={20} />
                       </div>
-                      <span className="stats-card-trend up">Total</span>
+                      <span className="stats-card-trend up">Today</span>
                     </div>
-                    <div className="stats-card-value">₹{(stats.total_revenue || 0).toLocaleString()}</div>
-                    <div className="stats-card-label">Total Revenue</div>
+                    <div className="stats-card-value">₹{(stats.today_revenue || 0).toLocaleString()}</div>
+                    <div className="stats-card-label">Today's Revenue</div>
+                  </div>
+                )}
+
+                {!isStaff && (
+                  <div className="stats-card">
+                    <div className="stats-card-top">
+                      <div className="stats-card-icon red" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        <TrendingUp size={20} />
+                      </div>
+                      <span className="stats-card-trend up">#1</span>
+                    </div>
+                    <div className="stats-card-value" style={{ fontSize: '20px' }}>
+                      {stats.best_selling_products?.length > 0 ? stats.best_selling_products[0].name : 'N/A'}
+                    </div>
+                    <div className="stats-card-label">Top Selling Product</div>
+                  </div>
+                )}
+
+                {!isStaff && (
+                  <div className="stats-card">
+                    <div className="stats-card-top">
+                      <div className="stats-card-icon blue" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        <Layers size={20} />
+                      </div>
+                      <span className="stats-card-trend up">Popular</span>
+                    </div>
+                    <div className="stats-card-value" style={{ fontSize: '20px' }}>{stats.most_ordered_category || 'N/A'}</div>
+                    <div className="stats-card-label">Most Ordered Category</div>
                   </div>
                 )}
 
@@ -525,112 +566,50 @@ const Dashboard = () => {
                   <div className="stats-card">
                     <div className="stats-card-top">
                       <div className="stats-card-icon orange" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                        <TrendingUp size={20} />
-                      </div>
-                      <span className="stats-card-trend up">Month</span>
-                    </div>
-                    <div className="stats-card-value">₹{(stats.monthly_revenue || 0).toLocaleString()}</div>
-                    <div className="stats-card-label">Monthly Revenue</div>
-                  </div>
-                )}
-
-                <div className="stats-card">
-                  <div className="stats-card-top">
-                    <div className="stats-card-icon yellow" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                      <ShoppingBag size={20} />
-                    </div>
-                    <span className="stats-card-trend up">Today</span>
-                  </div>
-                  <div className="stats-card-value">{stats.today_orders}</div>
-                  <div className="stats-card-label">Orders Today</div>
-                </div>
-
-                <div className="stats-card">
-                  <div className="stats-card-top">
-                    <div className="stats-card-icon blue" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                      <Clock size={20} />
-                    </div>
-                    <span className="stats-card-trend warning">Active</span>
-                  </div>
-                  <div className="stats-card-value">{stats.pending_orders}</div>
-                  <div className="stats-card-label">Pending Orders</div>
-                </div>
-
-                <div className="stats-card">
-                  <div className="stats-card-top">
-                    <div className="stats-card-icon red" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                      <PartyPopper size={20} />
-                    </div>
-                    <span className="stats-card-trend up">Events</span>
-                  </div>
-                  <div className="stats-card-value">{stats.bulk_orders}</div>
-                  <div className="stats-card-label">Bulk Catering Requests</div>
-                </div>
-
-                {!isStaff && (
-                  <div className="stats-card">
-                    <div className="stats-card-top">
-                      <div className="stats-card-icon blue" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                         <Users size={20} />
                       </div>
-                      <span className="stats-card-trend up">All</span>
+                      <span className="stats-card-trend up">Total</span>
                     </div>
-                    <div className="stats-card-value">{stats.total_customers}</div>
-                    <div className="stats-card-label">Total Customers</div>
+                    <div className="stats-card-value">{stats.active_customers}</div>
+                    <div className="stats-card-label">Active Customers</div>
                   </div>
                 )}
 
-                {!isStaff && (
-                  <div className="stats-card">
-                    <div className="stats-card-top">
-                      <div className="stats-card-icon teal" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                        <UserCheck size={20} />
+                {/* Keep some useful cards for staff */}
+                {isStaff && (
+                  <>
+                    <div className="stats-card">
+                      <div className="stats-card-top">
+                        <div className="stats-card-icon yellow" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                          <ShoppingBag size={20} />
+                        </div>
+                        <span className="stats-card-trend up">Today</span>
                       </div>
-                      <span className="stats-card-trend up">Retention</span>
+                      <div className="stats-card-value">{stats.today_orders}</div>
+                      <div className="stats-card-label">Orders Today</div>
                     </div>
-                    <div className="stats-card-value">
-                      {stats.total_customers > 0 ? ((stats.repeat_customers / stats.total_customers) * 100).toFixed(1) : 0}%
-                    </div>
-                    <div className="stats-card-label">Repeat Customer Rate</div>
-                  </div>
-                )}
-
-                {!isStaff && (
-                  <div className="stats-card">
-                    <div className="stats-card-top">
-                      <div className="stats-card-icon yellow" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                        <Tag size={20} />
+                    <div className="stats-card">
+                      <div className="stats-card-top">
+                        <div className="stats-card-icon blue" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                          <Clock size={20} />
+                        </div>
+                        <span className="stats-card-trend warning">Active</span>
                       </div>
-                      <span className="stats-card-trend up">Coupons</span>
+                      <div className="stats-card-value">{stats.pending_orders}</div>
+                      <div className="stats-card-label">Pending Orders</div>
                     </div>
-                    <div className="stats-card-value">{stats.active_coupons}</div>
-                    <div className="stats-card-label">Active Coupons</div>
-                  </div>
-                )}
-
-                {!isStaff && (
-                  <div className="stats-card">
-                    <div className="stats-card-top">
-                      <div className="stats-card-icon orange" style={{ backgroundColor: 'rgba(63, 144, 101, 0.1)', color: '#3F9065', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                        <Sparkles size={20} />
+                    <div className="stats-card">
+                      <div className="stats-card-top">
+                        <div className="stats-card-icon red" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                          <ChefHat size={20} />
+                        </div>
+                        <span className="stats-card-trend up">Items</span>
                       </div>
-                      <span className="stats-card-trend up" style={{ color: '#3F9065' }}>AI Est</span>
+                      <div className="stats-card-value">{stats.total_products}</div>
+                      <div className="stats-card-label">Total Products</div>
                     </div>
-                    <div className="stats-card-value">₹{stats.ai_predicted_tomorrow?.toLocaleString()}</div>
-                    <div className="stats-card-label">AI Sales Forecast (Tomorrow)</div>
-                  </div>
+                  </>
                 )}
-
-                <div className="stats-card">
-                  <div className="stats-card-top">
-                    <div className="stats-card-icon red" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                      <ChefHat size={20} />
-                    </div>
-                    <span className="stats-card-trend up">Items</span>
-                  </div>
-                  <div className="stats-card-value">{stats.total_products}</div>
-                  <div className="stats-card-label">Total Products</div>
-                </div>
 
               </div>
 
@@ -780,118 +759,7 @@ const Dashboard = () => {
                 </div>
               )}
 
-              {/* Logs Activity Feed and Batter Freshness Tracker Grid */}
-              <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: '20px', marginBottom: '25px' }}>
-                {/* Activity Feed */}
-                <div className="premium-card" style={{ padding: '20px 25px', margin: 0 }}>
-                  <div className="premium-card-title" style={{ marginBottom: '15px', borderBottom: '1px solid var(--border-color)', paddingBottom: '10px' }}>
-                    <i className="fa-solid fa-list-check"></i>
-                    <h3 style={{ margin: 0, fontSize: '16px' }}>Recent Customer Activity Feed</h3>
-                  </div>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', maxHeight: '270px', overflowY: 'auto' }}>
-                    {stats.recent_activity && stats.recent_activity.length > 0 ? (
-                      stats.recent_activity.map((act, idx) => {
-                        let iconClass = 'fa-solid fa-circle';
-                        let colorClass = 'var(--primary-color)';
-                        if (act.type === 'signup') {
-                          iconClass = 'fa-solid fa-user-plus';
-                          colorClass = '#C9AB81';
-                        } else if (act.type === 'order') {
-                          iconClass = 'fa-solid fa-cart-shopping';
-                          colorClass = '#3F9065';
-                        } else if (act.type === 'review') {
-                          iconClass = 'fa-solid fa-star';
-                          colorClass = '#FF9924';
-                        }
 
-                        return (
-                          <div key={idx} style={{
-                            display: 'flex',
-                            alignItems: 'flex-start',
-                            gap: '12px',
-                            paddingBottom: '10px',
-                            borderBottom: '1px dashed #EAE6DB'
-                          }}>
-                            <div style={{
-                              backgroundColor: `${colorClass}15`,
-                              color: colorClass,
-                              borderRadius: '8px',
-                              width: '32px',
-                              height: '32px',
-                              display: 'flex',
-                              alignItems: 'center',
-                              justifyContent: 'center',
-                              flexShrink: 0,
-                              fontSize: '13px'
-                            }}>
-                              <i className={iconClass}></i>
-                            </div>
-                            <div style={{ flexGrow: 1 }}>
-                              <p style={{ margin: 0, fontSize: '13px', fontWeight: '600', color: '#1b3d2b' }}>{act.message}</p>
-                              <span style={{ fontSize: '11px', color: '#888' }}>
-                                {act.timestamp ? new Date(act.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'Just now'}
-                              </span>
-                            </div>
-                          </div>
-                        );
-                      })
-                    ) : (
-                      <div className="text-muted" style={{ textAlign: 'center', padding: '30px' }}>
-                        No activities captured yet.
-                      </div>
-                    )}
-                  </div>
-                </div>
-
-                {/* Freshness Tracker */}
-                <div className="premium-card" style={{ padding: '20px 25px', margin: 0 }}>
-                  <div className="premium-card-title" style={{ marginBottom: '15px', borderBottom: '1px solid var(--border-color)', paddingBottom: '10px' }}>
-                    <i className="fa-solid fa-seedling"></i>
-                    <h3 style={{ margin: 0, fontSize: '16px' }}>Batter Freshness & Expiry Monitor</h3>
-                  </div>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', maxHeight: '270px', overflowY: 'auto' }}>
-                    {productionLogs && productionLogs.length > 0 ? (
-                      productionLogs.map((log, idx) => {
-                        const freshness = getFreshness(log.date);
-                        return (
-                          <div key={idx} style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'space-between',
-                            paddingBottom: '10px',
-                            borderBottom: '1px dashed #EAE6DB'
-                          }}>
-                            <div>
-                              <strong style={{ fontSize: '13px', color: 'var(--title-color)' }}>{log.batter_type}</strong>
-                              <div style={{ fontSize: '11px', color: '#666', marginTop: '2px' }}>
-                                Batch #{log.id} • Qty: {log.remaining_quantity} {log.unit} remaining
-                              </div>
-                            </div>
-                            <div>
-                              <span style={{
-                                display: 'inline-block',
-                                padding: '4px 10px',
-                                borderRadius: '15px',
-                                fontSize: '11px',
-                                fontWeight: '700',
-                                backgroundColor: `${freshness.color}15`,
-                                color: freshness.color,
-                                border: `1px solid ${freshness.color}`
-                              }}>
-                                {freshness.text}
-                              </span>
-                            </div>
-                          </div>
-                        );
-                      })
-                    ) : (
-                      <div className="text-muted" style={{ textAlign: 'center', padding: '30px' }}>
-                        No active batter batches logged.
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </div>
 
               {/* Recent Orders Table */}
               <div className="premium-card" style={{ margin: '0 0 30px 0' }}>

@@ -53,6 +53,24 @@ const CompleteProfile = () => {
     }
   }, [user]);
 
+  // Prevent back navigation if profile is not completed
+  useEffect(() => {
+    if (user && !user.profile_completed) {
+      window.history.pushState(null, '', window.location.href);
+      
+      const handlePopState = () => {
+        window.history.pushState(null, '', window.location.href);
+        setError("Please complete your profile to continue.");
+      };
+      
+      window.addEventListener('popstate', handlePopState);
+      
+      return () => {
+        window.removeEventListener('popstate', handlePopState);
+      };
+    }
+  }, [user]);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({
@@ -116,12 +134,12 @@ const CompleteProfile = () => {
   };
 
   return (
-    <AuthLayout
-      title="Complete Your Profile"
-      subtitle="Just one more step! We need your delivery address and details to serve you better."
-    >
-      <form className="auth-form" onSubmit={handleSubmit} style={{ maxHeight: '80vh', overflowY: 'auto', paddingRight: '10px' }}>
-        {error && <div className="alert alert-danger">{error}</div>}
+    <AuthLayout isSingle={true}>
+      <div className="auth-single-header">
+        <h1 className="auth-title">Complete Your Profile</h1>
+      </div>
+      <form className="auth-form-single" onSubmit={handleSubmit} style={{ maxHeight: '65vh', overflowY: 'auto', paddingRight: '10px' }}>
+        {error && <div className="alert alert-danger" style={{ backgroundColor: 'rgba(220, 53, 69, 0.1)', color: '#ff6b6b', border: '1px solid rgba(220, 53, 69, 0.2)', padding: '10px', borderRadius: '8px', marginBottom: '15px', fontSize: '0.9rem' }}>{error}</div>}
 
         {/* PROFILE PHOTO UPLOAD */}
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: '30px' }}>
@@ -133,8 +151,8 @@ const CompleteProfile = () => {
                 style={{ width: '100%', height: '100%', borderRadius: '50%', objectFit: 'cover', border: '3px solid var(--primary-color)' }} 
               />
             ) : (
-              <div style={{ width: '100%', height: '100%', borderRadius: '50%', backgroundColor: 'var(--bg-primary)', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px dashed var(--border-color)' }}>
-                <UserIcon size={36} style={{ color: 'var(--text-muted)' }} />
+              <div style={{ width: '100%', height: '100%', borderRadius: '50%', backgroundColor: 'rgba(255, 255, 255, 0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px dashed rgba(255, 255, 255, 0.3)' }}>
+                <UserIcon size={36} style={{ color: 'rgba(255, 255, 255, 0.5)' }} />
               </div>
             )}
             <label style={{ position: 'absolute', bottom: '0', right: '0', backgroundColor: 'var(--primary-color)', color: 'white', borderRadius: '50%', padding: '8px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 2px 8px rgba(0,0,0,0.2)' }}>
@@ -142,51 +160,48 @@ const CompleteProfile = () => {
               <Camera size={16} />
             </label>
           </div>
-          <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginTop: '8px' }}>
+          <span style={{ fontSize: '0.85rem', color: 'rgba(255, 255, 255, 0.7)', marginTop: '8px' }}>
             {uploading ? 'Uploading picture...' : 'Upload Profile Photo'}
           </span>
         </div>
 
         {/* PERSONAL DETAILS SECTION */}
         <div style={{ marginBottom: '24px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '14px', borderBottom: '1px solid var(--border-color)', paddingBottom: '6px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '14px', borderBottom: '1px solid rgba(255, 255, 255, 0.2)', paddingBottom: '6px' }}>
             <UserIcon size={18} style={{ color: 'var(--primary-color)' }} />
-            <h3 style={{ fontSize: '1.1rem', margin: '0', color: 'var(--primary-dark)', fontFamily: 'var(--font-serif)' }}>Personal Details</h3>
+            <h3 style={{ fontSize: '1.1rem', margin: '0', color: '#fff', fontFamily: 'var(--font-serif)' }}>Personal Details</h3>
           </div>
           
-          <div className="form-group">
-            <label style={{ fontSize: '0.85rem', color: 'var(--text-dark)', fontWeight: '600', display: 'block', marginBottom: '6px' }}>Full Name *</label>
+          <div className="form-group-single">
+            <label style={{ fontSize: '0.85rem', color: 'rgba(255, 255, 255, 0.9)', fontWeight: '600', display: 'block', marginBottom: '6px' }}>Full Name *</label>
             <input 
               type="text" 
               name="name"
               className="form-control" 
               value={formData.name}
               onChange={handleChange}
-              placeholder="e.g. Rajesh Kumar"
             />
           </div>
 
-          <div style={{ display: 'flex', gap: '15px' }}>
-            <div className="form-group" style={{ flex: '1' }}>
-              <label style={{ fontSize: '0.85rem', color: 'var(--text-dark)', fontWeight: '600', display: 'block', marginBottom: '6px' }}>Email *</label>
+          <div className="auth-flex-row">
+            <div className="form-group-single" style={{ flex: '1' }}>
+              <label style={{ fontSize: '0.85rem', color: 'rgba(255, 255, 255, 0.9)', fontWeight: '600', display: 'block', marginBottom: '6px' }}>Email *</label>
               <input 
                 type="email" 
                 name="email"
                 className="form-control" 
                 value={formData.email}
                 onChange={handleChange}
-                placeholder="e.g. rajesh@example.com"
               />
             </div>
-            <div className="form-group" style={{ flex: '1' }}>
-              <label style={{ fontSize: '0.85rem', color: 'var(--text-dark)', fontWeight: '600', display: 'block', marginBottom: '6px' }}>Mobile Number *</label>
+            <div className="form-group-single" style={{ flex: '1' }}>
+              <label style={{ fontSize: '0.85rem', color: 'rgba(255, 255, 255, 0.9)', fontWeight: '600', display: 'block', marginBottom: '6px' }}>Mobile Number *</label>
               <input 
                 type="text" 
                 name="phone"
                 className="form-control" 
                 value={formData.phone}
                 onChange={handleChange}
-                placeholder="e.g. 9876543210"
               />
             </div>
           </div>
@@ -194,82 +209,76 @@ const CompleteProfile = () => {
 
         {/* ADDRESS SECTION */}
         <div style={{ marginBottom: '24px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '14px', borderBottom: '1px solid var(--border-color)', paddingBottom: '6px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '14px', borderBottom: '1px solid rgba(255, 255, 255, 0.2)', paddingBottom: '6px' }}>
             <MapPin size={18} style={{ color: 'var(--primary-color)' }} />
-            <h3 style={{ fontSize: '1.1rem', margin: '0', color: 'var(--primary-dark)', fontFamily: 'var(--font-serif)' }}>Address</h3>
+            <h3 style={{ fontSize: '1.1rem', margin: '0', color: '#fff', fontFamily: 'var(--font-serif)' }}>Address</h3>
           </div>
 
-          <div style={{ display: 'flex', gap: '15px' }}>
-            <div className="form-group" style={{ flex: '1' }}>
-              <label style={{ fontSize: '0.85rem', color: 'var(--text-dark)', fontWeight: '600', display: 'block', marginBottom: '6px' }}>Door Number *</label>
+          <div className="auth-flex-row">
+            <div className="form-group-single" style={{ flex: '1' }}>
+              <label style={{ fontSize: '0.85rem', color: 'rgba(255, 255, 255, 0.9)', fontWeight: '600', display: 'block', marginBottom: '6px' }}>Door Number *</label>
               <input 
                 type="text" 
                 name="door_number"
                 className="form-control" 
                 value={formData.door_number}
                 onChange={handleChange}
-                placeholder="e.g. Flat 301, 3rd Floor"
               />
             </div>
-            <div className="form-group" style={{ flex: '2' }}>
-              <label style={{ fontSize: '0.85rem', color: 'var(--text-dark)', fontWeight: '600', display: 'block', marginBottom: '6px' }}>Street Name *</label>
+            <div className="form-group-single" style={{ flex: '2' }}>
+              <label style={{ fontSize: '0.85rem', color: 'rgba(255, 255, 255, 0.9)', fontWeight: '600', display: 'block', marginBottom: '6px' }}>Street Name *</label>
               <input 
                 type="text" 
                 name="street_name"
                 className="form-control" 
                 value={formData.street_name}
                 onChange={handleChange}
-                placeholder="e.g. 2nd Cross Street, Gandhi Nagar"
               />
             </div>
           </div>
 
-          <div style={{ display: 'flex', gap: '15px' }}>
-            <div className="form-group" style={{ flex: '1' }}>
-              <label style={{ fontSize: '0.85rem', color: 'var(--text-dark)', fontWeight: '600', display: 'block', marginBottom: '6px' }}>Area / Locality *</label>
+          <div className="auth-flex-row">
+            <div className="form-group-single" style={{ flex: '1' }}>
+              <label style={{ fontSize: '0.85rem', color: 'rgba(255, 255, 255, 0.9)', fontWeight: '600', display: 'block', marginBottom: '6px' }}>Area / Locality *</label>
               <input 
                 type="text" 
                 name="area"
                 className="form-control" 
                 value={formData.area}
                 onChange={handleChange}
-                placeholder="e.g. Adyar"
               />
             </div>
-            <div className="form-group" style={{ flex: '1' }}>
-              <label style={{ fontSize: '0.85rem', color: 'var(--text-dark)', fontWeight: '600', display: 'block', marginBottom: '6px' }}>City *</label>
+            <div className="form-group-single" style={{ flex: '1' }}>
+              <label style={{ fontSize: '0.85rem', color: 'rgba(255, 255, 255, 0.9)', fontWeight: '600', display: 'block', marginBottom: '6px' }}>City *</label>
               <input 
                 type="text" 
                 name="city"
                 className="form-control" 
                 value={formData.city}
                 onChange={handleChange}
-                placeholder="e.g. Chennai"
               />
             </div>
           </div>
 
-          <div style={{ display: 'flex', gap: '15px' }}>
-            <div className="form-group" style={{ flex: '1' }}>
-              <label style={{ fontSize: '0.85rem', color: 'var(--text-dark)', fontWeight: '600', display: 'block', marginBottom: '6px' }}>State *</label>
+          <div className="auth-flex-row">
+            <div className="form-group-single" style={{ flex: '1' }}>
+              <label style={{ fontSize: '0.85rem', color: 'rgba(255, 255, 255, 0.9)', fontWeight: '600', display: 'block', marginBottom: '6px' }}>State *</label>
               <input 
                 type="text" 
                 name="state"
                 className="form-control" 
                 value={formData.state}
                 onChange={handleChange}
-                placeholder="e.g. Tamil Nadu"
               />
             </div>
-            <div className="form-group" style={{ flex: '1' }}>
-              <label style={{ fontSize: '0.85rem', color: 'var(--text-dark)', fontWeight: '600', display: 'block', marginBottom: '6px' }}>Pincode *</label>
+            <div className="form-group-single" style={{ flex: '1' }}>
+              <label style={{ fontSize: '0.85rem', color: 'rgba(255, 255, 255, 0.9)', fontWeight: '600', display: 'block', marginBottom: '6px' }}>Pincode *</label>
               <input 
                 type="text" 
                 name="pincode"
                 className="form-control" 
                 value={formData.pincode}
                 onChange={handleChange}
-                placeholder="e.g. 600020"
               />
             </div>
           </div>
@@ -277,32 +286,30 @@ const CompleteProfile = () => {
 
         {/* DELIVERY DETAILS */}
         <div style={{ marginBottom: '24px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '14px', borderBottom: '1px solid var(--border-color)', paddingBottom: '6px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '14px', borderBottom: '1px solid rgba(255, 255, 255, 0.2)', paddingBottom: '6px' }}>
             <Phone size={18} style={{ color: 'var(--primary-color)' }} />
-            <h3 style={{ fontSize: '1.1rem', margin: '0', color: 'var(--primary-dark)', fontFamily: 'var(--font-serif)' }}>Delivery Details</h3>
+            <h3 style={{ fontSize: '1.1rem', margin: '0', color: '#fff', fontFamily: 'var(--font-serif)' }}>Delivery Details</h3>
           </div>
 
-          <div style={{ display: 'flex', gap: '15px' }}>
-            <div className="form-group" style={{ flex: '1' }}>
-              <label style={{ fontSize: '0.85rem', color: 'var(--text-dark)', fontWeight: '600', display: 'block', marginBottom: '6px' }}>Landmark</label>
+          <div className="auth-flex-row">
+            <div className="form-group-single" style={{ flex: '1' }}>
+              <label style={{ fontSize: '0.85rem', color: 'rgba(255, 255, 255, 0.9)', fontWeight: '600', display: 'block', marginBottom: '6px' }}>Landmark</label>
               <input 
                 type="text" 
                 name="landmark"
                 className="form-control" 
                 value={formData.landmark}
                 onChange={handleChange}
-                placeholder="e.g. Near Vinayagar Temple"
               />
             </div>
-            <div className="form-group" style={{ flex: '1' }}>
-              <label style={{ fontSize: '0.85rem', color: 'var(--text-dark)', fontWeight: '600', display: 'block', marginBottom: '6px' }}>Alternate Mobile</label>
+            <div className="form-group-single" style={{ flex: '1' }}>
+              <label style={{ fontSize: '0.85rem', color: 'rgba(255, 255, 255, 0.9)', fontWeight: '600', display: 'block', marginBottom: '6px' }}>Alternate Mobile</label>
               <input 
                 type="text" 
                 name="alternate_mobile"
                 className="form-control" 
                 value={formData.alternate_mobile}
                 onChange={handleChange}
-                placeholder="e.g. 9876543211"
               />
             </div>
           </div>
@@ -310,12 +317,12 @@ const CompleteProfile = () => {
 
         {/* PREFERENCE */}
         <div style={{ marginBottom: '30px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '14px', borderBottom: '1px solid var(--border-color)', paddingBottom: '6px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '14px', borderBottom: '1px solid rgba(255, 255, 255, 0.2)', paddingBottom: '6px' }}>
             <Heart size={18} style={{ color: 'var(--primary-color)' }} />
-            <h3 style={{ fontSize: '1.1rem', margin: '0', color: 'var(--primary-dark)', fontFamily: 'var(--font-serif)' }}>Food Preference</h3>
+            <h3 style={{ fontSize: '1.1rem', margin: '0', color: '#fff', fontFamily: 'var(--font-serif)' }}>Food Preference</h3>
           </div>
 
-          <div style={{ display: 'flex', gap: '15px' }}>
+          <div className="auth-flex-row">
             {['Veg', 'Non-Veg', 'Both'].map((pref) => (
               <label 
                 key={pref} 
@@ -326,12 +333,12 @@ const CompleteProfile = () => {
                   justifyContent: 'center', 
                   gap: '8px', 
                   padding: '12px', 
-                  border: `1px solid ${formData.preference === pref ? 'var(--primary-color)' : 'var(--border-color)'}`, 
-                  backgroundColor: formData.preference === pref ? 'rgba(200, 75, 49, 0.05)' : 'var(--bg-secondary)', 
+                  border: `1px solid ${formData.preference === pref ? 'var(--primary-color)' : 'rgba(255, 255, 255, 0.2)'}`, 
+                  backgroundColor: formData.preference === pref ? 'rgba(200, 75, 49, 0.2)' : 'rgba(255, 255, 255, 0.05)', 
                   borderRadius: 'var(--radius-sm)', 
                   cursor: 'pointer', 
                   fontWeight: '600', 
-                  color: formData.preference === pref ? 'var(--primary-color)' : 'var(--text-dark)',
+                  color: formData.preference === pref ? '#fff' : 'rgba(255, 255, 255, 0.7)',
                   transition: 'all 0.2s'
                 }}
               >
@@ -349,7 +356,7 @@ const CompleteProfile = () => {
           </div>
         </div>
 
-        <button type="submit" className="auth-submit-btn" disabled={submitting || uploading} style={{ marginBottom: '30px' }}>
+        <button type="submit" className="auth-submit-btn" disabled={submitting || uploading} style={{ marginBottom: '10px' }}>
           {submitting ? 'Saving details...' : 'Save & Continue'}
         </button>
       </form>

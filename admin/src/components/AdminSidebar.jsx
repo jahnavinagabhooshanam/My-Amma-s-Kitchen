@@ -16,15 +16,16 @@ import {
   BarChart3,
   Globe,
   Settings,
-  LogOut
+  LogOut,
+  Package
 } from 'lucide-react';
 
 const menuItems = [
   { to: '/admin/dashboard', icon: Home, label: 'Dashboard', roles: ['admin', 'manager', 'kitchen_staff', 'delivery_staff'] },
   { to: '/admin/ready-to-eat', icon: UtensilsCrossed, label: 'Ready To Eat Catalog', roles: ['admin', 'manager'] },
-  { to: '/admin/batter-products', icon: Layers, label: 'Batter Product Catalog', roles: ['admin', 'manager'] },
+  { to: '/admin/ready-to-cook', icon: Package, label: 'Ready To Cook Catalog', roles: ['admin', 'manager'] },
   { to: '/admin/batter-production', icon: Factory, label: 'Batter Production', roles: ['admin', 'manager', 'kitchen_staff'] },
-  { to: '/admin/orders', icon: ShoppingCart, label: 'Orders', roles: ['admin', 'manager', 'kitchen_staff'] },
+  { to: '/admin/orders', icon: ShoppingCart, label: 'Orders', roles: ['admin', 'manager', 'kitchen_staff', 'delivery_staff'] },
   { to: '/admin/delivery-management', icon: Truck, label: 'Delivery Management', roles: ['admin', 'manager', 'delivery_staff'] },
   { to: '/admin/bulk-orders', icon: PartyPopper, label: 'Bulk Orders', roles: ['admin', 'manager'] },
   { to: '/admin/customers', icon: Users, label: 'Customers', roles: ['admin', 'manager'] },

@@ -124,6 +124,7 @@ class Order(db.Model):
     status = db.Column(db.String(100), default='Pending', nullable=False, index=True)  # 'Pending', 'Confirmed', 'Preparing', 'Out For Delivery', 'Delivered', 'Cancelled'
     payment_status = db.Column(db.String(100), default='Pending', nullable=False)
     delivery_address = db.Column(db.Text, nullable=False)
+    timeline = db.Column(db.JSON, nullable=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
 
     def to_dict(self):
@@ -134,6 +135,7 @@ class Order(db.Model):
             "status": self.status,
             "payment_status": self.payment_status,
             "delivery_address": self.delivery_address,
+            "timeline": self.timeline or [],
             "created_at": self.created_at.isoformat() if self.created_at else None
         }
 
@@ -372,4 +374,96 @@ class HomepageConfig(db.Model):
             "festivals": self.festivals or {},
             "amma_recommends": self.amma_recommends or {},
             "updated_at": self.updated_at.isoformat() if self.updated_at else None
+        }
+
+class Address(db.Model):
+    __tablename__ = 'addresses'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, nullable=False, index=True)
+    label = db.Column(db.String(50), default='Home') # 'Home', 'Work', 'Other'
+    door_number = db.Column(db.String(255), nullable=True)
+    street_name = db.Column(db.String(255), nullable=True)
+    area = db.Column(db.String(255), nullable=True)
+    city = db.Column(db.String(255), nullable=True)
+    state = db.Column(db.String(255), nullable=True)
+    pincode = db.Column(db.String(20), nullable=True)
+    landmark = db.Column(db.String(255), nullable=True)
+    is_default = db.Column(db.Boolean, default=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "user_id": self.user_id,
+            "label": self.label,
+            "door_number": self.door_number,
+            "street_name": self.street_name,
+            "area": self.area,
+            "city": self.city,
+            "state": self.state,
+            "pincode": self.pincode,
+            "landmark": self.landmark,
+            "is_default": self.is_default,
+            "created_at": self.created_at.isoformat() if self.created_at else None
+        }
+
+class Wishlist(db.Model):
+    __tablename__ = 'wishlist'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, nullable=False, index=True)
+    product_id = db.Column(db.Integer, nullable=False, index=True)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "user_id": self.user_id,
+            "product_id": self.product_id,
+            "created_at": self.created_at.isoformat() if self.created_at else None
+        }
+
+class ContactInquiry(db.Model):
+    __tablename__ = 'contact_inquiries'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(255), nullable=False)
+    email = db.Column(db.String(255), nullable=False)
+    phone = db.Column(db.String(50), nullable=True)
+    subject = db.Column(db.String(255), nullable=True)
+    message = db.Column(db.Text, nullable=False)
+    status = db.Column(db.String(50), default='New', nullable=False) # 'New', 'In Progress', 'Resolved'
+    created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "name": self.name,
+            "email": self.email,
+            "phone": self.phone,
+            "subject": self.subject,
+            "message": self.message,
+            "status": self.status,
+            "created_at": self.created_at.isoformat() if self.created_at else None
+        }
+
+class Notification(db.Model):
+    __tablename__ = 'notifications'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, nullable=False, index=True)
+    message = db.Column(db.Text, nullable=False)
+    type = db.Column(db.String(100), default='info', nullable=False)
+    is_read = db.Column(db.Boolean, default=False, nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "user_id": self.user_id,
+            "message": self.message,
+            "type": self.type,
+            "is_read": self.is_read,
+            "created_at": self.created_at.isoformat() if self.created_at else None
         }

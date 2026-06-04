@@ -6,7 +6,7 @@ import logoImg from '../assets/img/logo.png';
 import apiClient from '../services/api';
 
 const Navbar = () => {
-  const { cartItems, cartTotal, cartCount, removeFromCart } = useCart();
+  const { cartItems, cartTotal, cartCount, removeFromCart, isCartAnimating } = useCart();
   const { user, logout } = useAuth();
   const [cartOpen, setCartOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -23,6 +23,8 @@ const Navbar = () => {
     whatsapp_number: "+919876543210"
   });
 
+  const [notifications, setNotifications] = useState([]);
+
   useEffect(() => {
     const fetchConfig = async () => {
       try {
@@ -34,6 +36,23 @@ const Navbar = () => {
     };
     fetchConfig();
   }, []);
+
+  useEffect(() => {
+    const fetchNotifications = async () => {
+      if (user) {
+        try {
+          const res = await apiClient.get('/notifications');
+          setNotifications(res.data);
+        } catch (err) {
+          console.error("Failed to fetch notifications:", err);
+        }
+      }
+    };
+    fetchNotifications();
+    // Refresh notifications every 30 seconds
+    const interval = setInterval(fetchNotifications, 30000);
+    return () => clearInterval(interval);
+  }, [user]);
 
   const handleToggleCart = () => setCartOpen(!cartOpen);
   const handleToggleMobileMenu = () => setMobileMenuOpen(!mobileMenuOpen);
@@ -140,24 +159,51 @@ const Navbar = () => {
                     {/* User Profile / Login (Desktop Only) */}
                     <div className="d-none d-lg-flex align-items-center me-3">
                       {user ? (
-                        <Link to="/account" style={{ display: 'flex', alignItems: 'center', gap: '8px', textDecoration: 'none', color: 'inherit' }} title="My Account">
-                          <div style={{
-                            width: '38px', height: '38px', borderRadius: '50%',
-                            backgroundColor: 'var(--primary-color)', color: 'white',
-                            display: 'flex', alignItems: 'center', justifyContent: 'center',
-                            fontWeight: 'bold', fontSize: '14px', overflow: 'hidden',
-                            border: '2px solid var(--border-color)', boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
-                          }}>
-                            {user.profile_image ? (
-                              <img src={user.profile_image} alt="Avatar" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                            ) : (
-                              (user.name || 'U').charAt(0).toUpperCase()
-                            )}
+                        <>
+                          <div className="dropdown me-3">
+                            <button className="icon-btn" type="button" data-bs-toggle="dropdown" aria-expanded="false" onClick={() => {
+                              // Optional: Mark as read here or handle differently
+                            }}>
+                              <span className="badge bg-danger" style={{ position: 'absolute', top: -5, right: -5, fontSize: '10px' }}>
+                                {notifications.filter(n => !n.is_read).length > 0 ? notifications.filter(n => !n.is_read).length : ''}
+                              </span>
+                              <i className="fa-regular fa-bell"></i>
+                            </button>
+                            <ul className="dropdown-menu dropdown-menu-end p-2" style={{ width: '300px', maxHeight: '400px', overflowY: 'auto' }}>
+                              <h6 className="dropdown-header">Notifications</h6>
+                              {notifications.length === 0 ? (
+                                <li className="text-center p-3 text-muted">No notifications</li>
+                              ) : (
+                                notifications.map(notif => (
+                                  <li key={notif.id} className="border-bottom p-2" style={{ fontSize: '13px', backgroundColor: notif.is_read ? '#fff' : '#f8f9fa' }}>
+                                    <div className="fw-bold text-primary">{notif.type.toUpperCase()}</div>
+                                    <div>{notif.message}</div>
+                                    <div className="text-muted" style={{ fontSize: '11px' }}>{new Date(notif.created_at).toLocaleString()}</div>
+                                  </li>
+                                ))
+                              )}
+                            </ul>
                           </div>
-                          <span style={{ fontWeight: '600', fontSize: '14px', fontFamily: "'Jost', sans-serif" }}>
-                            {user.name ? user.name.split(' ')[0] : 'Account'}
-                          </span>
-                        </Link>
+
+                          <Link to="/account" style={{ display: 'flex', alignItems: 'center', gap: '8px', textDecoration: 'none', color: 'inherit' }} title="My Account">
+                            <div style={{
+                              width: '38px', height: '38px', borderRadius: '50%',
+                              backgroundColor: 'var(--primary-color)', color: 'white',
+                              display: 'flex', alignItems: 'center', justifyContent: 'center',
+                              fontWeight: 'bold', fontSize: '14px', overflow: 'hidden',
+                              border: '2px solid var(--border-color)', boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+                            }}>
+                              {user.profile_image ? (
+                                <img src={user.profile_image} alt="Avatar" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                              ) : (
+                                (user.name || 'U').charAt(0).toUpperCase()
+                              )}
+                            </div>
+                            <span style={{ fontWeight: '600', fontSize: '14px', fontFamily: "'Jost', sans-serif" }}>
+                              {user.name ? user.name.split(' ')[0] : 'Account'}
+                            </span>
+                          </Link>
+                        </>
                       ) : (
                         <>
                           <Link to="/login" className="me-3" style={{ fontWeight: '600', fontSize: '14px', textDecoration: 'none', color: 'var(--text-dark)' }}>Login</Link>
@@ -167,10 +213,20 @@ const Navbar = () => {
                     </div>
 
                     {/* Cart Button (All Screens) */}
-                    <button type="button" onClick={handleToggleCart} className="icon-btn">
+                    <button type="button" onClick={handleToggleCart} className={`icon-btn ${isCartAnimating ? 'cart-bump' : ''}`}>
                       <span className="badge">{cartCount}</span>
                       <i className="fa-regular fa-cart-shopping"></i>
                     </button>
+                    <style>{`
+                      @keyframes cartBump {
+                        0% { transform: scale(1); }
+                        50% { transform: scale(1.3); }
+                        100% { transform: scale(1); }
+                      }
+                      .cart-bump {
+                        animation: cartBump 0.3s ease-out;
+                      }
+                    `}</style>
 
                     {/* View Basket Button (Desktop Only) */}
                     <Link to="/cart" className="th-btn style9 th-icon d-none d-xl-inline-flex ms-2">

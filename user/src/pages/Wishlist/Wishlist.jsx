@@ -1,24 +1,42 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useCart } from '../../context/CartContext';
+import { useAuth } from '../../context/AuthContext';
 import { Heart, ShoppingBag, Trash2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
-
-const MOCK_WISHLIST = [
-  { id: 'bat-01', name: 'Premium Mini Tiffin', price: 274.00, image: '🍶', unit: 'Combo Box', inStock: true },
-  { id: 'bat-02', name: 'Premium Idli Dosa Batter', price: 80.00, image: '🍶', unit: '1 kg Tub', inStock: true }
-];
+import wishlistService from '../../services/wishlistService';
 
 const Wishlist = () => {
   const { addToCart } = useCart();
-  const [wishlist, setWishlist] = React.useState(MOCK_WISHLIST);
+  const { token } = useAuth();
+  const [wishlist, setWishlist] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const handleRemove = (id) => {
-    setWishlist(wishlist.filter(item => item.id !== id));
+  useEffect(() => {
+    if (token) {
+      wishlistService.getAll().then(res => {
+        setWishlist(res.data);
+      }).catch(err => {
+        console.error(err);
+      }).finally(() => {
+        setLoading(false);
+      });
+    } else {
+      setLoading(false);
+    }
+  }, [token]);
+
+  const handleRemove = async (id, productId) => {
+    try {
+      if (token) await wishlistService.remove(productId);
+      setWishlist(wishlist.filter(item => item.id !== id));
+    } catch (e) {
+      console.error(e);
+    }
   };
 
   const handleMoveToCart = (item) => {
     addToCart(item, 1);
-    handleRemove(item.id);
+    handleRemove(item.id, item.id);
   };
 
   return (
@@ -35,7 +53,20 @@ const Wishlist = () => {
           </p>
         </div>
 
-        {wishlist.length === 0 ? (
+        {loading ? (
+          <div className="text-center" style={{ padding: '60px' }}>Loading wishlist...</div>
+        ) : !token ? (
+          <div className="card text-center" style={{ padding: '60px 30px', backgroundColor: '#FFFFFF', border: '1px solid #EAE6DB', borderRadius: '15px', maxWidth: '600px', margin: '0 auto' }}>
+            <Heart size={56} style={{ color: 'var(--primary-color)', margin: '0 auto', opacity: 0.3 }} />
+            <h3 className="title-md" style={{ color: 'var(--primary-dark)', marginTop: '20px' }}>Please login</h3>
+            <p className="text-muted" style={{ marginTop: '12px' }}>
+              Login to view and save items to your wishlist.
+            </p>
+            <Link to="/login" className="th-btn mt-4" style={{ border: 'none' }}>
+              Login Now
+            </Link>
+          </div>
+        ) : wishlist.length === 0 ? (
           <div className="card text-center" style={{ padding: '60px 30px', backgroundColor: '#FFFFFF', border: '1px solid #EAE6DB', borderRadius: '15px', maxWidth: '600px', margin: '0 auto' }}>
             <Heart size={56} style={{ color: 'var(--primary-color)', margin: '0 auto', opacity: 0.3 }} />
             <h3 className="title-md" style={{ color: 'var(--primary-dark)', marginTop: '20px' }}>Your Wishlist is Empty</h3>
@@ -92,7 +123,7 @@ const Wishlist = () => {
                               <button onClick={() => handleMoveToCart(item)} className="th-btn style9" style={{ border: 'none', padding: '10px 18px', cursor: 'pointer', fontSize: '12px' }}>
                                 <ShoppingBag size={14} style={{ marginRight: '6px' }} /> Move to Basket
                               </button>
-                              <button onClick={() => handleRemove(item.id)} className="icon-btn text-danger" style={{ backgroundColor: 'transparent', border: 'none', cursor: 'pointer' }} title="Remove item">
+                              <button onClick={() => handleRemove(item.wishlist_id || item.id, item.id)} className="icon-btn text-danger" style={{ backgroundColor: 'transparent', border: 'none', cursor: 'pointer' }} title="Remove item">
                                 <Trash2 size={16} />
                               </button>
                             </div>

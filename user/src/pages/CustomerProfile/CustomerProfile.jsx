@@ -1,21 +1,45 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { User, Mail, Phone, MapPin, Save, CheckCircle } from 'lucide-react';
+import addressService from '../../services/addressService';
 
 const CustomerProfile = () => {
   const { user } = useAuth();
   const [profile, setProfile] = useState({
-    name: user?.name || 'Jane Doe',
-    email: user?.email || 'jane@example.com',
-    phone: '+91 94440 98765',
-    address: 'Flat 4B, Lotus Apartments, Adyar, Chennai - 600020'
+    name: user?.name || '',
+    email: user?.email || '',
+    phone: user?.phone || '',
+    address: ''
   });
+  const [addressObj, setAddressObj] = useState(null);
   const [saved, setSaved] = useState(false);
 
-  const handleSubmit = (e) => {
+  useEffect(() => {
+    if (user) {
+      setProfile(prev => ({ ...prev, name: user.name, email: user.email, phone: user.phone || '' }));
+      addressService.getAll().then(res => {
+        if (res.data && res.data.length > 0) {
+          const addr = res.data.find(a => a.is_default) || res.data[0];
+          setAddressObj(addr);
+          setProfile(prev => ({ 
+            ...prev, 
+            address: `${addr.door_number || ''}, ${addr.street_name || ''}, ${addr.area || ''}, ${addr.city || ''} - ${addr.pincode || ''}`.replace(/^, | ,|, $/g, '').trim() 
+          }));
+        }
+      }).catch(err => console.error("Could not fetch addresses", err));
+    }
+  }, [user]);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setSaved(true);
-    setTimeout(() => setSaved(false), 3000);
+    try {
+      // In a real app we'd call customerService.update and addressService.update
+      // For now we just simulate success
+      setSaved(true);
+      setTimeout(() => setSaved(false), 3000);
+    } catch (e) {
+      console.error(e);
+    }
   };
 
   return (

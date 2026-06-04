@@ -7,6 +7,18 @@ const CartContext = createContext(null);
 export const CartProvider = ({ children }) => {
   const { token } = useAuth();
   const [cartItems, setCartItems] = useState([]);
+  const [toastMessage, setToastMessage] = useState(null);
+  const [isCartAnimating, setIsCartAnimating] = useState(false);
+
+  const showToast = (message, type = 'success') => {
+    setToastMessage({ message, type });
+    setTimeout(() => setToastMessage(null), 3000);
+  };
+
+  const triggerCartAnimation = () => {
+    setIsCartAnimating(true);
+    setTimeout(() => setIsCartAnimating(false), 300);
+  };
 
   // Load cart items initially or when token changes
   useEffect(() => {
@@ -44,8 +56,11 @@ export const CartProvider = ({ children }) => {
         // Refresh cart from server to be in sync
         const response = await cartService.getCart();
         setCartItems(response.data);
+        showToast(`Added ${quantity} ${product.name} to cart!`, 'success');
+        triggerCartAnimation();
       } catch (err) {
         console.error("Failed to add to server cart:", err);
+        showToast("Failed to add product to cart.", "error");
       }
     } else {
       setCartItems(prev => {
@@ -66,6 +81,8 @@ export const CartProvider = ({ children }) => {
           quantity
         }];
       });
+      showToast(`Added ${quantity} ${product.name} to cart!`, 'success');
+      triggerCartAnimation();
     }
   };
 
@@ -139,9 +156,36 @@ export const CartProvider = ({ children }) => {
       updateQuantity,
       clearCart,
       cartTotal,
-      cartCount
+      cartCount,
+      isCartAnimating
     }}>
       {children}
+      {toastMessage && (
+        <div style={{
+          position: 'fixed',
+          bottom: '20px',
+          right: '20px',
+          backgroundColor: toastMessage.type === 'error' ? '#E74C3C' : '#27AE60',
+          color: 'white',
+          padding: '12px 24px',
+          borderRadius: '8px',
+          boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+          zIndex: 9999,
+          fontWeight: 600,
+          display: 'flex',
+          alignItems: 'center',
+          gap: '8px',
+          animation: 'slideInRight 0.3s ease-out forwards',
+        }}>
+          {toastMessage.type === 'success' ? '✓' : '✕'} {toastMessage.message}
+          <style>{`
+            @keyframes slideInRight {
+              from { transform: translateX(100%); opacity: 0; }
+              to { transform: translateX(0); opacity: 1; }
+            }
+          `}</style>
+        </div>
+      )}
     </CartContext.Provider>
   );
 };

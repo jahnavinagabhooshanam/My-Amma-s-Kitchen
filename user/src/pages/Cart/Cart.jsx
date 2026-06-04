@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useCart } from '../../context/CartContext';
-import { Trash2, Plus, Minus, ArrowRight, CheckCircle, Truck } from 'lucide-react';
+import { useAuth } from '../../context/AuthContext';
+import { Trash2, Plus, Minus, ArrowRight, CheckCircle, Truck, MapPin } from 'lucide-react';
 import orderService from '../../services/orderService';
+import addressService from '../../services/addressService';
+import api from '../../services/api';
 
 const Cart = () => {
   const { cartItems, updateQuantity, removeFromCart, cartTotal, clearCart } = useCart();
@@ -20,21 +23,51 @@ const Cart = () => {
   const [orderPlaced, setOrderPlaced] = useState(false);
   const [orderId, setOrderId] = useState('');
   const [checkingOut, setCheckingOut] = useState(false);
+  
+  const { token, user } = useAuth();
+  const [savedAddresses, setSavedAddresses] = useState([]);
+  const [selectedAddressId, setSelectedAddressId] = useState('');
 
-  const applyPromo = (e) => {
+  React.useEffect(() => {
+    if (checkingOut && token) {
+      addressService.getAll().then(res => {
+        setSavedAddresses(res.data);
+        const defaultAddr = res.data.find(a => a.is_default);
+        if (defaultAddr) {
+          setSelectedAddressId(defaultAddr.id);
+          setAddress(`${defaultAddr.door_number || ''}, ${defaultAddr.street_name || ''}, ${defaultAddr.area || ''}, ${defaultAddr.city || ''} - ${defaultAddr.pincode || ''}`.replace(/^, | ,|, $/g, '').trim());
+        }
+      }).catch(err => console.error("Failed to load addresses", err));
+      
+      if (user && user.phone) {
+          setPhone(user.phone);
+      }
+    }
+  }, [checkingOut, token, user]);
+
+  const applyPromo = async (e) => {
     e.preventDefault();
+    if (!coupon.trim()) return;
     setErrorMsg('');
     setSuccessMsg('');
-    if (coupon.trim().toUpperCase() === 'AMMA20') {
-      setDiscount(cartTotal * 0.2);
-      setSuccessMsg('Coupon AMMA20 applied successfully! Saved 20%.');
-    } else {
-      setErrorMsg('Invalid coupon code. Try AMMA20.');
+    
+    try {
+      const res = await api.get(`/coupons/${coupon.trim().toUpperCase()}`);
+      const couponData = res.data;
+      if (couponData.discount_type === 'percentage') {
+        setDiscount(cartTotal * (couponData.discount_value / 100));
+        setSuccessMsg(`Coupon applied successfully! Saved ${couponData.discount_value}%.`);
+      } else {
+        setDiscount(couponData.discount_value);
+        setSuccessMsg(`Coupon applied successfully! Saved ₹${couponData.discount_value}.`);
+      }
+    } catch (err) {
+      setErrorMsg(err.response?.data?.error || 'Invalid or inactive coupon code.');
       setDiscount(0);
     }
   };
 
-  const grandTotal = cartTotal - discount;
+  const grandTotal = Math.max(0, cartTotal - discount);
 
   const handleCheckoutSubmit = async (e) => {
     e.preventDefault();
@@ -52,7 +85,8 @@ const Cart = () => {
         })),
         delivery_address: address,
         phone,
-        payment_method: payment
+        payment_method: payment,
+        coupon_code: discount > 0 ? coupon.trim().toUpperCase() : null
       });
       setOrderId(response.data.order.id);
       setOrderPlaced(true);
@@ -183,7 +217,30 @@ const Cart = () => {
                 </div>
 
                 <div className="form-group">
-                  <label className="form-label">Full Home Address *</label>
+                  <label className="form-label">Delivery Address *</label>
+                  {savedAddresses.length > 0 && (
+                    <select 
+                      className="form-control" 
+                      style={{ marginBottom: '10px' }}
+                      value={selectedAddressId}
+                      onChange={(e) => {
+                        const val = e.target.value;
+                        setSelectedAddressId(val);
+                        if (val) {
+                          const addr = savedAddresses.find(a => a.id.toString() === val);
+                          if (addr) setAddress(`${addr.door_number || ''}, ${addr.street_name || ''}, ${addr.area || ''}, ${addr.city || ''} - ${addr.pincode || ''}`.replace(/^, | ,|, $/g, '').trim());
+                        } else {
+                          setAddress('');
+                        }
+                      }}
+                    >
+                      <option value="">-- Select Saved Address --</option>
+                      {savedAddresses.map(a => (
+                        <option key={a.id} value={a.id}>{a.label} - {a.city}</option>
+                      ))}
+                      <option value="custom">Enter New Address</option>
+                    </select>
+                  )}
                   <textarea rows="3" className="form-control" required placeholder="Flat No, Building, Street, Area, Chennai" value={address} onChange={(e) => setAddress(e.target.value)} />
                 </div>
 

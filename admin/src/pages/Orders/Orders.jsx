@@ -365,8 +365,8 @@ const Orders = () => {
               <div className="responsive-table-wrapper" style={{ border: 'none', boxShadow: 'none' }}>
                 <table className="responsive-table">
                   
-                  {/* Rendering Tab 1: All Orders Grid */}
-                  {activeTab === 'all' && (
+                  {/* Rendering Tab 1: All Orders Grid (reused for pending, completed, cancelled) */}
+                  {['all', 'pending', 'completed', 'cancelled'].includes(activeTab) && (
                     <>
                       <thead>
                         <tr>
@@ -512,7 +512,7 @@ const Orders = () => {
                   )}
 
                   {/* Rendering Tab 3: Ready To Cook & Batter Packing */}
-                  {activeTab === 'rtc' && (
+                  {(activeTab === 'rtc' || activeTab === 'batter') && (
                     <>
                       <thead>
                         <tr>

@@ -54,7 +54,7 @@ const WebsiteManagement = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const searchParams = new URLSearchParams(location.search);
-  const activeTabParam = searchParams.get('tab') || 'categories';
+  const activeTabParam = searchParams.get('tab') || 'homepage';
 
   const [config, setConfig] = useState({
     banner: '',
@@ -87,7 +87,7 @@ const WebsiteManagement = () => {
   const [errorMsg, setErrorMsg] = useState('');
   
   // Tabs
-  const [activeTab, setActiveTab] = useState('categories'); // 'homepage', 'categories', 'products', 'content', 'marketing', 'media'
+  const [activeTab, setActiveTab] = useState('homepage'); // 'homepage', 'content', 'marketing'
 
   useEffect(() => {
     if (activeTabParam === 'hero') {
@@ -303,28 +303,6 @@ const WebsiteManagement = () => {
 
           <div style={{ display: 'flex', gap: '10px', marginBottom: '25px', borderBottom: '2px solid #EAE6DB', paddingBottom: '10px', flexWrap: 'wrap' }}>
             <button 
-              onClick={() => navigate('/admin/website-management?tab=categories')}
-              style={{
-                padding: '10px 20px', fontSize: '13px', fontWeight: '700', borderRadius: '8px', border: 'none', cursor: 'pointer',
-                backgroundColor: activeTab === 'categories' ? 'var(--primary-color)' : 'transparent',
-                color: activeTab === 'categories' ? '#fff' : 'var(--title-color)', transition: 'all 0.3s'
-              }}
-            >
-              <Tags size={14} style={{ marginRight: '6px' }} /> Categories Editor
-            </button>
-
-            <button 
-              onClick={() => navigate('/admin/website-management?tab=products')}
-              style={{
-                padding: '10px 20px', fontSize: '13px', fontWeight: '700', borderRadius: '8px', border: 'none', cursor: 'pointer',
-                backgroundColor: activeTab === 'products' ? 'var(--primary-color)' : 'transparent',
-                color: activeTab === 'products' ? '#fff' : 'var(--title-color)', transition: 'all 0.3s'
-              }}
-            >
-              <Utensils size={14} style={{ marginRight: '6px' }} /> Products Visibility
-            </button>
-
-            <button 
               onClick={() => navigate('/admin/website-management?tab=content')}
               style={{
                 padding: '10px 20px', fontSize: '13px', fontWeight: '700', borderRadius: '8px', border: 'none', cursor: 'pointer',
@@ -344,17 +322,6 @@ const WebsiteManagement = () => {
               }}
             >
               <Megaphone size={14} style={{ marginRight: '6px' }} /> Marketing Hub
-            </button>
-
-            <button 
-              onClick={() => navigate('/admin/website-management?tab=media')}
-              style={{
-                padding: '10px 20px', fontSize: '13px', fontWeight: '700', borderRadius: '8px', border: 'none', cursor: 'pointer',
-                backgroundColor: activeTab === 'media' ? 'var(--primary-color)' : 'transparent',
-                color: activeTab === 'media' ? '#fff' : 'var(--title-color)', transition: 'all 0.3s'
-              }}
-            >
-              <Image size={14} style={{ marginRight: '6px' }} /> Media Library
             </button>
           </div>
 
@@ -445,136 +412,6 @@ const WebsiteManagement = () => {
                       </button>
                     </div>
                   </form>
-                )}
-
-                {/* 2. Categories Editor tab */}
-                {activeTab === 'categories' && (
-                  <div>
-                    <h3 style={{ margin: '0 0 10px', fontSize: '18px', borderBottom: '1px solid var(--border-color)', paddingBottom: '10px', color: 'var(--title-color)' }}>
-                      Storefront Product Categories Manager
-                    </h3>
-                    <p style={{ fontSize: '12px', color: '#666', marginBottom: '20px' }}>
-                      Add or delete food categories dynamically. Product filter columns on the home client site will instantly adapt to these configurations.
-                    </p>
-
-                    {/* Add Category Form */}
-                    <div style={{ display: 'flex', gap: '10px', marginBottom: '25px', maxWidth: '450px' }}>
-                      <input 
-                        type="text" 
-                        placeholder="e.g. Millet Special Batters"
-                        value={newCatName}
-                        onChange={(e) => setNewCatName(e.target.value)}
-                        style={{ flexGrow: 1, padding: '10px', border: '1px solid #EAE6DB', borderRadius: '8px' }}
-                      />
-                      <button onClick={handleAddCategory} className="page-action-btn" style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', padding: '10px 18px' }}>
-                        <PlusCircle size={14} /> Add Category
-                      </button>
-                    </div>
-
-                    {/* Categories tag rows */}
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', maxWidth: '600px' }}>
-                      {categoryList.map((cat, idx) => (
-                        <div key={idx} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px 18px', border: '1px solid #EAE6DB', borderRadius: '10px', background: '#FAF8F2' }}>
-                          {editingCatIndex === idx ? (
-                            <div style={{ display: 'flex', gap: '8px', flexGrow: 1 }}>
-                              <input 
-                                type="text" 
-                                value={editingCatValue} 
-                                onChange={(e) => setEditingCatValue(e.target.value)}
-                                style={{ flexGrow: 1, padding: '6px', border: '1px solid #C9AB81', borderRadius: '6px' }}
-                              />
-                              <button onClick={handleEditCategorySave} className="btn-secondary" style={{ padding: '6px 12px', fontSize: '11px', backgroundColor: '#EDF3F0' }}>Save</button>
-                              <button onClick={() => setEditingCatIndex(null)} className="btn-secondary" style={{ padding: '6px 12px', fontSize: '11px' }}>Cancel</button>
-                            </div>
-                          ) : (
-                            <>
-                              <strong style={{ fontSize: '14px', color: '#1B3D2B' }}>{cat}</strong>
-                              <div style={{ display: 'flex', gap: '8px' }}>
-                                <button onClick={() => handleEditCategoryStart(idx)} className="btn-secondary" style={{ padding: '4px 10px', fontSize: '11px' }}>Edit</button>
-                                <button onClick={() => handleDeleteCategory(idx)} className="btn-secondary" style={{ padding: '4px 10px', fontSize: '11px', backgroundColor: '#FDEDEC', color: '#78281F', borderColor: '#F5B7B1' }}>Delete</button>
-                              </div>
-                            </>
-                          )}
-                        </div>
-                      ))}
-                      {categoryList.length === 0 && (
-                        <div style={{ padding: '20px', textAlign: 'center', color: '#999', fontStyle: 'italic' }}>No custom categories configured.</div>
-                      )}
-                    </div>
-                  </div>
-                )}
-
-                {/* 3. Products Visibility Settings tab */}
-                {activeTab === 'products' && (
-                  <div>
-                    <h3 style={{ margin: '0 0 10px', fontSize: '18px', borderBottom: '1px solid var(--border-color)', paddingBottom: '10px', color: 'var(--title-color)' }}>
-                      Products Visibility & Featured Badges
-                    </h3>
-                    <p style={{ fontSize: '12px', color: '#666', marginBottom: '20px' }}>
-                      Toggle dynamic display availability parameters and pin popular items to the homepage featured sliders.
-                    </p>
-
-                    <div className="responsive-table-wrapper" style={{ border: 'none', boxShadow: 'none' }}>
-                      <table className="responsive-table">
-                        <thead>
-                          <tr>
-                            <th>Preview</th>
-                            <th>Product Name</th>
-                            <th>Category</th>
-                            <th>Store Visibility</th>
-                            <th>Featured (Home slider)</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {products.map(p => {
-                            const isFeatured = config.featured_products?.includes(p.id);
-                            return (
-                              <tr key={p.id}>
-                                <td>
-                                  <img 
-                                    src={resolveImagePath(p.image)} 
-                                    alt={p.name} 
-                                    style={{ width: '40px', height: '40px', objectFit: 'cover', borderRadius: '6px', border: '1px solid #EAE6DB' }}
-                                  />
-                                </td>
-                                <td><strong>{p.name}</strong></td>
-                                <td style={{ textTransform: 'capitalize' }}>{p.category?.replace('_', ' ')}</td>
-                                <td>
-                                  <button 
-                                    onClick={() => handleProductVisibilityToggle(p)}
-                                    style={{
-                                      border: 'none', padding: '4px 12px', borderRadius: '20px', fontSize: '11px', fontWeight: '700',
-                                      cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '4px',
-                                      backgroundColor: p.is_available ? '#D4EFDF' : '#FADBD8',
-                                      color: p.is_available ? '#196F3D' : '#943126'
-                                    }}
-                                  >
-                                    {p.is_available ? <Eye size={12} /> : <EyeOff size={12} />}
-                                    {p.is_available ? 'Visible' : 'Hidden'}
-                                  </button>
-                                </td>
-                                <td>
-                                  <button
-                                    onClick={() => handleProductFeaturedToggle(p.id)}
-                                    style={{
-                                      border: 'none', padding: '4px 12px', borderRadius: '20px', fontSize: '11px', fontWeight: '700',
-                                      cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '4px',
-                                      backgroundColor: isFeatured ? '#FEF9E7' : '#FAF8F2',
-                                      color: isFeatured ? '#B7950B' : '#ccc',
-                                      border: isFeatured ? '1px solid #B7950B' : '1px solid #ccc'
-                                    }}
-                                  >
-                                    <Star size={12} fill={isFeatured ? '#B7950B' : 'none'} />
-                                    {isFeatured ? 'Featured' : 'Pin Item'}
-                                  </button>
-                                </td>
-                              </tr>
-                            );
-                          })}
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
                 )}
 
                 {/* 4. Content Editor tab */}
@@ -730,65 +567,6 @@ const WebsiteManagement = () => {
                       </button>
                     </div>
                   </form>
-                )}
-
-                {/* 6. Media library tab */}
-                {activeTab === 'media' && (
-                  <div>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', borderBottom: '1px solid #EAE6DB', paddingBottom: '15px' }}>
-                      <div>
-                        <h3 style={{ margin: 0, fontSize: '18px', color: 'var(--title-color)' }}>Media Library</h3>
-                        <p className="text-muted" style={{ margin: '4px 0 0', fontSize: '12px' }}>Upload dish graphics or hero banners here and copy their link paths to apply them live.</p>
-                      </div>
-
-                      <div>
-                        <label className="page-action-btn" style={{ cursor: 'pointer', padding: '8px 16px', display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
-                          <Upload size={14} />
-                          {uploadingMedia ? 'Uploading...' : 'Upload File'}
-                          <input 
-                            type="file" 
-                            accept="image/*"
-                            onChange={handleMediaUpload}
-                            style={{ display: 'none' }}
-                            disabled={uploadingMedia}
-                          />
-                        </label>
-                      </div>
-                    </div>
-
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: '20px' }}>
-                      {mediaList.map((media, idx) => {
-                        const directUrl = resolveImagePath(media.url);
-                        return (
-                          <div key={idx} style={{ border: '1px solid #EAE6DB', borderRadius: '12px', padding: '15px', background: '#FAF8F2', display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                            <div style={{ width: '100%', height: '140px', overflow: 'hidden', borderRadius: '8px', border: '1px solid #EAE6DB' }}>
-                              <img 
-                                src={directUrl} 
-                                alt={media.name} 
-                                style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
-                              />
-                            </div>
-                            <div style={{ fontSize: '12px', fontWeight: '700', color: 'var(--title-color)', textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap' }} title={media.name}>
-                              {media.name}
-                            </div>
-                            <div style={{ display: 'flex', gap: '5px' }}>
-                              <button 
-                                onClick={() => copyToClipboard(media.url, idx)} 
-                                className="btn-secondary" 
-                                style={{ flex: 1, padding: '6px 0', fontSize: '11px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '4px' }}
-                              >
-                                <Copy size={10} />
-                                {copiedIndex === idx ? 'Copied!' : 'Copy Path'}
-                              </button>
-                            </div>
-                          </div>
-                        );
-                      })}
-                      {mediaList.length === 0 && (
-                        <div style={{ gridColumn: '1 / -1', padding: '40px', textAlign: 'center', color: '#999' }}>No media assets uploaded yet.</div>
-                      )}
-                    </div>
-                  </div>
                 )}
               </>
             )}

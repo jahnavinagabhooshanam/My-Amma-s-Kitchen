@@ -27,9 +27,9 @@ const ProtectedRoute = ({ children, allowedRoles }) => {
     );
   }
 
-  // Not logged in: redirect to /auth
+  // Not logged in: redirect to /login
   if (!token || !user) {
-    return <Navigate to="/auth" state={{ from: location }} replace />;
+    return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
   // Logged in but profile not completed: redirect to /complete-profile

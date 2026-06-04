@@ -206,10 +206,29 @@ def get_dashboard_stats():
     monthly_rev_query = db.session.query(func.sum(Order.total_amount)).filter(Order.status != 'Cancelled', Order.created_at >= current_month_start).scalar()
     monthly_revenue = float(monthly_rev_query) if monthly_rev_query else (total_revenue * 0.75 if total_revenue > 0 else 12500.00)
 
+    today_start = datetime.datetime.utcnow().replace(hour=0, minute=0, second=0, microsecond=0)
+    today_rev_query = db.session.query(func.sum(Order.total_amount)).filter(Order.created_at >= today_start, Order.status != 'Cancelled').scalar()
+    today_revenue = float(today_rev_query) if today_rev_query else 0.0
+
+    # Most Ordered Category
+    category_sales = {}
+    order_items_all = db.session.query(OrderItem, Product).join(Product, OrderItem.product_id == Product.id).all()
+    for item, prod in order_items_all:
+        o = Order.query.get(item.order_id)
+        if o and o.status != 'Cancelled':
+            cat = prod.category
+            if cat not in category_sales:
+                category_sales[cat] = 0
+            category_sales[cat] += item.quantity
+    
+    most_ordered_category = max(category_sales, key=category_sales.get) if category_sales else "N/A"
+
     data = {
         "total_orders": total_orders,
-        "today_orders": Order.query.filter(Order.created_at >= func.now() - func.sec_to_time(86400)).count(),
+        "today_orders": Order.query.filter(Order.created_at >= today_start).count(),
         "total_revenue": total_revenue,
+        "today_revenue": today_revenue,
+        "most_ordered_category": most_ordered_category.replace('_', ' ').title() if most_ordered_category != "N/A" else "N/A",
         "total_customers": total_customers,
         "pending_orders": pending_orders,
         "completed_orders": completed_orders,

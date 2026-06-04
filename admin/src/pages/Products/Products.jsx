@@ -75,7 +75,8 @@ const Products = () => {
           description: "Homestyle authentic item prepared daily with organic components.",
           image: '/assets/images/placeholder.jpg',
           stock: 100,
-          in_stock: true
+          in_stock: true,
+          diet_type: form.type
         };
         await apiClient.post('/products/', payload);
       }
@@ -167,17 +168,24 @@ const Products = () => {
               <h4 style={{ color: 'var(--primary-dark)', margin: 0 }}>Add New Item to {category.toUpperCase()}</h4>
               
               <div className="row">
-                <div className="form-group col-md-4">
+                <div className="form-group col-md-3">
                   <label className="form-label">Product Name *</label>
                   <input type="text" className="form-control" required value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />
                 </div>
-                <div className="form-group col-md-4">
+                <div className="form-group col-md-3">
                   <label className="form-label">Price (₹) *</label>
                   <input type="number" step="0.01" className="form-control" required value={form.price} onChange={(e) => setForm({ ...form, price: e.target.value })} />
                 </div>
-                <div className="form-group col-md-4">
+                <div className="form-group col-md-3">
                   <label className="form-label">Weight / Pack Unit *</label>
-                  <input type="text" className="form-control" placeholder="e.g., 1kg Pack, Plate" required value={form.unit} onChange={(e) => setForm({ ...form, unit: e.target.value })} />
+                  <input type="text" className="form-control" placeholder="e.g., 1kg Pack" required value={form.unit} onChange={(e) => setForm({ ...form, unit: e.target.value })} />
+                </div>
+                <div className="form-group col-md-3">
+                  <label className="form-label">Diet Type *</label>
+                  <select className="form-control" value={form.type} onChange={(e) => setForm({ ...form, type: e.target.value })} style={{ height: '50px' }}>
+                    <option value="Veg">Veg</option>
+                    <option value="Non-Veg">Non-Veg</option>
+                  </select>
                 </div>
               </div>
  

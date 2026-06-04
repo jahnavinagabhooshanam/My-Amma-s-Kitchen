@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify
 from database.db import db
-from database.models import Order, OrderItem, Product, User
+from database.models import Order, OrderItem, Product, User, CartItem
 from datetime import datetime
 
 orders_bp = Blueprint('orders', __name__)
@@ -12,6 +12,7 @@ def get_current_user_id():
     token = auth_header.split(' ')[1]
     
     from routes.auth import decode_token
+    from database.models import CartItem
     user_id = decode_token(auth_header)
     if user_id:
         return user_id
@@ -74,7 +75,8 @@ def get_orders():
                 "product_id": it.product_id,
                 "product_name": p.name if p else f"Product #{it.product_id}",
                 "price": it.price,
-                "quantity": it.quantity
+                "quantity": it.quantity,
+                "category": p.category if p else "unknown"
             })
         results.append({
             "id": o.id,
@@ -124,7 +126,8 @@ def get_order(order_id):
             "product_id": it.product_id,
             "product_name": p.name if p else f"Product #{it.product_id}",
             "price": it.price,
-            "quantity": it.quantity
+            "quantity": it.quantity,
+            "category": p.category if p else "unknown"
         })
 
     return jsonify({
@@ -134,6 +137,7 @@ def get_order(order_id):
         "items": mapped_items,
         "total": o.total_amount,
         "status": o.status,
+        "timeline": o.timeline or [],
         "created_at": o.created_at.isoformat() + "Z" if o.created_at else None,
         "delivery_address": o.delivery_address,
         "phone": cust.phone if cust else "+91 99999 99999",
@@ -158,19 +162,36 @@ def place_order():
     delivery_address = data.get('delivery_address')
     phone = data.get('phone')
     payment_method = data.get('payment_method', 'COD')
+    coupon_code = data.get('coupon_code')
 
     if not items or not delivery_address or not phone:
         return jsonify({"error": "Missing order details (items, address, phone)"}), 400
 
     total = sum(item['price'] * item['quantity'] for item in items)
     
+    # Handle Coupon
+    if coupon_code:
+        from database.models import Coupon
+        coupon = Coupon.query.filter_by(coupon_code=coupon_code.upper()).first()
+        if coupon and coupon.is_active:
+            if coupon.discount_type == 'percentage':
+                discount_amount = total * (coupon.discount_value / 100.0)
+            else:
+                discount_amount = coupon.discount_value
+            total = max(0, total - discount_amount)
+            coupon.usage_count += 1
+        else:
+            return jsonify({"error": "Invalid or inactive coupon code"}), 400
+
+    timeline = [{"status": "Pending", "timestamp": datetime.utcnow().isoformat() + "Z"}]
     # Save the Order
     new_order = Order(
         user_id=user_id,
         total_amount=float(total),
         status='Pending',  # Use 'Pending' as requested by tables spec
         payment_status='Pending' if payment_method == 'COD' else 'Paid',
-        delivery_address=delivery_address
+        delivery_address=delivery_address,
+        timeline=timeline
     )
     db.session.add(new_order)
     db.session.commit()  # commit to generate new_order.id
@@ -188,7 +209,14 @@ def place_order():
         # Deduct product stock if product exists
         prod = Product.query.get(new_item.product_id)
         if prod and prod.stock is not None:
+            # Check stock before deducting (Phase 3 strict stock)
+            if prod.stock < new_item.quantity:
+                db.session.rollback()
+                return jsonify({"error": f"Product '{prod.name}' is out of stock. Available: {prod.stock}"}), 400
             prod.stock = max(0, prod.stock - new_item.quantity)
+            
+    # Clear cart for user
+    CartItem.query.filter_by(user_id=user_id).delete()
             
     db.session.commit()
 
@@ -223,6 +251,29 @@ def update_order_status(order_id):
         return jsonify({"error": "Status field is required"}), 400
 
     o.status = status
+    timeline = o.timeline or []
+    timeline.append({"status": status, "timestamp": datetime.utcnow().isoformat() + "Z"})
+    o.timeline = timeline
+    
+    # Create Notification (Phase 4)
+    from database.models import Notification
+    notification_msg = f"Order #{o.id} is now: {status}"
+    if status.lower() == 'confirmed':
+        notification_msg = f"Order Confirmed! Your order #{o.id} has been confirmed."
+    elif status.lower() == 'preparing':
+        notification_msg = f"Order Preparing! We are packing your order #{o.id}."
+    elif status.lower() == 'out for delivery':
+        notification_msg = f"Out For Delivery! Your order #{o.id} is on its way."
+    elif status.lower() == 'delivered':
+        notification_msg = f"Delivered! Your order #{o.id} has been delivered. Enjoy!"
+
+    new_notif = Notification(
+        user_id=o.user_id,
+        message=notification_msg,
+        type='success' if status.lower() == 'delivered' else 'info'
+    )
+    db.session.add(new_notif)
+    
     db.session.commit()
     
     return jsonify({

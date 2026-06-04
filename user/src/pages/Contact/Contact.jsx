@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Mail, Phone, MapPin, Clock, Send, CheckCircle, MessageCircle, ExternalLink } from 'lucide-react';
 
 import SEO from '../../components/SEO';
+import contactService from '../../services/contactService';
 import './Contact.css';
 
 const Contact = () => {
@@ -9,15 +10,19 @@ const Contact = () => {
   const [sent, setSent] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    // Simulate API call
-    setTimeout(() => {
-      setLoading(false);
+    try {
+      await contactService.submit(form);
       setSent(true);
       setForm({ name: '', email: '', message: '' });
-    }, 1200);
+    } catch (error) {
+      console.error('Failed to submit contact form', error);
+      alert('Failed to send message. Please try again.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (

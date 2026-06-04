@@ -435,15 +435,36 @@ const ReadyToEat = () => {
                   <div className="form-field">
                     <label>Product Image</label>
                     <div style={{ display: 'flex', gap: '15px', alignItems: 'center', marginTop: '5px' }}>
-                      <img src={resolveImagePath(formData.image)} alt="Preview" style={{ width: '60px', height: '60px', borderRadius: '10px', objectFit: 'cover', border: '1px solid #EAE6DB' }} onError={(e) => { e.target.src = '/assets/images/placeholder.jpg' }} />
-                      <div style={{ flexGrow: 1 }}>
+                      <label style={{ 
+                        width: '80px', 
+                        height: '80px', 
+                        borderRadius: '10px', 
+                        border: '2px dashed #ccc', 
+                        display: 'flex', 
+                        alignItems: 'center', 
+                        justifyContent: 'center', 
+                        cursor: 'pointer',
+                        overflow: 'hidden',
+                        backgroundColor: '#f9f9f9',
+                        position: 'relative'
+                      }}>
+                        {formData.image && formData.image !== '/assets/images/placeholder.jpg' ? (
+                          <img src={resolveImagePath(formData.image)} alt="Preview" style={{ width: '100%', height: '100%', objectFit: 'cover' }} onError={(e) => { e.target.src = '/assets/images/placeholder.jpg' }} />
+                        ) : (
+                          <Plus size={30} color="#aaa" />
+                        )}
                         <input
                           type="file"
                           accept="image/*"
                           onChange={handleImageUpload}
-                          style={{ border: 'none', padding: 0 }}
+                          style={{ display: 'none' }}
                         />
-                        {uploadingImage && <span style={{ fontSize: '11px', color: 'var(--theme-color)', display: 'block', marginTop: '4px' }}>Uploading image...</span>}
+                      </label>
+                      <div style={{ flexGrow: 1 }}>
+                        <div style={{ fontSize: '13px', color: '#666', marginBottom: '4px' }}>
+                          Click the box to {formData.image && formData.image !== '/assets/images/placeholder.jpg' ? 'change' : 'upload'} image
+                        </div>
+                        {uploadingImage && <span style={{ fontSize: '12px', color: 'var(--theme-color)', display: 'block', fontWeight: 'bold' }}>Uploading image...</span>}
                       </div>
                     </div>
                   </div>

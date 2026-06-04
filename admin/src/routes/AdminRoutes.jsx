@@ -35,7 +35,7 @@ const AdminLoader = () => (
 // Admin Pages (Lazy Loaded)
 const Dashboard = lazy(() => import('../pages/Dashboard/Dashboard'));
 const ReadyToEat = lazy(() => import('../pages/ReadyToEat/ReadyToEat'));
-const BatterProducts = lazy(() => import('../pages/BatterProducts/BatterProducts'));
+const ReadyToCook = lazy(() => import('../pages/ReadyToCook/ReadyToCook'));
 const BulkOrders = lazy(() => import('../pages/BulkOrders/BulkOrders'));
 const Orders = lazy(() => import('../pages/Orders/Orders'));
 const Customers = lazy(() => import('../pages/Customers/Customers'));
@@ -78,15 +78,7 @@ const AdminRoutes = () => {
           path="/ready-to-cook" 
           element={
             <ProtectedRoute allowedRoles={mgmtRoles}>
-              <Navigate to="/admin/batter-products" replace />
-            </ProtectedRoute>
-          } 
-        />
-        <Route 
-          path="/batter-products" 
-          element={
-            <ProtectedRoute allowedRoles={mgmtRoles}>
-              <BatterProducts />
+              <ReadyToCook />
             </ProtectedRoute>
           } 
         />

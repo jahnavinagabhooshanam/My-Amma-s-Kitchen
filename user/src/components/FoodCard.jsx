@@ -51,9 +51,15 @@ const FoodCard = ({ product }) => {
             <div className="stock">Stock: {product.stock ?? product.stock_quantity ?? '—'}</div>
           </div>
           <div style={{ display: 'flex', gap: '8px', marginTop: '10px' }}>
-            <button onClick={handleAdd} className="th-btn" style={{ border: 'none', cursor: 'pointer' }}>
-              Add to cart
-            </button>
+            {(product.stock === 0 || product.stock_quantity === 0) ? (
+              <button disabled className="th-btn style10" style={{ border: 'none', cursor: 'not-allowed', backgroundColor: '#e0e0e0', color: '#999' }}>
+                Out of Stock
+              </button>
+            ) : (
+              <button onClick={handleAdd} className="th-btn" style={{ border: 'none', cursor: 'pointer' }}>
+                Add to cart
+              </button>
+            )}
             <button onClick={(e)=>{e.preventDefault();}} className="btn-outline">View</button>
           </div>
         </div>
