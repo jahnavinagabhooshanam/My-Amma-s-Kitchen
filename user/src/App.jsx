@@ -14,7 +14,8 @@ function AppContent() {
   const { token, user } = useAuth();
   const authRoutes = ['/login', '/register', '/forgot-password', '/verify-otp', '/complete-profile'];
   const isAuthPage = authRoutes.includes(location.pathname);
-  const showMainLayout = !isAuthPage && token && user && user.profile_completed;
+  // Show main layout on all non-auth pages so Footer and modal work for public users
+  const showMainLayout = !isAuthPage;
 
   return (
     <div className="app-shell">
