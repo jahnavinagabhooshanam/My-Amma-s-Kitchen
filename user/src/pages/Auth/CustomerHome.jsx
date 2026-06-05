@@ -119,11 +119,11 @@ const CustomerHome = () => {
           });
           const pool = currentMealProducts.length ? currentMealProducts : products;
           const shuffled = [...pool].sort(() => 0.5 - Math.random());
-          setRecommendedDishes(shuffled.slice(0, 3).map(p => ({ ...p, img: resolveImagePath(p.image) })));
+          setRecommendedDishes(shuffled.slice(0, 4).map(p => ({ ...p, img: resolveImagePath(p.image) })));
         }
       } catch (err) {
         console.error("Failed to load dashboard products", err);
-        setRecommendedDishes(DEFAULT_HOMEPAGE_CONFIG.trending_today.slice(0, 3));
+        setRecommendedDishes(DEFAULT_HOMEPAGE_CONFIG.trending_today.slice(0, 4));
       }
     };
     fetchRecommended();
@@ -259,10 +259,10 @@ const CustomerHome = () => {
             </div>
           </motion.div>
 
-          {/* 2. ENHANCED AMMA RECOMMENDS (Span 10) */}
+          {/* 2. ENHANCED AMMA RECOMMENDS (Span 12) */}
           <motion.div 
             initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.4 }}
-            className="glass-card span-10"
+            className="glass-card span-12"
           >
             <div className="recommends-header">
               <h2 className="section-title" style={{ margin: 0 }}><Star size={28} /> Amma Recommends</h2>
@@ -277,7 +277,7 @@ const CustomerHome = () => {
             
             <p className="recommendation-context"><TrendingUp size={16} /> {getMealRecommendation()}</p>
             
-            <div className="trending-grid recommends-grid">
+            <div className="trending-grid">
               {recommendedDishes.map((dish, i) => (
                 <div key={`${activeTab}-${i}`} className="trending-card">
                   <div className="trending-img-container">

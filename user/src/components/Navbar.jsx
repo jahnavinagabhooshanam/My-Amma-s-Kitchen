@@ -86,7 +86,7 @@ const Navbar = () => {
                 <div className="header-links">
                   <ul>
                     <li className="d-none d-xl-inline-block">
-                      <i className="far fa-location-dot"></i> 45, Temple Car Street, Chennai
+                      <i className="far fa-location-dot"></i> 123 Amma's Kitchen Street, Chennai
                     </li>
                     <li className="d-none d-md-inline-block">
                       <i className="far fa-envelope-open"></i>
@@ -123,11 +123,11 @@ const Navbar = () => {
         {/* Main Sticky Navbar Wrapper */}
         <div className="sticky-wrapper">
           <div className="menu-area">
-            <div className="container-fluid px-4 px-lg-5">
+            <div className="container-fluid px-2 px-xl-4">
               <div className="row align-items-center justify-content-between flex-nowrap">
 
                 {/* Logo */}
-                <div className="col-auto">
+                <div className="col-auto flex-shrink-0">
                   <div className="header-logo">
                     <Link to="/">
                       <img src={logoImg} alt="Amma's Kitchen Logo" style={{ maxHeight: '180px', width: 'auto' }} />
@@ -136,7 +136,7 @@ const Navbar = () => {
                 </div>
 
                 {/* Desktop Nav Links */}
-                <div className="col d-none d-lg-block text-center">
+                <div className="col d-none d-lg-block text-center" style={{ overflowX: 'auto', scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
                   <nav className="main-menu">
                     <ul style={{ whiteSpace: 'nowrap' }}>
                       <li><NavLink to="/" end>HOME</NavLink></li>
@@ -154,7 +154,7 @@ const Navbar = () => {
                 </div>
 
                 {/* Actions buttons */}
-                <div className="col-auto">
+                <div className="col-auto flex-shrink-0">
                   <div className="header-button d-flex align-items-center">
                     
                     {/* User Profile / Login (Desktop Only) */}
@@ -229,9 +229,9 @@ const Navbar = () => {
                       }
                     `}</style>
 
-                    {/* View Basket Button (Desktop Only) */}
+                    {/* View Cart Button (Desktop Only) */}
                     <Link to="/cart" className="th-btn style9 th-icon d-none d-xl-inline-flex ms-2">
-                      View Basket <i className="fa-light fa-arrow-right"></i>
+                      View Cart <i className="fa-light fa-arrow-right"></i>
                     </Link>
 
                     {/* Mobile Menu Toggle (Mobile Only) */}
