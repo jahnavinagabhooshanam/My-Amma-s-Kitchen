@@ -1,0 +1,39 @@
+.cert-page {
+  padding: 40px 24px;
+}
+.cert-hero h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: 2.2rem;
+  margin-bottom: 6px;
+  color: var(--primary-color);
+}
+.cert-hero .subtitle {
+  color: var(--text-muted);
+  margin-bottom: 24px;
+}
+.cert-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
+}
+.cert-card {
+  padding: 22px;
+  border-radius: 16px;
+  box-shadow: 0 12px 30px rgba(10,25,47,0.06);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: flex-start;
+}
+.cert-badge img { width: 90px; height: auto; }
+.cert-card h3 { margin: 0; font-size: 1.2rem; display:flex; align-items:center; gap:10px }
+.cert-card .verified { background: #50C878; color: white; padding: 4px 8px; border-radius: 12px; font-size: 0.75rem; }
+.cert-desc { color: var(--text-muted); margin: 0 0 8px 0; }
+.cert-actions { display:flex; gap: 12px; margin-top: auto; }
+.btn { padding: 10px 16px; border-radius: 10px; font-weight: 600; cursor: pointer; border: none; }
+.btn.view { background: var(--primary-color); color: white; }
+.btn.download { background: transparent; border: 1px solid var(--border-color); color: var(--text-dark); }
+
+@media (max-width: 1024px) {
+  .cert-grid { grid-template-columns: 1fr; }
+}

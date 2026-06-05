@@ -49,6 +49,7 @@ const ReadyToCook = lazy(() => import('../pages/ReadyToCook/ReadyToCook'));
 const BatterProducts = lazy(() => import('../pages/BatterProducts/BatterProducts'));
 const BulkOrders = lazy(() => import('../pages/BulkOrders/BulkOrders'));
 const Contact = lazy(() => import('../pages/Contact/Contact'));
+const Certificates = lazy(() => import('../pages/Certificates/Certificates'));
 const Cart = lazy(() => import('../pages/Cart/Cart'));
 const Wishlist = lazy(() => import('../pages/Wishlist/Wishlist'));
 const CustomerOrders = lazy(() => import('../pages/CustomerOrders/CustomerOrders'));
@@ -71,6 +72,7 @@ const AppRoutes = () => {
         <Route path="/ready-to-eat" element={<ProtectedRoute><ReadyToEat /></ProtectedRoute>} />
         <Route path="/ready-to-cook" element={<ProtectedRoute><ReadyToCook /></ProtectedRoute>} />
         <Route path="/bulk-orders" element={<ProtectedRoute><BulkOrders /></ProtectedRoute>} />
+        <Route path="/certificates" element={<ProtectedRoute><Certificates /></ProtectedRoute>} />
         <Route path="/contact" element={<ProtectedRoute><Contact /></ProtectedRoute>} />
         <Route path="/cart" element={<ProtectedRoute><Cart /></ProtectedRoute>} />
         <Route path="/checkout" element={<ProtectedRoute><Cart /></ProtectedRoute>} />

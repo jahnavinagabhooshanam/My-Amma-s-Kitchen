@@ -5,6 +5,7 @@ import { CartProvider } from './context/CartContext';
 import AppRoutes from './routes/AppRoutes';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
+import ModalHost from './components/ModalHost';
 import OfferPopup from './components/OfferPopup';
 import './App.css';
 
@@ -22,6 +23,7 @@ function AppContent() {
         <AppRoutes />
       </main>
       {showMainLayout && <Footer />}
+      {showMainLayout && <ModalHost />}
       {showMainLayout && <OfferPopup />}
     </div>
   );

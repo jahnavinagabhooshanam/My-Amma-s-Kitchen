@@ -30,61 +30,55 @@ const Footer = () => {
     <footer className="premium-footer">
       <div className="pf-container">
         <div className="pf-grid">
-          
-          {/* Brand Column */}
+          {/* Column 1 - Brand */}
           <div className="pf-brand">
             <Link to="/">
               <img src={footerLogo} alt="Amma's Kitchen" className="pf-logo" />
             </Link>
-            <div className="pf-motto">
-              Authentic Flavors.<br/>Timeless Traditions.
-            </div>
-            <div className="pf-socials">
-              <a href={config.social_facebook} target="_blank" rel="noreferrer" className="pf-social-link"><i className="fab fa-facebook-f"></i></a>
-              <a href={config.social_twitter} target="_blank" rel="noreferrer" className="pf-social-link"><i className="fab fa-twitter"></i></a>
-              <a href={config.social_instagram} target="_blank" rel="noreferrer" className="pf-social-link"><i className="fab fa-instagram"></i></a>
-            </div>
+            <div className="pf-motto">Authentic South Indian Homemade Foods &amp; Batters.</div>
           </div>
 
-          {/* Links Column */}
+          {/* Column 2 - Quick Links */}
           <div>
-            <h3 className="pf-title">Explore Menu</h3>
+            <h3 className="pf-title">Quick Links</h3>
             <ul className="pf-links">
-              <li><Link to="/menu" className="pf-link-item">Digital Menu</Link></li>
-              <li><Link to="/ready-to-eat" className="pf-link-item">Premium Dining</Link></li>
-              <li><Link to="/ready-to-cook" className="pf-link-item">Artisan Batters</Link></li>
-              <li><Link to="/bulk-orders" className="pf-link-item">Catering</Link></li>
+              <li><Link to="/" className="pf-link-item">Home</Link></li>
+              <li><Link to="/menu" className="pf-link-item">Menu</Link></li>
+              <li><Link to="/ready-to-eat" className="pf-link-item">Ready To Eat</Link></li>
+              <li><Link to="/ready-to-cook" className="pf-link-item">Ready To Cook</Link></li>
+              <li><Link to="/bulk-orders" className="pf-link-item">Bulk Orders</Link></li>
+              <li><Link to="/certificates" className="pf-link-item">Certificates</Link></li>
+              <li><Link to="/contact" className="pf-link-item">Contact</Link></li>
             </ul>
           </div>
 
-          {/* Links Column 2 */}
+          {/* Column 3 - Contact Info */}
           <div>
-            <h3 className="pf-title">Help & Info</h3>
-            <ul className="pf-links">
-              <li><Link to="/customer-profile" className="pf-link-item">My Account</Link></li>
-              <li><Link to="/customer-orders" className="pf-link-item">Track Order</Link></li>
-              <li><Link to="/contact" className="pf-link-item">Contact Us</Link></li>
-              <li><Link to="#" className="pf-link-item">Privacy Policy</Link></li>
-            </ul>
+            <h3 className="pf-title">Contact Information</h3>
+            <div className="pf-contact-block">
+              <div className="pf-contact-label">Address</div>
+              <div className="pf-contact-text">2nd Cross,<br/>Gopalappa Nagar,<br/>Near KCC Nagar,<br/>Hosur - 635109</div>
+            </div>
+            <div className="pf-contact-block">
+              <div className="pf-contact-label">Phone</div>
+              <div className="pf-contact-text">+91 72009 42596</div>
+            </div>
+            <div className="pf-contact-block">
+              <div className="pf-contact-label">Business Hours</div>
+              <div className="pf-contact-text">Monday - Sunday<br/>6:00 AM - 10:00 PM</div>
+            </div>
           </div>
 
-          {/* Contact Column */}
+          {/* Column 4 - Certifications */}
           <div>
-            <h3 className="pf-title">Visit Us</h3>
-            
-            <div className="pf-contact-block">
-              <div className="pf-contact-label">Location</div>
-              <div className="pf-contact-text">123 Heritage Lane, Culinary District<br/>Food City, FC 500001</div>
-            </div>
-
-            <div className="pf-contact-block">
-              <div className="pf-contact-label">Hours</div>
-              <div className="pf-contact-text">{config.opening_hours}<br/>Open All Days</div>
-            </div>
-
-            <div className="pf-contact-block">
-              <div className="pf-contact-label">Reservations & Delivery</div>
-              <div className="pf-contact-text">{config.whatsapp_number}</div>
+            <h3 className="pf-title">Business Certifications</h3>
+            <ul className="pf-links">
+              <li className="pf-link-item">GST Registered</li>
+              <li className="pf-link-item">FSSAI Licensed</li>
+            </ul>
+            <div style={{ marginTop: 12, display: 'flex', gap: 10 }}>
+              <button className="btn-cert" onClick={() => window.dispatchEvent(new CustomEvent('open-pdf', { detail: { file: '/certificates/gst-registration.pdf', title: 'GST Registration Certificate' } }))}>View GST Certificate</button>
+              <button className="btn-cert" onClick={() => window.dispatchEvent(new CustomEvent('open-pdf', { detail: { file: '/certificates/fssai-license.pdf', title: 'FSSAI Food License' } }))}>View FSSAI Certificate</button>
             </div>
           </div>
 

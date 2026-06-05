@@ -144,6 +144,7 @@ const Navbar = () => {
                       <li><NavLink to="/ready-to-eat">READY TO EAT</NavLink></li>
                       <li><NavLink to="/ready-to-cook">READY TO COOK</NavLink></li>
                       <li><NavLink to="/bulk-orders">BULK ORDERS</NavLink></li>
+                      <li><NavLink to="/certificates">CERTIFICATES</NavLink></li>
                       <li><NavLink to="/contact">CONTACT</NavLink></li>
                       {user?.role === 'admin' && (
                         <li><Link to="/admin/dashboard" style={{ color: '#E84C3D' }}>ADMIN PANEL</Link></li>
@@ -256,14 +257,15 @@ const Navbar = () => {
               <img src={logoImg} alt="Amma Logo" style={{ maxHeight: '110px', width: 'auto' }} />
             </Link>
           </div>
-          <div className="th-mobile-menu">
+              <div className="th-mobile-menu">
             <ul>
               <li><Link to="/" onClick={handleToggleMobileMenu}>HOME</Link></li>
               <li><Link to="/menu" onClick={handleToggleMobileMenu}>MENU</Link></li>
               <li><Link to="/ready-to-eat" onClick={handleToggleMobileMenu}>READY TO EAT</Link></li>
               <li><Link to="/ready-to-cook" onClick={handleToggleMobileMenu}>READY TO COOK</Link></li>
               <li><Link to="/bulk-orders" onClick={handleToggleMobileMenu}>BULK ORDERS</Link></li>
-              <li><Link to="/contact" onClick={handleToggleMobileMenu}>CONTACT</Link></li>
+                  <li><Link to="/certificates" onClick={handleToggleMobileMenu}>CERTIFICATES</Link></li>
+                  <li><Link to="/contact" onClick={handleToggleMobileMenu}>CONTACT</Link></li>
               {user ? (
                 <>
                   <li><Link to="/account" onClick={handleToggleMobileMenu}>MY ACCOUNT</Link></li>
