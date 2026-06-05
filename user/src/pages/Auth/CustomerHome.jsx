@@ -277,55 +277,26 @@ const CustomerHome = () => {
             
             <p className="recommendation-context"><TrendingUp size={16} /> {getMealRecommendation()}</p>
             
-            <div className="recommends-grid">
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={activeTab}
-                  initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 10 }} transition={{ duration: 0.3 }}
-                  style={{ display: 'contents' }}
-                >
-                  {recommendedDishes.map((dish, i) => (
-                    <div 
-                      key={`${activeTab}-${i}`}
-                      className="recommend-card"
-                    >
-                      <img src={resolveImagePath(dish.img)} alt={dish.name} />
-                      <div className="recommend-content">
-                        <h4>{dish.name}</h4>
-                        <div className="recommend-meta">
-                          <span className="price">₹{dish.price}</span>
-                          <button className="add-btn-small" onClick={() => handleCardAction(dish)}>Add</button>
-                        </div>
-                      </div>
+            <div className="trending-grid recommends-grid">
+              {recommendedDishes.map((dish, i) => (
+                <div key={`${activeTab}-${i}`} className="trending-card">
+                  <div className="trending-img-container">
+                    <img src={resolveImagePath(dish.img)} alt={dish.name} />
+                    <div className="trending-overlay">
+                      <button className="icon-btn-light" onClick={() => handleCardAction(dish)}><Plus size={20} /></button>
                     </div>
-                  ))}
-                </motion.div>
-              </AnimatePresence>
+                  </div>
+                  <div className="trending-info">
+                    <h4>{dish.name}</h4>
+                    <p>₹{dish.price}</p>
+                  </div>
+                </div>
+              ))}
             </div>
           </motion.div>
 
           {/* 4. HOME STYLE SCORE (Span 4) */}
-          <motion.div 
-            initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.5 }}
-            className="glass-card span-4 score-card"
-          >
-            <h2 className="section-title"><ShieldCheck size={28} /> Home Style Score</h2>
-            <div className="score-container">
-              <div className="score-circle">
-                <svg viewBox="0 0 36 36" className="circular-chart">
-                  <path className="circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
-                  <path className="circle" strokeDasharray="98, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
-                  <text x="18" y="20.35" className="percentage">98%</text>
-                </svg>
-                <span>Authenticity</span>
-              </div>
-              <div className="score-metrics">
-                <div className="metric-row"><Leaf size={16} /> <span>100% Fresh Ingredients</span></div>
-                <div className="metric-row"><Star size={16} /> <span>4.9/5 Quality Rating</span></div>
-                <div className="metric-row"><Utensils size={16} /> <span>Zero Preservatives</span></div>
-              </div>
-            </div>
-          </motion.div>
+          {/* Home Style Score removed per request */}
 
           {/* Note: 'Your Food Journey' and 'Amma Rewards' cards removed per request. */}
 
