@@ -259,10 +259,10 @@ const CustomerHome = () => {
             </div>
           </motion.div>
 
-          {/* 2. ENHANCED AMMA RECOMMENDS (Span 8) */}
+          {/* 2. ENHANCED AMMA RECOMMENDS (Span 10) */}
           <motion.div 
             initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.4 }}
-            className="glass-card span-8"
+            className="glass-card span-10"
           >
             <div className="recommends-header">
               <h2 className="section-title" style={{ margin: 0 }}><Star size={28} /> Amma Recommends</h2>
@@ -327,59 +327,7 @@ const CustomerHome = () => {
             </div>
           </motion.div>
 
-          {/* 5. CUSTOMER FOOD JOURNEY (Span 6) */}
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.6 }}
-            className="glass-card span-6 food-journey-card"
-          >
-            <h2 className="section-title"><Heart size={28} /> Your Food Journey</h2>
-            <div className="journey-grid">
-              <div className="journey-stat">
-                <span className="stat-label">Member Since</span>
-                <span className="stat-value">Jan 2024</span>
-              </div>
-              <div className="journey-stat">
-                <span className="stat-label">Orders Completed</span>
-                <span className="stat-value">42</span>
-              </div>
-              <div className="journey-stat highlight-stat">
-                <span className="stat-label">Favorite Dish</span>
-                <span className="stat-value text-accent">Ghee Roast Dosa</span>
-              </div>
-              <div className="journey-stat">
-                <span className="stat-label">Lifetime Savings</span>
-                <span className="stat-value text-success">₹1,240</span>
-              </div>
-            </div>
-          </motion.div>
-
-          {/* 6. ENHANCED REWARDS (Span 6) */}
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.7 }}
-            className="glass-card span-6 rewards-card-premium"
-          >
-            <div className="rewards-header">
-              <h2 className="section-title" style={{ margin: 0, color: 'white' }}><Award size={28} /> Amma Rewards</h2>
-              <span className="tier-badge gold">Gold Tier</span>
-            </div>
-            
-            <div className="points-display">
-              <span className="points-large">2,450</span> <span className="points-label">pts</span>
-            </div>
-            
-            <div className="progress-container">
-              <div className="progress-labels">
-                <span>Current: Gold</span>
-                <span>Platinum at 2500</span>
-              </div>
-              <div className="progress-track">
-                <div className="progress-fill" style={{ width: '90%' }}>
-                  <div className="progress-glow"></div>
-                </div>
-              </div>
-              <p className="reward-unlock">Unlock <strong>Free Filter Coffee</strong> in 50 pts!</p>
-            </div>
-          </motion.div>
+          {/* Note: 'Your Food Journey' and 'Amma Rewards' cards removed per request. */}
 
           {/* 8. SMART CATERING PREVIEW (Span 8) */}
           <motion.div 

@@ -91,9 +91,10 @@
 .span-6 { grid-column: span 6; }
 .span-3 { grid-column: span 3; }
 .span-9 { grid-column: span 9; }
+.span-10 { grid-column: span 10; }
 
 @media (max-width: 1024px) {
-  .span-8, .span-4, .span-9, .span-3 { grid-column: span 12; }
+  .span-8, .span-4, .span-9, .span-3, .span-10 { grid-column: span 12; }
 }
 @media (max-width: 768px) {
   .span-6 { grid-column: span 12; }
