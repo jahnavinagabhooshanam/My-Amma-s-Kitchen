@@ -1,0 +1,33 @@
+/* Home Page Styling */
+.home-page {
+  display: flex;
+  flex-direction: column;
+}
+
+.featured-section {
+  position: relative;
+}
+
+.values-section {
+  background-color: var(--bg-primary);
+}
+
+.value-item {
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  align-items: center;
+}
+
+.value-item h3 {
+  color: var(--text-dark);
+}
+
+.value-item p {
+  line-height: 1.5;
+}
+
+@media (max-width: 768px) {
+  .grid-cols-3 {
+    grid-template-columns: 1fr;
+  }
+}

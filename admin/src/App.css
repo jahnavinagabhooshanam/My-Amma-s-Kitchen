@@ -1,0 +1,70 @@
+/* Reset and root variables */
+:root {
+  --primary-color: #E84C3D;
+  --primary-light: #FADBD8;
+  --secondary-color: #2ECC71;
+  --secondary-light: #D5F5E3;
+  --theme-color: #E84C3D;
+  --theme-color-light: #FADBD8;
+  --bg-primary: #FCFBF7;
+  --border-color: #EAE6DB;
+  --text-dark: #2C2A24;
+  --text-muted: #7E7A6B;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: var(--bg-primary);
+  color: var(--text-dark);
+  font-family: 'Outfit', 'Jost', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.gap-1 {
+  gap: 4px;
+}
+
+.gap-2 {
+  gap: 8px;
+}
+
+.gap-3 {
+  gap: 12px;
+}
+
+.flex-between {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Responsive Grid Helpers */
+.grid-auto-fit {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+  gap: 24px;
+}
+
+.grid-auto-fill {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 250px), 1fr));
+  gap: 24px;
+}
+
+.grid-auto-sm {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 140px), 1fr));
+  gap: 12px;
+}

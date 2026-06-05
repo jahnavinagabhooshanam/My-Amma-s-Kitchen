@@ -1,0 +1,79 @@
+query ListAllRestaurants @auth(level: PUBLIC, insecureReason: "This operation is safe to expose to the public as it lists public restaurant information.") {
+  restaurants {
+    id
+    name
+    cuisineType
+    address
+    rating
+    phoneNumber
+  }
+}
+
+query GetRestaurantDetails($restaurantId: UUID!) @auth(level: PUBLIC, insecureReason: "This operation is safe to expose to the public as it retrieves public restaurant details.") {
+  restaurant(id: $restaurantId) {
+    id
+    name
+    cuisineType
+    address
+    phoneNumber
+    rating
+    createdAt
+    owner {
+      displayName
+      email
+    }
+    menuItems {
+      id
+      name
+      description
+      price
+      isAvailable
+    }
+  }
+}
+
+mutation CreateNewOrder(
+  $restaurantId: UUID!,
+  $deliveryAddress: String!,
+  $totalAmount: Float!,
+  $deliveryInstructions: String,
+  $orderItems: [OrderItem_Data!]!
+) @auth(level: USER) {
+  order_insert(
+    data: {
+      customerId_expr: "auth.uid",
+      restaurantId: $restaurantId,
+      orderDate_expr: "request.time",
+      deliveryAddress: $deliveryAddress,
+      totalAmount: $totalAmount,
+      status: "PENDING",
+      createdAt_expr: "request.time",
+      deliveryInstructions: $deliveryInstructions,
+      orderItems_on_order: $orderItems
+    }
+  ) {
+    id
+  }
+}
+
+query GetMyOrders @auth(level: USER) {
+  orders(where: {customerId: {eq_expr: "auth.uid"}}) {
+    id
+    restaurant {
+      name
+      address
+    }
+    orderDate
+    totalAmount
+    status
+    deliveryAddress
+    orderItems {
+      menuItem {
+        name
+        price
+      }
+      quantity
+      priceAtTimeOfOrder
+    }
+  }
+}
