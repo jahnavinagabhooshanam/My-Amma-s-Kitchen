@@ -42,12 +42,13 @@ const Customers = lazy(() => import('../pages/Customers/Customers'));
 const Inventory = lazy(() => import('../pages/Inventory/Inventory'));
 const Products = lazy(() => import('../pages/Products/Products'));
 const Reports = lazy(() => import('../pages/Reports/Reports'));
-const Coupons = lazy(() => import('../pages/Coupons/Coupons'));
+
 const WebsiteManagement = lazy(() => import('../pages/WebsiteManagement/WebsiteManagement'));
 const Settings = lazy(() => import('../pages/Settings/Settings'));
 const BatterProduction = lazy(() => import('../pages/BatterProduction/BatterProduction'));
 const DeliveryManagement = lazy(() => import('../pages/DeliveryManagement/DeliveryManagement'));
 const KitchenManagement = lazy(() => import('../pages/KitchenManagement/KitchenManagement'));
+const Offers = lazy(() => import('../pages/Offers/Offers'));
 
 const AdminRoutes = () => {
   const staffAndOps = ['admin', 'manager', 'kitchen_staff', 'delivery_staff'];
@@ -134,7 +135,15 @@ const AdminRoutes = () => {
           path="/coupons" 
           element={
             <ProtectedRoute allowedRoles={mgmtRoles}>
-              <Coupons />
+              <Navigate to="/admin/offers?tab=coupons" replace />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/offers" 
+          element={
+            <ProtectedRoute allowedRoles={mgmtRoles}>
+              <Offers />
             </ProtectedRoute>
           } 
         />

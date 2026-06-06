@@ -221,6 +221,38 @@ const ReadyToCook = () => {
     }
   };
 
+  const handleToggleAvailability = async (product) => {
+    const currentStatus = product.in_stock !== undefined ? product.in_stock : product.is_available;
+    const newAvailability = !currentStatus;
+
+    // Optimistic UI update
+    setProducts(prevProducts => 
+      prevProducts.map(p => 
+        p.id === product.id 
+          ? { ...p, in_stock: newAvailability, is_available: newAvailability, stock: newAvailability ? 50 : 0, stock_count: newAvailability ? 50 : 0 } 
+          : p
+      )
+    );
+
+    try {
+      await apiClient.patch(`/products/${product.id}/status`, { is_available: newAvailability });
+      setSuccessMsg(newAvailability ? `Product Activated: ${product.name}` : `Product Marked Out Of Stock: ${product.name}`);
+      setTimeout(() => setSuccessMsg(''), 3000);
+    } catch (err) {
+      console.error("Failed to toggle availability:", err);
+      // Rollback on failure
+      setProducts(prevProducts => 
+        prevProducts.map(p => 
+          p.id === product.id 
+            ? { ...p, in_stock: currentStatus, is_available: currentStatus, stock: currentStatus ? 50 : 0, stock_count: currentStatus ? 50 : 0 } 
+            : p
+        )
+      );
+      setErrorMsg("Failed to update availability status.");
+      setTimeout(() => setErrorMsg(''), 3000);
+    }
+  };
+
   const filteredProducts = products.filter(p => {
     const matchesSearch = p.name.toLowerCase().includes(searchQuery.toLowerCase());
     
@@ -300,9 +332,9 @@ const ReadyToCook = () => {
             <div className="admin-food-grid">
               {filteredProducts.map((p) => {
                 const parsed = parseDescription(p.description);
-                const inStock = p.stock_count > 0 || p.stock > 0;
+                const inStock = p.in_stock !== undefined ? p.in_stock : p.is_available;
                 return (
-                  <div className="food-standard-card" key={p.id}>
+                  <div className={`food-standard-card ${!inStock ? 'unavailable' : ''}`} key={p.id}>
                     <div className="food-card-image">
                       <img src={resolveImagePath(p.image)} alt={p.name} onError={(e) => { e.target.src = '/assets/images/placeholder.jpg' }} />
                       <span className="food-badge" style={{ backgroundColor: 'var(--theme-color2)', color: '#000' }}>RTC Mix</span>
@@ -319,8 +351,19 @@ const ReadyToCook = () => {
                     <div className="food-card-content">
                       <div className="food-rating">
                         <span className={`badge-status ${inStock ? 'active' : 'inactive'}`}>
-                          {inStock ? `${p.stock_count || p.stock || 0} In Stock` : 'Out of Stock'}
+                          {inStock ? 'Available' : 'Out of Stock'}
                         </span>
+                        <label className="switch" style={{ position: 'relative', display: 'inline-block', width: '34px', height: '20px', cursor: 'pointer', marginLeft: '8px' }}>
+                          <input
+                            type="checkbox"
+                            checked={inStock}
+                            onChange={() => handleToggleAvailability(p)}
+                            style={{ position: 'absolute', opacity: 0, width: '100%', height: '100%', cursor: 'pointer', zIndex: 5, margin: 0 }}
+                          />
+                          <span className="slider round" style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: inStock ? 'var(--theme-color)' : '#ccc', transition: '.4s', borderRadius: '34px', pointerEvents: 'none' }}>
+                            <span style={{ position: 'absolute', content: '""', height: '14px', width: '14px', left: inStock ? '16px' : '4px', bottom: '3px', backgroundColor: 'white', transition: '.4s', borderRadius: '50%' }} />
+                          </span>
+                        </label>
                         {parsed.shelf_life && (
                           <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', fontSize: '11px', fontWeight: '600', color: '#888' }}>
                             <Clock size={12} /> Shelf Life: {parsed.shelf_life}

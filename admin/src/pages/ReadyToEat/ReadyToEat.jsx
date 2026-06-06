@@ -193,19 +193,34 @@ const ReadyToEat = () => {
   };
 
   const handleToggleAvailability = async (product) => {
-    const newAvailability = !(product.in_stock !== undefined ? product.in_stock : product.is_available);
-    const payload = {
-      in_stock: newAvailability,
-      stock_count: newAvailability ? 50 : 0
-    };
+    const currentStatus = product.in_stock !== undefined ? product.in_stock : product.is_available;
+    const newAvailability = !currentStatus;
+
+    // Optimistic UI update
+    setProducts(prevProducts => 
+      prevProducts.map(p => 
+        p.id === product.id 
+          ? { ...p, in_stock: newAvailability, is_available: newAvailability, stock: newAvailability ? 50 : 0, stock_count: newAvailability ? 50 : 0 } 
+          : p
+      )
+    );
+
     try {
-      await apiClient.put(`/products/${product.id}`, payload);
-      setSuccessMsg(`Status updated for ${product.name}`);
-      fetchProducts();
+      await apiClient.patch(`/products/${product.id}/status`, { is_available: newAvailability });
+      setSuccessMsg(newAvailability ? `Product Activated: ${product.name}` : `Product Marked Out Of Stock: ${product.name}`);
       setTimeout(() => setSuccessMsg(''), 3000);
     } catch (err) {
       console.error("Failed to toggle availability:", err);
+      // Rollback on failure
+      setProducts(prevProducts => 
+        prevProducts.map(p => 
+          p.id === product.id 
+            ? { ...p, in_stock: currentStatus, is_available: currentStatus, stock: currentStatus ? 50 : 0, stock_count: currentStatus ? 50 : 0 } 
+            : p
+        )
+      );
       setErrorMsg("Failed to update availability status.");
+      setTimeout(() => setErrorMsg(''), 3000);
     }
   };
 

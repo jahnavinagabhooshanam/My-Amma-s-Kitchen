@@ -8,16 +8,10 @@ export const AuthProvider = ({ children }) => {
   const [token, setToken] = useState(localStorage.getItem('amma_admin_token') || null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    if (token) {
-      localStorage.setItem('amma_admin_token', token);
-      fetchProfile();
-    } else {
-      localStorage.removeItem('amma_admin_token');
-      setUser(null);
-      setLoading(false);
-    }
-  }, [token]);
+  const logout = () => {
+    setToken(null);
+    setUser(null);
+  };
 
   const fetchProfile = async () => {
     try {
@@ -37,6 +31,17 @@ export const AuthProvider = ({ children }) => {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (token) {
+      localStorage.setItem('amma_admin_token', token);
+      fetchProfile();
+    } else {
+      localStorage.removeItem('amma_admin_token');
+      setUser(null);
+      setLoading(false);
+    }
+  }, [token]);
 
   const login = async (email, password) => {
     setLoading(true);
@@ -64,10 +69,6 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const logout = () => {
-    setToken(null);
-    setUser(null);
-  };
 
   return (
     <AuthContext.Provider value={{ user, token, loading, login, logout }}>

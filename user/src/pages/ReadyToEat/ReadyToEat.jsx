@@ -19,16 +19,24 @@ const PremiumRTECard = React.memo(({ product, onQuickView }) => {
   // Diet Icon
   const isVeg = product.type === 'Veg';
 
+  const isOutOfStock = product.stock === 0 || product.stock_count === 0 || product.is_available === false || product.in_stock === false;
+
   return (
-    <div className="rte-card">
+    <div className={`rte-card ${isOutOfStock ? 'out-of-stock-card' : ''}`} style={isOutOfStock ? { opacity: 0.6, filter: 'grayscale(0.5)' } : {}}>
       <div className="rte-card-img-wrapper">
         <img src={resolveImagePath(product.image)} alt={product.name} className="rte-card-img" />
         
         <div className="rte-card-badges">
-          {isBestSeller && <div className="rte-badge bestseller">⭐ Best Seller</div>}
-          {isTrending && <div className="rte-badge trending">🔥 Trending</div>}
-          {isNew && <div className="rte-badge new">🆕 Newly Added</div>}
-          {isChefRec && <div className="rte-badge chef">👨‍🍳 Chef Recommended</div>}
+          {isOutOfStock ? (
+            <div className="rte-badge" style={{ backgroundColor: '#ccc', color: '#333' }}>Out of Stock</div>
+          ) : (
+            <>
+              {isBestSeller && <div className="rte-badge bestseller">⭐ Best Seller</div>}
+              {isTrending && <div className="rte-badge trending">🔥 Trending</div>}
+              {isNew && <div className="rte-badge new">🆕 Newly Added</div>}
+              {isChefRec && <div className="rte-badge chef">👨‍🍳 Chef Recommended</div>}
+            </>
+          )}
         </div>
 
         <div className="rte-diet-icon" style={{ borderColor: isVeg ? '#008000' : '#C84B31' }}>
@@ -45,11 +53,13 @@ const PremiumRTECard = React.memo(({ product, onQuickView }) => {
           </div>
         </div>
 
-        <div className="rte-quickview-overlay">
-          <button className="rte-quickview-btn" onClick={(e) => { e.stopPropagation(); onQuickView(product); }}>
-            Quick View
-          </button>
-        </div>
+        {!isOutOfStock && (
+          <div className="rte-quickview-overlay">
+            <button className="rte-quickview-btn" onClick={(e) => { e.stopPropagation(); onQuickView(product); }}>
+              Quick View
+            </button>
+          </div>
+        )}
       </div>
       
       <div className="rte-card-content">
@@ -58,9 +68,15 @@ const PremiumRTECard = React.memo(({ product, onQuickView }) => {
         
         <div className="rte-card-footer">
           <span className="rte-card-price">₹{product.price.toFixed(2)}</span>
-          <button className="rte-add-btn" onClick={(e) => { e.stopPropagation(); addToCart(product, 1); }}>
-            Add To Cart
-          </button>
+          {isOutOfStock ? (
+            <button className="rte-add-btn" disabled style={{ backgroundColor: '#ccc', color: '#666', cursor: 'not-allowed', border: 'none' }}>
+              Out of Stock
+            </button>
+          ) : (
+            <button className="rte-add-btn" onClick={(e) => { e.stopPropagation(); addToCart(product, 1); }}>
+              Add To Cart
+            </button>
+          )}
         </div>
       </div>
     </div>
@@ -142,9 +158,19 @@ const ReadyToEat = () => {
     return matchesSearch && matchesCat;
   });
 
+  const sortAvailability = (a, b) => {
+    const aOut = a.stock === 0 || a.stock_count === 0 || a.is_available === false || a.in_stock === false;
+    const bOut = b.stock === 0 || b.stock_count === 0 || b.is_available === false || b.in_stock === false;
+    if (aOut && !bOut) return 1;
+    if (!aOut && bOut) return -1;
+    return 0;
+  };
+
+  const sortedFiltered = [...filtered].sort(sortAvailability);
+
   // Dynamic sections (Derived from products)
-  const todaysSpecials = products.filter(p => p.id === 'rte-1' || p.id === 'rte-6');
-  const trending = products.filter(p => p.id === 'rte-2' || p.id === 'rte-7' || p.id === 'rte-4');
+  const todaysSpecials = products.filter(p => p.id === 'rte-1' || p.id === 'rte-6').sort(sortAvailability);
+  const trending = products.filter(p => p.id === 'rte-2' || p.id === 'rte-7' || p.id === 'rte-4').sort(sortAvailability);
 
   return (
     <div className="rte-page">
@@ -218,9 +244,9 @@ const ReadyToEat = () => {
             )}
 
             {/* Main Menu Grid */}
-            {filtered.length > 0 ? (
+            {sortedFiltered.length > 0 ? (
               <div className="rte-grid">
-                {filtered.map(product => (
+                {sortedFiltered.map(product => (
                   <PremiumRTECard key={product.id} product={product} onQuickView={setQuickViewProduct} />
                 ))}
               </div>

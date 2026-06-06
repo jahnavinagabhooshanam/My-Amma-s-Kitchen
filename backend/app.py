@@ -21,8 +21,12 @@ CORS(app, resources={r"/*": {
 db.init_app(app)
 migrate.init_app(app, db)
 
+# Initialize SocketIO
+from sockets import socketio
+socketio.init_app(app)
+
 # Import models to ensure they are registered for migrations
-from database.models import User, Product, BatterProduct, Order, OrderItem, CartItem, BulkOrder, Review, Coupon, Inventory, BatterProduction, DeliveryPartner, WebsiteActivity, KitchenStaff, HomepageConfig, Notification
+from database.models import User, Product, BatterProduct, Order, OrderItem, CartItem, BulkOrder, Review, Coupon, Inventory, BatterProduction, DeliveryPartner, WebsiteActivity, KitchenStaff, HomepageConfig, Notification, Offer, RolePermission
 
 # Create upload folder if it doesn't exist
 if not os.path.exists(app.config['UPLOAD_FOLDER']):
@@ -48,6 +52,7 @@ from routes.addresses import addresses_bp
 from routes.wishlist import wishlist_bp
 from routes.contact import contact_bp
 from routes.notifications import notifications_bp
+from routes.offers import offers_bp
 
 # Register Blueprints under standard prefix /api
 app.register_blueprint(auth_bp, url_prefix='/api/auth')
@@ -69,6 +74,7 @@ app.register_blueprint(addresses_bp, url_prefix='/api/addresses')
 app.register_blueprint(wishlist_bp, url_prefix='/api/wishlist')
 app.register_blueprint(contact_bp, url_prefix='/api/contact')
 app.register_blueprint(notifications_bp, url_prefix='/api/notifications')
+app.register_blueprint(offers_bp, url_prefix='/api/offers')
 
 @app.route('/api/health', methods=['GET'])
 def health_check():
@@ -205,4 +211,4 @@ def internal_error(error):
 
 if __name__ == '__main__':
     # Start the server
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    socketio.run(app, host='0.0.0.0', port=5000, debug=True)

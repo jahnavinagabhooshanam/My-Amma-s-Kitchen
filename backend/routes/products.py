@@ -3,6 +3,7 @@ from database.db import db
 from database.models import Product, BatterProduct, WebsiteActivity
 from routes.auth import check_admin_auth
 from datetime import datetime
+from sockets import emit_update
 
 products_bp = Blueprint('products', __name__)
 
@@ -128,6 +129,8 @@ def create_product():
     db.session.add(new_prod)
     db.session.commit()
     
+    emit_update('product_updated', {'action': 'create', 'product': new_prod.to_dict()})
+    
     return jsonify({
         "message": "Product created successfully",
         "product": {
@@ -137,6 +140,36 @@ def create_product():
             "category": new_prod.category
         }
     }), 201
+
+@products_bp.route('/<int:product_id>/status', methods=['PATCH'])
+def update_product_status(product_id):
+    auth_header = request.headers.get('Authorization')
+    if not check_admin_auth(auth_header):
+        return jsonify({"error": "Admin access required"}), 403
+
+    p = Product.query.get(product_id)
+    if not p:
+        return jsonify({"error": "Product not found"}), 404
+
+    data = request.get_json() or {}
+    if 'is_available' not in data:
+        return jsonify({"error": "is_available boolean is required"}), 400
+
+    is_available = bool(data['is_available'])
+    p.is_available = is_available
+    p.stock = 50 if is_available else 0
+
+    db.session.commit()
+    
+    from app import clear_cache
+    clear_cache()
+    
+    emit_update('product_status_changed', {'product_id': p.id, 'is_available': p.is_available, 'stock': p.stock})
+    
+    return jsonify({
+        "message": "Product status updated",
+        "product": p.to_dict()
+    }), 200
 
 @products_bp.route('/<int:product_id>', methods=['PUT'])
 def update_product(product_id):
@@ -160,12 +193,19 @@ def update_product(product_id):
     p.image = data.get('image', p.image)
     if 'in_stock' in data:
         p.is_available = bool(data['in_stock'])
-    if 'stock_count' in data or 'stock' in data:
-        p.stock = int(data.get('stock_count') or data.get('stock'))
+    if 'stock_count' in data:
+        p.stock = int(data['stock_count'])
+    elif 'stock' in data:
+        p.stock = int(data['stock'])
     if 'diet_type' in data or 'type' in data:
         p.diet_type = data.get('diet_type') or data.get('type')
 
     db.session.commit()
+    
+    from app import clear_cache
+    clear_cache()
+    
+    emit_update('product_updated', {'action': 'update', 'product': p.to_dict()})
     return jsonify({
         "message": "Product updated successfully",
         "product": {
@@ -187,6 +227,7 @@ def delete_product(product_id):
 
     db.session.delete(p)
     db.session.commit()
+    emit_update('product_updated', {'action': 'delete', 'product_id': product_id})
     return jsonify({"message": "Product deleted successfully"}), 200
 
 # File Upload Endpoint

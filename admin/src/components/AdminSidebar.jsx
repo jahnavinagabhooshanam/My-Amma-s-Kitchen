@@ -17,7 +17,8 @@ import {
   Globe,
   Settings,
   LogOut,
-  Package
+  Package,
+  Gift
 } from 'lucide-react';
 
 const menuItems = [
@@ -30,7 +31,7 @@ const menuItems = [
   { to: '/admin/bulk-orders', icon: PartyPopper, label: 'Bulk Orders', roles: ['admin', 'manager'] },
   { to: '/admin/customers', icon: Users, label: 'Customers', roles: ['admin', 'manager'] },
   { to: '/admin/inventory', icon: Warehouse, label: 'Inventory', roles: ['admin', 'manager'] },
-  { to: '/admin/coupons', icon: Tag, label: 'Coupons & Offers', roles: ['admin', 'manager'] },
+  { to: '/admin/offers', icon: Gift, label: 'Offers & Coupons', roles: ['admin', 'manager'] },
   { to: '/admin/reports', icon: BarChart3, label: 'Reports & Analytics', roles: ['admin', 'manager'] },
   { to: '/admin/website-management', icon: Globe, label: 'Website Control Center', roles: ['admin', 'manager'] },
   { to: '/admin/settings', icon: Settings, label: 'Settings', roles: ['admin'] },

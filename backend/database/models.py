@@ -72,6 +72,17 @@ class Product(db.Model):
     diet_type = db.Column(db.String(50), default='Veg', nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
 
+    def __init__(self, name=None, category=None, description=None, price=None, offer_price=None, image=None, stock=0, is_available=True, diet_type='Veg'):
+        self.name = name
+        self.category = category
+        self.description = description
+        self.price = price
+        self.offer_price = offer_price
+        self.image = image
+        self.stock = stock
+        self.is_available = is_available
+        self.diet_type = diet_type
+
     def to_dict(self):
         return {
             "id": self.id,
@@ -100,6 +111,17 @@ class BatterProduct(db.Model):
     expiry_date = db.Column(db.String(100), nullable=True)
     manufacture_date = db.Column(db.String(100), nullable=True)
     image = db.Column(db.String(255), nullable=True)
+
+    def __init__(self, product_name=None, variant=None, weight=None, price=None, offer_price=None, stock=0, expiry_date=None, manufacture_date=None, image=None):
+        self.product_name = product_name
+        self.variant = variant
+        self.weight = weight
+        self.price = price
+        self.offer_price = offer_price
+        self.stock = stock
+        self.expiry_date = expiry_date
+        self.manufacture_date = manufacture_date
+        self.image = image
 
     def to_dict(self):
         return {
@@ -337,6 +359,11 @@ class WebsiteActivity(db.Model):
     product_id = db.Column(db.Integer, nullable=True)
     timestamp = db.Column(db.DateTime, default=datetime.utcnow, nullable=False, index=True)
 
+    def __init__(self, ip_address=None, activity_type=None, product_id=None):
+        self.ip_address = ip_address
+        self.activity_type = activity_type
+        self.product_id = product_id
+
     def to_dict(self):
         return {
             "id": self.id,
@@ -376,6 +403,13 @@ class HomepageConfig(db.Model):
     festivals = db.Column(db.JSON, nullable=True)
     amma_recommends = db.Column(db.JSON, nullable=True)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    def __init__(self, hero_banner=None, kitchen_pulse=None, trending_today=None, festivals=None, amma_recommends=None):
+        self.hero_banner = hero_banner
+        self.kitchen_pulse = kitchen_pulse
+        self.trending_today = trending_today
+        self.festivals = festivals
+        self.amma_recommends = amma_recommends
 
     def to_dict(self):
         return {
@@ -478,4 +512,87 @@ class Notification(db.Model):
             "type": self.type,
             "is_read": self.is_read,
             "created_at": self.created_at.isoformat() if self.created_at else None
+        }
+
+class Offer(db.Model):
+    __tablename__ = 'offers'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(255), nullable=False)
+    description = db.Column(db.Text, nullable=True)
+    type = db.Column(db.String(100), nullable=False)  # popup, banner, discount, coupon, Buy One Get One, etc
+    target_type = db.Column(db.String(50), default='all') # all, product, category
+    target_id = db.Column(db.String(100), nullable=True) # product_id or category name
+    discount_type = db.Column(db.String(50), nullable=True) # percentage, flat
+    discount_value = db.Column(db.Float, nullable=True)
+    
+    priority = db.Column(db.String(50), default='Medium') # High, Medium, Low
+    
+    start_date = db.Column(db.String(100), nullable=True)
+    start_time = db.Column(db.String(50), nullable=True)
+    end_date = db.Column(db.String(100), nullable=True)
+    end_time = db.Column(db.String(50), nullable=True)
+    
+    display_locations = db.Column(db.JSON, nullable=True) # ['home_popup', 'home_banner', 'checkout']
+    featured_products = db.Column(db.JSON, nullable=True) # [1, 2, 3] -> product IDs
+    
+    image_url = db.Column(db.String(255), nullable=True) # Banner
+    popup_image_url = db.Column(db.String(255), nullable=True)
+    thumbnail_image_url = db.Column(db.String(255), nullable=True)
+    
+    status = db.Column(db.String(50), default='Active', nullable=False) # Active, Scheduled, Disabled
+    
+    views = db.Column(db.Integer, default=0)
+    clicks = db.Column(db.Integer, default=0)
+    orders_generated = db.Column(db.Integer, default=0)
+    revenue_generated = db.Column(db.Float, default=0.0)
+    
+    created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "title": self.title,
+            "description": self.description,
+            "type": self.type,
+            "target_type": self.target_type,
+            "target_id": self.target_id,
+            "discount_type": self.discount_type,
+            "discount_value": self.discount_value,
+            "priority": self.priority,
+            "start_date": self.start_date,
+            "start_time": self.start_time,
+            "end_date": self.end_date,
+            "end_time": self.end_time,
+            "display_locations": self.display_locations or [],
+            "featured_products": self.featured_products or [],
+            "image_url": self.image_url,
+            "popup_image_url": self.popup_image_url,
+            "thumbnail_image_url": self.thumbnail_image_url,
+            "status": self.status,
+            "views": self.views,
+            "clicks": self.clicks,
+            "orders_generated": self.orders_generated,
+            "revenue_generated": self.revenue_generated,
+            "created_at": self.created_at.isoformat() if self.created_at else None,
+            "updated_at": self.updated_at.isoformat() if self.updated_at else None
+        }
+
+class RolePermission(db.Model):
+    __tablename__ = 'role_permissions'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    role = db.Column(db.String(50), unique=True, nullable=False, index=True)
+    permissions = db.Column(db.JSON, nullable=False) # e.g. ["view_orders", "add_product", "edit_product"]
+    created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "role": self.role,
+            "permissions": self.permissions or [],
+            "created_at": self.created_at.isoformat() if self.created_at else None,
+            "updated_at": self.updated_at.isoformat() if self.updated_at else None
         }

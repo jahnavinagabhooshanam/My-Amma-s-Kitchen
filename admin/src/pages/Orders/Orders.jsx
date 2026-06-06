@@ -22,6 +22,106 @@ import {
   MapPin,
   Phone
 } from 'lucide-react';
+import PropTypes from 'prop-types';
+
+// Timeline components
+const OrderTimeline = ({ currentStatus }) => {
+  const stages = ['Pending', 'Confirmed', 'Preparing', 'Packed', 'Out For Delivery', 'Delivered'];
+  const currentIdx = stages.indexOf(currentStatus);
+
+  return (
+    <div style={{ margin: '20px 0 30px', padding: '10px 0' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', position: 'relative' }}>
+        {/* Connector Line */}
+        <div style={{
+          position: 'absolute',
+          top: '15px',
+          left: '5%',
+          right: '5%',
+          height: '4px',
+          backgroundColor: '#EAE6DB',
+          zIndex: 1
+        }} />
+        <div style={{
+          position: 'absolute',
+          top: '15px',
+          left: '5%',
+          width: `${currentIdx >= 0 ? (currentIdx / (stages.length - 1)) * 90 : 0}%`,
+          height: '4px',
+          backgroundColor: '#3F9065',
+          zIndex: 2,
+          transition: 'width 0.4s ease'
+        }} />
+
+        {stages.map((stage, idx) => {
+          const isCompleted = idx < currentIdx;
+          const isActive = idx === currentIdx;
+          const isPending = idx > currentIdx;
+
+          let icon = <Clock size={14} />;
+          if (stage === 'Confirmed') icon = <ThumbsUp size={14} />;
+          else if (stage === 'Preparing') icon = <ChefHat size={14} />;
+          else if (stage === 'Packed') icon = <Package size={14} />;
+          else if (stage === 'Out For Delivery') icon = <Truck size={14} />;
+          else if (stage === 'Delivered') icon = <CheckCircle size={14} />;
+
+          let circleColor = '#EAE6DB';
+          let iconColor = '#888';
+          let textColor = '#888';
+          let borderWidth = '0px';
+
+          if (isActive) {
+            circleColor = '#C9AB81';
+            iconColor = '#fff';
+            textColor = '#C9AB81';
+            borderWidth = '2px';
+          } else if (isCompleted) {
+            circleColor = '#3F9065';
+            iconColor = '#fff';
+            textColor = '#3F9065';
+          }
+
+          return (
+            <div key={idx} style={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              zIndex: 3,
+              width: '15%'
+            }}>
+              <div style={{
+                width: '32px',
+                height: '32px',
+                borderRadius: '50%',
+                backgroundColor: circleColor,
+                color: iconColor,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                border: borderWidth !== '0px' ? `3px solid #FAF8F2` : 'none',
+                boxShadow: isActive ? '0 0 0 3px #C9AB81' : 'none'
+              }}>
+                {icon}
+              </div>
+              <span style={{
+                fontSize: '11px',
+                fontWeight: isActive || isCompleted ? '700' : '500',
+                color: textColor,
+                marginTop: '8px',
+                textAlign: 'center',
+                whiteSpace: 'nowrap'
+              }}>{stage}</span>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+};
+
+OrderTimeline.propTypes = {
+  currentStatus: PropTypes.string
+};
 
 const Orders = () => {
   const location = useLocation();
@@ -162,101 +262,6 @@ const Orders = () => {
   };
 
   const filteredOrders = getFilteredOrders();
-
-  // Timeline components
-  const OrderTimeline = ({ currentStatus }) => {
-    const stages = ['Pending', 'Confirmed', 'Preparing', 'Packed', 'Out For Delivery', 'Delivered'];
-    const currentIdx = stages.indexOf(currentStatus);
-
-    return (
-      <div style={{ margin: '20px 0 30px', padding: '10px 0' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', position: 'relative' }}>
-          {/* Connector Line */}
-          <div style={{
-            position: 'absolute',
-            top: '15px',
-            left: '5%',
-            right: '5%',
-            height: '4px',
-            backgroundColor: '#EAE6DB',
-            zIndex: 1
-          }} />
-          <div style={{
-            position: 'absolute',
-            top: '15px',
-            left: '5%',
-            width: `${currentIdx >= 0 ? (currentIdx / (stages.length - 1)) * 90 : 0}%`,
-            height: '4px',
-            backgroundColor: '#3F9065',
-            zIndex: 2,
-            transition: 'width 0.4s ease'
-          }} />
-
-          {stages.map((stage, idx) => {
-            const isCompleted = idx < currentIdx;
-            const isActive = idx === currentIdx;
-            const isPending = idx > currentIdx;
-
-            let icon = <Clock size={14} />;
-            if (stage === 'Confirmed') icon = <ThumbsUp size={14} />;
-            else if (stage === 'Preparing') icon = <ChefHat size={14} />;
-            else if (stage === 'Packed') icon = <Package size={14} />;
-            else if (stage === 'Out For Delivery') icon = <Truck size={14} />;
-            else if (stage === 'Delivered') icon = <CheckCircle size={14} />;
-
-            let circleColor = '#EAE6DB';
-            let iconColor = '#888';
-            let textColor = '#888';
-            let borderWidth = '0px';
-
-            if (isActive) {
-              circleColor = '#C9AB81';
-              iconColor = '#fff';
-              textColor = '#C9AB81';
-              borderWidth = '2px';
-            } else if (isCompleted) {
-              circleColor = '#3F9065';
-              iconColor = '#fff';
-              textColor = '#3F9065';
-            }
-
-            return (
-              <div key={idx} style={{
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                zIndex: 3,
-                width: '15%'
-              }}>
-                <div style={{
-                  width: '32px',
-                  height: '32px',
-                  borderRadius: '50%',
-                  backgroundColor: circleColor,
-                  color: iconColor,
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  border: borderWidth !== '0px' ? `3px solid #FAF8F2` : 'none',
-                  boxShadow: isActive ? '0 0 0 3px #C9AB81' : 'none'
-                }}>
-                  {icon}
-                </div>
-                <span style={{
-                  fontSize: '11px',
-                  fontWeight: isActive || isCompleted ? '700' : '500',
-                  color: textColor,
-                  marginTop: '8px',
-                  textAlign: 'center',
-                  whiteSpace: 'nowrap'
-                }}>{stage}</span>
-              </div>
-            );
-          })}
-        </div>
-      </div>
-    );
-  };
 
   return (
     <div className="admin-wrapper">

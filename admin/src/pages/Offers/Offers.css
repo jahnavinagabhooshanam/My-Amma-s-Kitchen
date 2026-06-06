@@ -1,0 +1,212 @@
+/* Offers.css - Premium ERP Styling */
+
+.offers-module {
+  padding: 10px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.offers-page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 25px;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+.offers-title-area h2 {
+  font-size: 28px;
+  color: var(--title-color);
+  margin: 0 0 8px 0;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  font-family: 'Outfit', sans-serif;
+}
+
+.offers-title-area p {
+  color: #6c757d;
+  font-size: 15px;
+  margin: 0;
+  max-width: 800px;
+  line-height: 1.5;
+}
+
+/* Module Tabs */
+.module-tabs {
+  display: flex;
+  gap: 15px;
+  border-bottom: 2px solid #EAE6DB;
+  margin-bottom: 30px;
+}
+
+.module-tab {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 25px;
+  font-size: 15px;
+  font-weight: 700;
+  border: none;
+  background: none;
+  border-bottom: 3px solid transparent;
+  color: #7E7A6B;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: 'Outfit', sans-serif;
+}
+
+.module-tab:hover {
+  color: var(--primary-color);
+  background-color: rgba(63, 144, 101, 0.04);
+}
+
+.module-tab.active {
+  border-bottom-color: var(--primary-color);
+  color: var(--primary-color);
+}
+
+/* KPI Cards Grid */
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+.kpi-card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+  border: 1px solid var(--border-color);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.kpi-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+}
+
+.kpi-title {
+  font-size: 13px;
+  color: #6C757D;
+  text-transform: uppercase;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.kpi-val {
+  font-size: 28px;
+  font-weight: 800;
+  color: var(--title-color);
+  font-family: 'Outfit', sans-serif;
+}
+
+/* Modal Grid Layout */
+.modal-grid-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 30px;
+}
+
+@media (max-width: 900px) {
+  .modal-grid-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+.form-section h4 {
+  font-size: 16px;
+  color: var(--primary-color);
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 10px;
+  margin-bottom: 15px;
+  font-family: 'Outfit', sans-serif;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+}
+
+.checkbox-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: var(--text-color);
+  cursor: pointer;
+}
+
+.checkbox-label input {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--primary-color);
+}
+
+/* Badges */
+.badge {
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+.badge.popup { background-color: #E8F4FD; color: #1976D2; }
+.badge.banner { background-color: #FDF4E8; color: #E67E22; }
+.badge.discount { background-color: #E8FDE8; color: #2E7D32; }
+.badge.coupon { background-color: #F3E5F5; color: #7B1FA2; }
+
+.priority-badge {
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 700;
+  border: 1px solid transparent;
+}
+.priority-badge.high { background: #FFEBEE; color: #C62828; border-color: #FFCDD2; }
+.priority-badge.medium { background: #FFF8E1; color: #F57F17; border-color: #FFECB3; }
+.priority-badge.low { background: #E0F7FA; color: #00838F; border-color: #B2EBF2; }
+
+/* Action Buttons */
+.action-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.action-buttons button {
+  background: #f8f9fa;
+  border: 1px solid var(--border-color);
+  color: #495057;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.action-buttons button:hover {
+  background: var(--primary-color);
+  color: #fff;
+  border-color: var(--primary-color);
+}
+
+.action-buttons button.text-danger:hover {
+  background: #dc3545;
+  color: #fff;
+  border-color: #dc3545;
+}

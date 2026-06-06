@@ -15,7 +15,7 @@ const Navbar = () => {
   const [config, setConfig] = useState({
     banner: "✨ Amma's Special Deal: 15% Off Your First Artisan Batter Order! Code: AMMA20 ✨",
     opening_hours: "6am to 10pm",
-    contact_phone: "+91 98765 43210",
+    contact_phone: "+91 72009 42596",
     contact_email: "order@ammaskitchen.com",
     social_facebook: "#",
     social_instagram: "#",
@@ -24,6 +24,20 @@ const Navbar = () => {
   });
 
   const [notifications, setNotifications] = useState([]);
+  const [activeBannerOffer, setActiveBannerOffer] = useState(null);
+
+  useEffect(() => {
+    const fetchActiveBanner = async () => {
+      try {
+        const res = await apiClient.get('/offers/active');
+        const bannerOffer = res.data.find(o => o.display_locations.includes('home_banner'));
+        if (bannerOffer) setActiveBannerOffer(bannerOffer);
+      } catch (err) {
+        console.error("Failed to load active banner offer:", err);
+      }
+    };
+    fetchActiveBanner();
+  }, []);
 
   useEffect(() => {
     const fetchConfig = async () => {
@@ -64,7 +78,7 @@ const Navbar = () => {
 
   return (
     <>
-      {config.banner && (
+      {(activeBannerOffer || config.banner) && (
         <div style={{
           backgroundColor: 'var(--primary-color)',
           color: 'white',
@@ -74,7 +88,7 @@ const Navbar = () => {
           fontWeight: '600',
           fontFamily: "'Jost', sans-serif"
         }}>
-          {config.banner}
+          {activeBannerOffer ? activeBannerOffer.title : config.banner}
         </div>
       )}
       <header className="th-header header-default">
@@ -86,7 +100,7 @@ const Navbar = () => {
                 <div className="header-links">
                   <ul>
                     <li className="d-none d-xl-inline-block">
-                      <i className="far fa-location-dot"></i> 123 Amma's Kitchen Street, Chennai
+                      <i className="far fa-location-dot"></i> 2nd Cross, Gopalappa Nagar, Near KCC Nagar, Hosur - 635109
                     </li>
                     <li className="d-none d-md-inline-block">
                       <i className="far fa-envelope-open"></i>

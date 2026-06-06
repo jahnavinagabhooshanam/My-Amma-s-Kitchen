@@ -62,3 +62,15 @@ apiClient.interceptors.response.use(
 );
 
 export default apiClient;
+
+import { io } from 'socket.io-client';
+// Use the same base URL but without /api
+const SOCKET_URL = API_BASE_URL.replace('/api', '');
+export const socket = io(SOCKET_URL, {
+  autoConnect: true,
+  reconnection: true
+});
+
+socket.on('connect', () => {
+  console.log('[Socket.IO] Connected to backend real-time server');
+});

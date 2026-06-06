@@ -7,6 +7,7 @@ import { resolveImagePath } from '../../components/FoodCard';
 import { useCart } from '../../context/CartContext';
 import './Home.css';
 import apiClient from '../../services/api';
+import OfferPopup from '../../components/OfferPopup';
 
 // Slides details tailored for premium South Indian culinary branding
 const HERO_SLIDES = [
@@ -42,6 +43,7 @@ const Home = () => {
   
   const [activeSlide, setActiveSlide] = useState(0);
   const [activeTesti, setActiveTesti] = useState(0);
+  const [activePopupOffer, setActivePopupOffer] = useState(null);
 
   const [readyToEatItems, setReadyToEatItems] = useState([]);
   const [batterItems, setBatterItems] = useState([]);
@@ -73,6 +75,14 @@ const Home = () => {
     try {
       const configRes = await apiClient.get('/admin/website-config');
       setConfig(configRes.data);
+
+      try {
+        const offersRes = await apiClient.get('/offers/active');
+        const popupOffer = offersRes.data.find(o => o.display_locations.includes('home_popup'));
+        if (popupOffer) setActivePopupOffer(popupOffer);
+      } catch (e) {
+        console.error("Failed to load offers:", e);
+      }
 
       const productsRes = await apiClient.get('/products/');
       const allProds = productsRes.data;
@@ -154,6 +164,7 @@ const Home = () => {
 
   return (
     <div className="home-10">
+      <OfferPopup offer={activePopupOffer} />
       <SEO title="Home" />
       
       {/* Swiper Hero Slider Area */}
