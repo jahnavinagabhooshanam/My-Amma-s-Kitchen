@@ -185,7 +185,7 @@ const Register = () => {
           </div>
         </div>
         
-        <div className="auth-actions-single" style={{ marginBottom: '20px', justifyContent: 'flex-start' }}>
+        <div className="auth-actions-single" style={{ marginBottom: '10px', justifyContent: 'flex-start' }}>
           <label className="auth-checkbox">
             <input 
               type="checkbox" 

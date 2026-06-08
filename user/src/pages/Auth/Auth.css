@@ -813,7 +813,7 @@
   width: 480px;
   max-width: 90%;
   flex-direction: column;
-  padding: 50px 40px;
+  padding: 30px 40px;
   border-radius: 24px;
   background: rgba(255, 255, 255, 0.1);
   box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
@@ -825,7 +825,7 @@
 
 .auth-single-header {
   text-align: center;
-  margin-bottom: 35px;
+  margin-bottom: 20px;
 }
 
 .auth-single-header .auth-title {
@@ -844,7 +844,7 @@
 .social-login-single {
   display: flex;
   gap: 15px;
-  margin-bottom: 25px;
+  margin-bottom: 15px;
 }
 
 .social-login-single .social-btn {
@@ -853,7 +853,7 @@
   border: 1px solid rgba(255, 255, 255, 0.3);
   color: #fff;
   border-radius: 8px;
-  height: 48px;
+  height: 42px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -873,7 +873,7 @@
   display: flex;
   align-items: center;
   text-align: center;
-  margin: 20px 0;
+  margin: 15px 0;
   color: rgba(255, 255, 255, 0.7);
   font-size: 0.85rem;
 }
@@ -890,7 +890,7 @@
 }
 
 .auth-form-single .form-group-single {
-  margin-bottom: 20px;
+  margin-bottom: 15px;
 }
 
 .auth-form-single .form-control {
@@ -898,8 +898,8 @@
   border: 1px solid rgba(255, 255, 255, 0.3);
   color: #fff;
   border-radius: 8px;
-  padding: 12px 16px 12px 45px;
-  height: 50px;
+  padding: 10px 16px 10px 45px;
+  height: 45px;
 }
 
 .auth-form-single .form-control::placeholder {
@@ -910,7 +910,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 25px;
+  margin-bottom: 15px;
 }
 
 .auth-form-single .auth-checkbox {
@@ -931,11 +931,11 @@
   color: #fff;
   border: none;
   border-radius: 8px;
-  height: 50px;
+  height: 45px;
   font-size: 1.05rem;
   font-weight: 600;
   width: 100%;
-  margin-bottom: 20px;
+  margin-bottom: 15px;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
   cursor: pointer;
 }
