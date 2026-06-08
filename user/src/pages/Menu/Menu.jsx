@@ -8,9 +8,24 @@ import './Menu.css';
 
 const resolveImg = (path) => {
   if (!path) return 'https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=800&q=80';
-  if (path.startsWith('http')) return path;
-  const clean = path.replace(/^\/?(api\/)?assets\//, '');
-  return `http://127.0.0.1:5000/assets/${clean}`;
+  let clean = path;
+  if (clean.startsWith('http')) return clean;
+  
+  const backendUrl = import.meta.env.VITE_API_BASE_URL 
+    ? import.meta.env.VITE_API_BASE_URL.replace('/api', '') 
+    : 'http://127.0.0.1:5000';
+
+  if (clean.startsWith('/uploads/') || clean.startsWith('uploads/')) {
+    if (clean.startsWith('/')) clean = clean.substring(1);
+    return `${backendUrl}/${clean}`;
+  }
+
+  if (clean.startsWith('/assets/') || clean.startsWith('assets/') || clean.startsWith('/api/assets/')) {
+    clean = clean.replace(/^\/?(api\/)?assets\//, '');
+    return `/assets/${clean}`;
+  }
+  
+  return clean.startsWith('/') ? clean : `/${clean}`;
 };
 
 const CATEGORY_ORDER = [
