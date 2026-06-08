@@ -12,7 +12,7 @@ const resolveImagePath = (path) => {
   // Route backend-provided admin assets to the backend server
   if (clean.startsWith('/assets/') || clean.startsWith('assets/Food images/') || clean.startsWith('assets/images/')) {
     if (clean.startsWith('/')) clean = clean.substring(1);
-    return `http://localhost:5000/${clean}`;
+    return `http://127.0.0.1:5000/${clean}`;
   }
 
   if (clean.startsWith('../user/assets/')) {
@@ -32,36 +32,36 @@ const FoodCard = ({ product }) => {
   };
 
   return (
-    <div className="product-card-wrapper">
-      <div className="admin-food-card">
-        <div className="admin-food-img">
-          <img src={resolveImagePath(product.image)} alt={product.name} />
-          <div className="badge-availability">AVAILABLE</div>
-          <a href="#" className="fav-btn" onClick={(e) => e.preventDefault()}>
-            <i className="far fa-heart"></i>
-          </a>
+    <div className="product-card-wrapper" style={{ height: '100%' }}>
+      <div className="premium-product-card mobile-compact-card">
+        <img src={resolveImagePath(product.image)} alt={product.name} className="premium-product-img mobile-compact-img" />
+        <div className="premium-product-rating">
+          <i className="fas fa-star"></i>
+          <i className="fas fa-star"></i>
+          <i className="fas fa-star"></i>
+          <i className="fas fa-star"></i>
+          <i className="fas fa-star-half-alt"></i>
+          <span style={{ fontSize: '14px', color: '#666', marginLeft: '5px' }}>4.8</span>
         </div>
-        <div className="admin-food-body">
-          <h4 className="admin-food-title">{product.name}</h4>
-          <p className="admin-food-desc">{product.description || product.unit}</p>
-          <div className="admin-food-footer">
-            <div className="price-block">
-              <span className="price">₹{Number(product.price).toFixed(2)}</span>
-            </div>
-            <div className="stock">Stock: {product.stock ?? product.stock_quantity ?? '—'}</div>
-          </div>
-          <div style={{ display: 'flex', gap: '8px', marginTop: '10px' }}>
-            {(product.stock === 0 || product.stock_quantity === 0) ? (
-              <button disabled className="th-btn style10" style={{ border: 'none', cursor: 'not-allowed', backgroundColor: '#e0e0e0', color: '#999' }}>
-                Out of Stock
-              </button>
-            ) : (
-              <button onClick={handleAdd} className="th-btn" style={{ border: 'none', cursor: 'pointer' }}>
-                Add to cart
-              </button>
-            )}
-            <button onClick={(e)=>{e.preventDefault();}} className="btn-outline">View</button>
-          </div>
+        <h4 className="premium-product-title mobile-compact-title">
+          {product.name}
+        </h4>
+        <p className="premium-product-desc mobile-compact-desc">
+          {product.description || product.unit}
+        </p>
+        <div className="premium-product-price mobile-compact-price">
+          ₹{Number(product.price).toFixed(2)}
+        </div>
+        <div className="mobile-compact-btn-wrapper" style={{ display: 'flex', gap: '8px', width: '100%', justifyContent: 'center' }}>
+          {(product.stock === 0 || product.stock_quantity === 0) ? (
+            <button disabled className="premium-add-cart-btn mobile-compact-btn" style={{ backgroundColor: '#e0e0e0', color: '#999', cursor: 'not-allowed', width: '100%' }}>
+              Out of Stock
+            </button>
+          ) : (
+            <button onClick={handleAdd} className="premium-add-cart-btn mobile-compact-btn" style={{ width: '100%', cursor: 'pointer' }}>
+              Add to cart
+            </button>
+          )}
         </div>
       </div>
     </div>

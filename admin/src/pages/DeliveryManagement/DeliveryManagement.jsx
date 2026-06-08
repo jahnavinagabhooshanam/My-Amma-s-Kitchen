@@ -249,7 +249,7 @@ const DeliveryManagement = () => {
           )}
 
           {/* Section tabs */}
-          <div style={{ display: 'flex', gap: '15px', borderBottom: '2px solid #EAE6DB', marginBottom: '25px', paddingBottom: '0' }}>
+          <div className="module-tabs">
             {!isDriver && (
               <button 
                 onClick={() => navigate('/admin/delivery-management?tab=agents')}
@@ -324,14 +324,14 @@ const DeliveryManagement = () => {
 
                         return (
                           <tr key={p.id}>
-                            <td><strong>DPT-{p.id}</strong></td>
-                            <td><strong>{p.name}</strong></td>
-                            <td>
+                            <td data-label="Partner ID"><strong>DPT-{p.id}</strong></td>
+                            <td data-label="Name"><strong>{p.name}</strong></td>
+                            <td data-label="Mobile">
                               <a href={`tel:${p.phone}`} style={{ color: 'var(--theme-color)', fontWeight: '700', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
                                 <Phone size={12} /> {p.phone}
                               </a>
                             </td>
-                            <td>
+                            <td data-label="Active Status">
                               <span style={{
                                 padding: '4px 10px', borderRadius: '15px', fontSize: '11px', fontWeight: '700',
                                 backgroundColor: `${statusColor}15`, color: statusColor, border: `1px solid ${statusColor}`
@@ -339,12 +339,12 @@ const DeliveryManagement = () => {
                                 {p.status}
                               </span>
                             </td>
-                            <td>
+                            <td data-label="Assigned Orders">
                               <div style={{ maxWidth: '200px', wordBreak: 'break-all', fontWeight: '600' }}>
                                 {p.assigned_orders || 'None'}
                               </div>
                             </td>
-                            <td>
+                            <td data-label="Quick Status Switch">
                               <select 
                                 value={p.status} 
                                 onChange={(e) => handlePartnerStatusChange(p.id, e.target.value)}
@@ -356,7 +356,7 @@ const DeliveryManagement = () => {
                                 <option value="Delivered">Delivered</option>
                               </select>
                             </td>
-                            <td>
+                            <td data-label="Actions">
                               <div style={{ position: 'relative', display: 'inline-block' }} onMouseLeave={() => setActiveDropdown(null)}>
                                 <button 
                                   onClick={() => setActiveDropdown(activeDropdown === p.id ? null : p.id)}
@@ -424,8 +424,8 @@ const DeliveryManagement = () => {
                     <tbody>
                       {myOrders.map(o => (
                         <tr key={o.id}>
-                          <td><strong>#{o.order_id_string || `ORD-${o.id}`}</strong></td>
-                          <td>
+                          <td data-label="Order ID"><strong>#{o.order_id_string || `ORD-${o.id}`}</strong></td>
+                          <td data-label="Customer Info">
                             <strong>{o.customer_name}</strong>
                             <div style={{ fontSize: '11px', color: '#7E7A6B', marginTop: '4px' }}>
                               <a href={`tel:${o.phone}`} style={{ color: 'var(--primary-color)', fontWeight: '600', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
@@ -433,18 +433,18 @@ const DeliveryManagement = () => {
                               </a>
                             </div>
                           </td>
-                          <td style={{ maxWidth: '220px', fontSize: '12px', lineHeight: '1.4' }}>
+                          <td data-label="Delivery Address" style={{ maxWidth: '220px', fontSize: '12px', lineHeight: '1.4' }}>
                             <MapPin size={12} style={{ color: 'var(--accent-color)', marginRight: '4px', verticalAlign: 'middle', display: 'inline-block' }} />
                             {o.delivery_address}
                           </td>
-                          <td>
+                          <td data-label="Dishes Checklist">
                             <div style={{ fontSize: '12px' }}>
                               {o.items?.map((it, idx) => (
                                 <div key={idx}>• {it.quantity}x {it.product_name}</div>
                               ))}
                             </div>
                           </td>
-                          <td>
+                          <td data-label="Total & COD">
                             <div style={{ fontWeight: '700' }}>₹{o.total.toFixed(2)}</div>
                             <span style={{
                               padding: '2px 6px', borderRadius: '8px', fontSize: '9px', fontWeight: '700',
@@ -454,7 +454,7 @@ const DeliveryManagement = () => {
                               {o.payment_status === 'Paid' ? 'Paid' : 'COD Pending'}
                             </span>
                           </td>
-                          <td>
+                          <td data-label="Status">
                             <span style={{
                               padding: '4px 10px', borderRadius: '12px', fontSize: '11px', fontWeight: '700',
                               backgroundColor: o.status === 'Out For Delivery' ? '#FCF3CF' : o.status === 'Delivered' ? '#D4EFDF' : '#EBF5FB',
@@ -463,7 +463,7 @@ const DeliveryManagement = () => {
                               {o.status}
                             </span>
                           </td>
-                          <td>
+                          <td data-label="Actions">
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
                               {o.status === 'Packed' && (
                                 <div style={{ display: 'flex', gap: '4px' }}>
@@ -573,9 +573,9 @@ const DeliveryManagement = () => {
                     <tbody>
                       {myOrders.map(o => (
                         <tr key={o.id}>
-                          <td><strong>#{o.order_id_string || `ORD-${o.id}`}</strong></td>
-                          <td><strong>{o.customer_name}</strong></td>
-                          <td>
+                          <td data-label="Order ID"><strong>#{o.order_id_string || `ORD-${o.id}`}</strong></td>
+                          <td data-label="Customer Name"><strong>{o.customer_name}</strong></td>
+                          <td data-label="Delivery Status">
                             <span style={{
                               padding: '3px 8px', borderRadius: '10px', fontSize: '11px', fontWeight: '600',
                               backgroundColor: o.status === 'Delivered' ? '#D4EFDF' : '#FCF3CF',
@@ -584,10 +584,10 @@ const DeliveryManagement = () => {
                               {o.status === 'Delivered' ? 'Completed' : 'Delivery Active'}
                             </span>
                           </td>
-                          <td>
+                          <td data-label="Phone Number">
                             <strong style={{ fontSize: '14px', color: '#1B3D2B' }}>{o.phone}</strong>
                           </td>
-                          <td>
+                          <td data-label="Actions">
                             <div style={{ display: 'flex', gap: '8px' }}>
                               <a href={`tel:${o.phone}`} className="page-action-btn" style={{ textDecoration: 'none', padding: '6px 12px', fontSize: '11px' }}>
                                 <Phone size={10} style={{ marginRight: '4px' }} /> Call Customer

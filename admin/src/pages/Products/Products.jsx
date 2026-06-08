@@ -215,14 +215,14 @@ const Products = () => {
                   <tbody>
                     {getActiveList().map((p) => (
                       <tr key={p.id}>
-                        <td>#{p.id}</td>
-                        <td>
+                        <td data-label="Item ID">#{p.id}</td>
+                        <td data-label="Product Details">
                           <strong>{p.name}</strong>
                           <div className="text-muted" style={{ fontSize: '11px' }}>{p.description || "Homestyle authentic item prepared daily."}</div>
                         </td>
-                        <td style={{ fontWeight: '700' }}>₹{p.price.toFixed(2)}</td>
-                        <td className="text-muted">{p.unit}</td>
-                        <td>
+                        <td data-label="Price" style={{ fontWeight: '700' }}>₹{p.price.toFixed(2)}</td>
+                        <td data-label="Pack Unit" className="text-muted">{p.unit}</td>
+                        <td data-label="Actions">
                           <button onClick={() => handleDelete(p.id)} className="btn-secondary text-danger" style={{ padding: '6px 12px', border: '1px solid #EAE6DB', borderRadius: '4px', cursor: 'pointer', fontSize: '12px' }}>
                             Delete
                           </button>

@@ -39,12 +39,12 @@ const resolveImagePath = (path) => {
     } else if (clean.startsWith('/assets/')) {
       clean = clean.substring(8);
     }
-    return `http://localhost:5000/assets/${clean}`;
+    return `http://127.0.0.1:5000/assets/${clean}`;
   }
 
   if (clean.startsWith('/uploads/') || clean.startsWith('uploads/')) {
     if (clean.startsWith('/')) clean = clean.substring(1);
-    return `http://localhost:5000/${clean}`;
+    return `http://127.0.0.1:5000/${clean}`;
   }
 
   return clean;
@@ -301,7 +301,7 @@ const WebsiteManagement = () => {
             </div>
           )}
 
-          <div style={{ display: 'flex', gap: '10px', marginBottom: '25px', borderBottom: '2px solid #EAE6DB', paddingBottom: '10px', flexWrap: 'wrap' }}>
+          <div className="module-tabs">
             <button 
               onClick={() => navigate('/admin/website-management?tab=content')}
               style={{

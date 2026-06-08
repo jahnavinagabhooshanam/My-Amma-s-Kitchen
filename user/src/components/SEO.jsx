@@ -4,7 +4,7 @@ const SEO = ({
   title, 
   description = "Hotel Amma's Kitchen serves traditional stone-ground batters, zero-prep ready-to-cook meal kits, and fresh authentic ready-to-eat South Indian vegetarian delicacies.", 
   keywords = "Amma's Kitchen, South Indian food, fresh idli batter, dosa batter, ready to cook, ready to eat, Mylapore catering", 
-  image = "/src/assets/img/logo.png", 
+  image = "/src/assets/img/my-ammas-logo-new.jpg", 
   canonical = "http://localhost:5173",
   schemaType = null,
   schemaData = null
@@ -66,7 +66,7 @@ const SEO = ({
       "@type": "Restaurant",
       "@id": "http://localhost:5173/#restaurant",
       "name": "Hotel Amma's Kitchen",
-      "image": "http://localhost:5173/src/assets/img/logo.png",
+      "image": "http://localhost:5173/src/assets/img/my-ammas-logo-new.jpg",
       "url": "http://localhost:5173",
       "telephone": "+91 98765 43210",
       "priceRange": "$$",

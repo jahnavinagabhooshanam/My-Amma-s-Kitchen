@@ -317,18 +317,18 @@ const Offers = () => {
                     <tbody>
                       {offers.map(offer => (
                         <tr key={offer.id}>
-                          <td>
+                          <td data-label="Image">
                             {offer.thumbnail_image_url ? 
                               <img src={offer.thumbnail_image_url} alt="offer" width="40" height="40" style={{ borderRadius: '4px', objectFit: 'cover' }} /> : 
                               <div style={{ width: '40px', height: '40px', background: '#e2ebd9', borderRadius: '4px' }}></div>
                             }
                           </td>
-                          <td style={{ fontWeight: '600' }}>{offer.title}</td>
-                          <td><span className={`badge ${offer.type}`}>{offer.type.replace('_', ' ')}</span></td>
-                          <td style={{ color: 'var(--theme-color)', fontWeight: 'bold' }}>{offer.discount_value}%</td>
-                          <td>{offer.start_date || 'Now'} - {offer.end_date || 'Forever'}</td>
-                          <td><span className={`priority-badge ${offer.priority?.toLowerCase()}`}>{offer.priority}</span></td>
-                          <td>
+                          <td data-label="Offer Title" style={{ fontWeight: '600' }}>{offer.title}</td>
+                          <td data-label="Type"><span className={`badge ${offer.type}`}>{offer.type.replace('_', ' ')}</span></td>
+                          <td data-label="Discount" style={{ color: 'var(--theme-color)', fontWeight: 'bold' }}>{offer.discount_value}%</td>
+                          <td data-label="Dates">{offer.start_date || 'Now'} - {offer.end_date || 'Forever'}</td>
+                          <td data-label="Priority"><span className={`priority-badge ${offer.priority?.toLowerCase()}`}>{offer.priority}</span></td>
+                          <td data-label="Status">
                             <div className="food-rating" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                               <span className={`badge-status ${offer.status === 'Active' ? 'approved' : 'inactive'}`}>{offer.status}</span>
                               <label className="switch" style={{ position: 'relative', display: 'inline-block', width: '34px', height: '20px', cursor: 'pointer' }}>
@@ -344,7 +344,7 @@ const Offers = () => {
                               </label>
                             </div>
                           </td>
-                          <td>
+                          <td data-label="Actions">
                             <div className="action-buttons">
                               <button onClick={() => handleOpenOfferModal(offer)} title="Edit"><Edit2 size={16} /></button>
                               <button onClick={() => duplicateOffer(offer)} title="Duplicate"><Copy size={16} /></button>
@@ -397,14 +397,14 @@ const Offers = () => {
                     <tbody>
                       {coupons.map((c) => (
                         <tr key={c.id}>
-                          <td style={{ fontWeight: '700', color: 'var(--title-color)' }}><code>{c.coupon_code}</code></td>
-                          <td style={{ color: 'var(--theme-color)', fontWeight: '700' }}>
+                          <td data-label="Coupon Code" style={{ fontWeight: '700', color: 'var(--title-color)' }}><code>{c.coupon_code}</code></td>
+                          <td data-label="Discount Value" style={{ color: 'var(--theme-color)', fontWeight: '700' }}>
                             {c.discount_type === 'percentage' ? `${c.discount_value}%` : `₹${c.discount_value}`}
                           </td>
-                          <td style={{ textTransform: 'capitalize' }}>{c.discount_type}</td>
-                          <td className="text-muted">{c.expiry_date || 'No Expiry'}</td>
-                          <td>{c.usage_count || 0} times</td>
-                          <td>
+                          <td data-label="Discount Type" style={{ textTransform: 'capitalize' }}>{c.discount_type}</td>
+                          <td data-label="Expiry Date" className="text-muted">{c.expiry_date || 'No Expiry'}</td>
+                          <td data-label="Usage Count">{c.usage_count || 0} times</td>
+                          <td data-label="Status">
                             <div className="food-rating" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                               <span className={`badge-status ${c.is_active ? 'approved' : 'inactive'}`}>
                                 {c.is_active ? 'Active' : 'Disabled'}
@@ -425,7 +425,7 @@ const Offers = () => {
                               </label>
                             </div>
                           </td>
-                          <td>
+                          <td data-label="Actions">
                             <div className="action-buttons">
                               <button onClick={() => handleOpenCouponModal(c)}><Edit2 size={16} /></button>
                               <button onClick={() => deleteCoupon(c.id)} className="text-danger"><Trash2 size={16} /></button>

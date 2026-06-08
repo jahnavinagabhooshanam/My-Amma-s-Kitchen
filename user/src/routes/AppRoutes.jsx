@@ -54,6 +54,12 @@ const Cart = lazy(() => import('../pages/Cart/Cart'));
 const Wishlist = lazy(() => import('../pages/Wishlist/Wishlist'));
 const CustomerOrders = lazy(() => import('../pages/CustomerOrders/CustomerOrders'));
 const Menu = lazy(() => import('../pages/Menu/Menu'));
+const Offers = lazy(() => import('../pages/Offers/Offers'));
+const CheckoutAddress = lazy(() => import('../pages/Checkout/CheckoutAddress'));
+const OrderReview = lazy(() => import('../pages/Checkout/OrderReview'));
+const OrderSuccess = lazy(() => import('../pages/Checkout/OrderSuccess'));
+const TrackOrder = lazy(() => import('../pages/Orders/TrackOrder'));
+const OrderDetails = lazy(() => import('../pages/Orders/OrderDetails'));
 
 const AppRoutes = () => {
   return (
@@ -75,8 +81,13 @@ const AppRoutes = () => {
         <Route path="/certificates" element={<ProtectedRoute><Certificates /></ProtectedRoute>} />
         <Route path="/contact" element={<ProtectedRoute><Contact /></ProtectedRoute>} />
         <Route path="/cart" element={<ProtectedRoute><Cart /></ProtectedRoute>} />
-        <Route path="/checkout" element={<ProtectedRoute><Cart /></ProtectedRoute>} />
+        <Route path="/checkout/address" element={<ProtectedRoute><CheckoutAddress /></ProtectedRoute>} />
+        <Route path="/checkout/review" element={<ProtectedRoute><OrderReview /></ProtectedRoute>} />
+        <Route path="/order-success" element={<ProtectedRoute><OrderSuccess /></ProtectedRoute>} />
+        <Route path="/track-order/:id" element={<ProtectedRoute><TrackOrder /></ProtectedRoute>} />
+        <Route path="/order/:id" element={<ProtectedRoute><OrderDetails /></ProtectedRoute>} />
         <Route path="/wishlist" element={<ProtectedRoute><Wishlist /></ProtectedRoute>} />
+        <Route path="/offers" element={<ProtectedRoute><Offers /></ProtectedRoute>} />
         
         <Route path="/complete-profile" element={<ProtectedRoute><CompleteProfile /></ProtectedRoute>} />
         <Route path="/account" element={<ProtectedRoute><UserProfile /></ProtectedRoute>} />

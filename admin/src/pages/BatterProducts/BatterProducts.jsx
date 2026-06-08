@@ -40,13 +40,13 @@ const resolveImagePath = (path) => {
     } else if (clean.startsWith('/assets/')) {
       clean = clean.substring(8);
     }
-    return `http://localhost:5000/assets/${clean}`;
+    return `http://127.0.0.1:5000/assets/${clean}`;
   }
 
   // Handle uploaded files
   if (clean.startsWith('/uploads/') || clean.startsWith('uploads/')) {
     if (clean.startsWith('/')) clean = clean.substring(1);
-    return `http://localhost:5000/${clean}`;
+    return `http://127.0.0.1:5000/${clean}`;
   }
 
   return clean;
@@ -229,6 +229,38 @@ const BatterProducts = () => {
     }
   };
 
+  const handleToggleAvailability = async (product) => {
+    const currentStatus = product.in_stock !== undefined ? product.in_stock : product.is_available;
+    const newAvailability = !currentStatus;
+
+    // Optimistic UI update
+    setBatters(prevBatters => 
+      prevBatters.map(p => 
+        p.id === product.id 
+          ? { ...p, in_stock: newAvailability, is_available: newAvailability, stock: newAvailability ? 50 : 0, stock_count: newAvailability ? 50 : 0 } 
+          : p
+      )
+    );
+
+    try {
+      await apiClient.patch(`/products/${product.id}/status`, { is_available: newAvailability });
+      setSuccessMsg(newAvailability ? `Product Activated: ${product.name}` : `Product Marked Out Of Stock: ${product.name}`);
+      setTimeout(() => setSuccessMsg(''), 3000);
+    } catch (err) {
+      console.error("Failed to toggle availability:", err);
+      // Rollback on failure
+      setBatters(prevBatters => 
+        prevBatters.map(p => 
+          p.id === product.id 
+            ? { ...p, in_stock: currentStatus, is_available: currentStatus, stock: currentStatus ? 50 : 0, stock_count: currentStatus ? 50 : 0 } 
+            : p
+        )
+      );
+      setErrorMsg("Failed to update availability status.");
+      setTimeout(() => setErrorMsg(''), 3000);
+    }
+  };
+
   // Variant Handlers
   const handleOpenVariantModal = (v = null) => {
     if (v) {
@@ -403,6 +435,17 @@ const BatterProducts = () => {
                       <span className={`badge-status ${(b.in_stock !== undefined ? b.in_stock : b.is_available) ? 'active' : 'inactive'}`}>
                         {(b.in_stock !== undefined ? b.in_stock : b.is_available) ? 'In Stock' : 'Out of Stock'}
                       </span>
+                      <label className="switch" style={{ position: 'relative', display: 'inline-block', width: '34px', height: '20px', cursor: 'pointer' }}>
+                        <input
+                          type="checkbox"
+                          checked={b.in_stock !== undefined ? b.in_stock : b.is_available}
+                          onChange={() => handleToggleAvailability(b)}
+                          style={{ position: 'absolute', opacity: 0, width: '100%', height: '100%', cursor: 'pointer', zIndex: 5, margin: 0 }}
+                        />
+                        <span className="slider round" style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: (b.in_stock !== undefined ? b.in_stock : b.is_available) ? 'var(--theme-color)' : '#ccc', transition: '.4s', borderRadius: '34px', pointerEvents: 'none' }}>
+                          <span style={{ position: 'absolute', content: '""', height: '14px', width: '14px', left: (b.in_stock !== undefined ? b.in_stock : b.is_available) ? '16px' : '4px', bottom: '3px', backgroundColor: 'white', transition: '.4s', borderRadius: '50%' }} />
+                        </span>
+                      </label>
                     </div>
                     <h3 className="product-title" style={{ fontSize: '15px', margin: '8px 0' }}>{b.name}</h3>
                     <p className="product-desc" style={{ fontSize: '12px', minHeight: '36px' }}>{b.description}</p>

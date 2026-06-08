@@ -323,7 +323,7 @@ const Customers = () => {
           )}
 
           {/* Tab Selection */}
-          <div style={{ display: 'flex', gap: '15px', borderBottom: '2px solid #EAE6DB', marginBottom: '25px', paddingBottom: '0', flexWrap: 'wrap' }}>
+          <div className="module-tabs">
             {[
               { id: 'directory', label: 'Customer List' },
               { id: 'reviews', label: 'Customer Reviews' },
@@ -388,27 +388,27 @@ const Customers = () => {
                     <tbody>
                       {filteredCustomers.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage).map((cust) => (
                         <tr key={cust.id}>
-                          <td>#CUST-{cust.id}</td>
-                          <td>
+                          <td data-label="Customer ID">#CUST-{cust.id}</td>
+                          <td data-label="Customer Details">
                             <strong>{cust.name}</strong>
                             <div className="text-muted" style={{ fontSize: '11px', lineHeight: '1.4', maxWidth: '280px', textOverflow: 'ellipsis', overflow: 'hidden', display: 'flex', alignItems: 'center', gap: '4px', marginTop: '2px' }}>
                               <MapPin size={10} /> {cust.address || 'Address not listed'}
                             </div>
                           </td>
-                          <td>
+                          <td data-label="Contact Info">
                             <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}><Mail size={11} style={{ color: '#888' }} /> {cust.email}</div>
                             <div className="text-muted" style={{ fontSize: '12px', marginTop: '4px', display: 'flex', alignItems: 'center', gap: '4px' }}><Phone size={11} /> {cust.phone || 'No Mobile'}</div>
                           </td>
-                          <td style={{ fontWeight: '600' }}>{cust.orders_count} orders</td>
-                          <td style={{ fontWeight: '800', color: 'var(--theme-color)', fontSize: '15px' }}>
+                          <td data-label="Total Orders" style={{ fontWeight: '600' }}>{cust.orders_count} orders</td>
+                          <td data-label="Total Spend" style={{ fontWeight: '800', color: 'var(--theme-color)', fontSize: '15px' }}>
                             ₹{cust.total_spent.toFixed(2)}
                           </td>
-                          <td>
+                          <td data-label="Access Status">
                             <span className={`badge-status ${cust.is_blocked ? 'inactive' : 'approved'}`}>
                               {cust.is_blocked ? 'Blocked' : 'Active'}
                             </span>
                           </td>
-                          <td>
+                          <td data-label="Actions">
                             <div style={{ position: 'relative', display: 'inline-block' }} onMouseLeave={() => setActiveDropdown(null)}>
                               <button
                                 onClick={() => setActiveDropdown(activeDropdown === cust.id ? null : cust.id)}
@@ -471,17 +471,17 @@ const Customers = () => {
 
                         return (
                           <tr key={r.id}>
-                            <td>
+                            <td data-label="Customer Name">
                               <strong>{r.user_name || 'Anonymous Customer'}</strong>
                               <div className="text-muted" style={{ fontSize: '11px' }}>User ID: #{r.user_id}</div>
                             </td>
-                            <td><strong>{r.product_name || `Product #${r.product_id}`}</strong></td>
-                            <td style={{ color: '#F1C40F', whiteSpace: 'nowrap' }}>
+                            <td data-label="Product Name"><strong>{r.product_name || `Product #${r.product_id}`}</strong></td>
+                            <td data-label="Rating" style={{ color: '#F1C40F', whiteSpace: 'nowrap' }}>
                               {Array(r.rating || 5).fill().map((_, i) => (
                                 <Star key={i} size={13} fill="#F1C40F" color="#F1C40F" />
                               ))}
                             </td>
-                            <td style={{ maxWidth: '280px', fontSize: '13px' }}>
+                            <td data-label="Review Content" style={{ maxWidth: '280px', fontSize: '13px' }}>
                               <div style={{ fontStyle: 'italic', marginBottom: '6px' }}>"{r.review}"</div>
                               {activeReplyId === r.id && (
                                 <form onSubmit={(e) => handleSendReply(e, r.id)} style={{ marginTop: '10px' }}>
@@ -505,7 +505,7 @@ const Customers = () => {
                                 </form>
                               )}
                             </td>
-                            <td>
+                            <td data-label="Featured">
                               <span 
                                 style={{ cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '5px', fontWeight: '700', color: r.is_featured ? '#F1C40F' : '#ccc' }}
                                 onClick={() => handleReviewToggleFeature(r.id)}
@@ -515,13 +515,13 @@ const Customers = () => {
                                 {r.is_featured ? 'Featured' : 'Regular'}
                               </span>
                             </td>
-                            <td>
+                            <td data-label="Status">
                               <span className={`badge-status ${statusClass}`}>{r.status || 'Pending'}</span>
                             </td>
-                            <td className="text-muted" style={{ fontSize: '12px' }}>
+                            <td data-label="Date" className="text-muted" style={{ fontSize: '12px' }}>
                               {r.created_at ? new Date(r.created_at).toLocaleDateString() : 'N/A'}
                             </td>
-                            <td>
+                            <td data-label="Actions">
                               <div style={{ display: 'flex', gap: '5px', flexWrap: 'wrap' }}>
                                 {r.status !== 'Approved' && (
                                   <button onClick={() => handleReviewApprove(r.id)} className="btn-secondary" style={{ padding: '5px 10px', fontSize: '11px', color: 'var(--theme-color)', borderColor: 'var(--border-color)' }}>
@@ -596,11 +596,11 @@ const Customers = () => {
                           .slice(0, 5)
                           .map(cust => (
                             <tr key={cust.id}>
-                              <td><strong>{cust.name}</strong></td>
-                              <td>{cust.email}</td>
-                              <td>{cust.orders_count} orders</td>
-                              <td style={{ fontWeight: '700', color: 'var(--primary-color)' }}>₹{cust.total_spent.toFixed(2)}</td>
-                              <td>₹{cust.orders_count > 0 ? (cust.total_spent / cust.orders_count).toFixed(2) : '0.00'}</td>
+                              <td data-label="Customer"><strong>{cust.name}</strong></td>
+                              <td data-label="Contact">{cust.email}</td>
+                              <td data-label="Total Orders">{cust.orders_count} orders</td>
+                              <td data-label="Total Spends" style={{ fontWeight: '700', color: 'var(--primary-color)' }}>₹{cust.total_spent.toFixed(2)}</td>
+                              <td data-label="AOV">₹{cust.orders_count > 0 ? (cust.total_spent / cust.orders_count).toFixed(2) : '0.00'}</td>
                             </tr>
                           ))}
                       </tbody>

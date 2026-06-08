@@ -5,17 +5,23 @@ import { CartProvider } from './context/CartContext';
 import AppRoutes from './routes/AppRoutes';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
+import BottomNav from './components/BottomNav';
 import ModalHost from './components/ModalHost';
 import OfferPopup from './components/OfferPopup';
 import './App.css';
-
+import './premium.css';
+import './responsive.css';
 function AppContent() {
   const location = useLocation();
   const { token, user } = useAuth();
   const authRoutes = ['/login', '/register', '/forgot-password', '/verify-otp', '/complete-profile'];
   const isAuthPage = authRoutes.includes(location.pathname);
-  // Show main layout on all non-auth pages so Footer and modal work for public users
+  // Show main layout on all non-auth pages so Navbar and modal work for public users
   const showMainLayout = !isAuthPage;
+
+  // Only show footer on specific pages as requested
+  const footerRoutes = ['/', '/home', '/bulk-orders', '/certificates', '/contact'];
+  const showFooter = footerRoutes.includes(location.pathname);
 
   return (
     <div className="app-shell">
@@ -23,7 +29,8 @@ function AppContent() {
       <main className="main-content">
         <AppRoutes />
       </main>
-      {showMainLayout && <Footer />}
+      {showFooter && <Footer />}
+      {showMainLayout && <BottomNav />}
       {showMainLayout && <ModalHost />}
       {showMainLayout && <OfferPopup />}
     </div>

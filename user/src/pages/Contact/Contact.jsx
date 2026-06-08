@@ -6,7 +6,7 @@ import contactService from '../../services/contactService';
 import './Contact.css';
 
 const Contact = () => {
-  const [form, setForm] = useState({ name: '', email: '', message: '' });
+  const [form, setForm] = useState({ name: '', email: '', phone: '', message: '' });
   const [sent, setSent] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -16,7 +16,7 @@ const Contact = () => {
     try {
       await contactService.submit(form);
       setSent(true);
-      setForm({ name: '', email: '', message: '' });
+      setForm({ name: '', email: '', phone: '', message: '' });
     } catch (error) {
       console.error('Failed to submit contact form', error);
       alert('Failed to send message. Please try again.');
@@ -141,6 +141,11 @@ const Contact = () => {
                   </div>
 
                   <div className="floating-group">
+                    <input type="tel" className="floating-input" placeholder=" " required value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} />
+                    <label className="floating-label">Phone Number</label>
+                  </div>
+
+                  <div className="floating-group">
                     <textarea className="floating-input" placeholder=" " required value={form.message} onChange={(e) => setForm({ ...form, message: e.target.value })} />
                     <label className="floating-label">Your Message</label>
                   </div>
@@ -160,26 +165,7 @@ const Contact = () => {
           </div>
         </div>
 
-        {/* Interactive Map & Business Hours */}
-        <div id="map" className="map-section">
-          <div className="business-hours">
-            <div className="business-hours-icon">
-              <Clock size={28} />
-            </div>
-            <div className="business-hours-info">
-              <p>Mon – Sun</p>
-              <h5>6:00 AM – 10:00 PM</h5>
-            </div>
-          </div>
-          <iframe 
-            className="map-iframe"
-            title="Location Map"
-            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15547.469950796332!2d80.2647754!3d13.0336053!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3a5267b2d56a22f7%3A0xc3c544bd0a4b160b!2sMylapore%2C%20Chennai%2C%20Tamil%20Nadu!5e0!3m2!1sen!2sin!4v1700000000000!5m2!1sen!2sin" 
-            allowFullScreen="" 
-            loading="lazy" 
-            referrerPolicy="no-referrer-when-downgrade">
-          </iframe>
-        </div>
+
 
       </div>
     </div>

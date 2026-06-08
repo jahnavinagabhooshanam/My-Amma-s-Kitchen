@@ -1,27 +1,21 @@
 /* BulkOrders.css - Premium Catering Experience */
 
 .bulk-page {
-  background-color: #FDFBF7;
+  background-color: #F5FAF5;
   font-family: 'Inter', sans-serif;
-  color: #2C1A0E;
-  padding-bottom: 80px;
+  color: #143D14;
+  padding-bottom: 20px;
 }
 
 /* Hero Section */
 .bulk-hero {
   position: relative;
-  background: url('../../../assets/img/bg/hero-9-bg.webp') center/cover no-repeat;
-  padding: 100px 20px;
+  padding: 60px 20px 40px;
   text-align: center;
-  color: white;
-  border-bottom: 4px solid #8B1A10;
 }
 
 .bulk-hero::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: rgba(26, 13, 8, 0.7);
+  display: none;
 }
 
 .bulk-hero-content {
@@ -40,7 +34,7 @@
 
 .bulk-hero-subtitle {
   font-size: 1.2rem;
-  color: #EAE6DB;
+  color: #DCECDC;
   margin-bottom: 40px;
   font-weight: 300;
   line-height: 1.6;
@@ -69,7 +63,7 @@
   font-family: 'Playfair Display', serif;
   font-size: 2.2rem;
   font-weight: 700;
-  color: #D4AF37;
+  color: #8BC34A;
   margin-bottom: 5px;
 }
 
@@ -91,7 +85,7 @@
   font-family: 'Playfair Display', serif;
   font-size: 2.5rem;
   margin-bottom: 15px;
-  color: #2C1A0E;
+  color: #143D14;
 }
 
 .bulk-section-subtitle {
@@ -104,7 +98,7 @@
 /* Event Types Grid */
 .bulk-event-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
+  grid-template-columns: repeat(2, 1fr);
   gap: 20px;
 }
 
@@ -113,27 +107,27 @@
   border-radius: 16px;
   padding: 30px 20px;
   text-align: center;
-  border: 1px solid #EAE6DB;
+  border: 1px solid #DCECDC;
   transition: all 0.3s ease;
   cursor: default;
 }
 
 .bulk-event-card:hover {
   transform: translateY(-5px);
-  border-color: #8B1A10;
-  box-shadow: 0 10px 25px rgba(139, 26, 16, 0.1);
+  border-color: #1A5D1A;
+  box-shadow: 0 10px 25px rgba(26, 93, 26, 0.1);
 }
 
 .bulk-event-icon {
   width: 60px;
   height: 60px;
-  background: #F5F3ED;
+  background: #E8F5E8;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   margin: 0 auto 20px;
-  color: #8B1A10;
+  color: #1A5D1A;
 }
 
 .bulk-event-name {
@@ -153,15 +147,15 @@
   background: white;
   border-radius: 20px;
   overflow: hidden;
-  border: 1px solid #EAE6DB;
+  border: 1px solid #DCECDC;
   position: relative;
   transition: all 0.3s ease;
 }
 
 .bulk-pkg-card.premium {
-  border: 2px solid #D4AF37;
+  border: 2px solid #8BC34A;
   transform: scale(1.02);
-  box-shadow: 0 15px 35px rgba(212, 175, 55, 0.15);
+  box-shadow: 0 15px 35px rgba(139, 195, 74, 0.15);
 }
 
 .bulk-pkg-card:hover {
@@ -176,12 +170,12 @@
 .bulk-pkg-header {
   padding: 30px 20px;
   text-align: center;
-  background: #FDFBF7;
-  border-bottom: 1px solid #EAE6DB;
+  background: #F5FAF5;
+  border-bottom: 1px solid #DCECDC;
 }
 
 .bulk-pkg-card.premium .bulk-pkg-header {
-  background: linear-gradient(135deg, #2C1A0E, #1A0D08);
+  background: linear-gradient(135deg, #143D14, #051A05);
   color: white;
 }
 
@@ -192,7 +186,7 @@
 }
 
 .bulk-pkg-card.premium .bulk-pkg-title {
-  color: #D4AF37;
+  color: #8BC34A;
 }
 
 .bulk-pkg-desc {
@@ -224,7 +218,7 @@
 }
 
 .bulk-pkg-item svg {
-  color: #8B1A10;
+  color: #1A5D1A;
   flex-shrink: 0;
 }
 
@@ -287,7 +281,7 @@
   background: white;
   padding: 40px;
   border-radius: 20px;
-  border: 1px solid #EAE6DB;
+  border: 1px solid #DCECDC;
   position: relative;
 }
 
@@ -295,7 +289,7 @@
   font-family: 'Cormorant Garamond', serif;
   font-size: 1.3rem;
   font-style: italic;
-  color: #2C1A0E;
+  color: #143D14;
   margin-bottom: 20px;
   line-height: 1.6;
 }
@@ -310,11 +304,11 @@
   width: 50px;
   height: 50px;
   border-radius: 50%;
-  background: #F5F3ED;
+  background: #E8F5E8;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #8B1A10;
+  color: #1A5D1A;
   font-weight: 700;
 }
 
@@ -326,7 +320,7 @@
   padding: 50px;
   border-radius: 24px;
   box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1);
-  border: 1px solid #EAE6DB;
+  border: 1px solid #DCECDC;
   position: relative;
   z-index: 10;
 }
@@ -348,6 +342,16 @@
 }
 
 @media (max-width: 768px) {
+  .bulk-hero {
+    padding-left: 5px;
+    padding-right: 5px;
+  }
+
+  .bulk-hero .container {
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+
   .bulk-gallery {
     grid-template-columns: 1fr;
   }
@@ -357,7 +361,9 @@
   }
 
   .bulk-form-container {
-    padding: 30px 20px;
+    padding: 25px 15px;
+    margin-top: 10px;
+    border-radius: 16px;
   }
 }
 
@@ -385,7 +391,7 @@
 .bulk-form-container .form-label {
   margin-bottom: 8px;
   font-size: 0.95rem;
-  color: #2C1A0E;
+  color: #143D14;
   display: block;
   width: 100%;
   text-align: left;
@@ -395,15 +401,15 @@
   width: 100%;
   padding: 14px 16px;
   border-radius: 8px;
-  border: 1px solid #EAE6DB;
-  background-color: #FDFBF7;
+  border: 1px solid #DCECDC;
+  background-color: #F5FAF5;
   transition: all 0.3s ease;
 }
 
 .bulk-form-container .form-control:focus {
   outline: none;
-  border-color: #8B1A10;
-  box-shadow: 0 0 0 3px rgba(139, 26, 16, 0.1);
+  border-color: #1A5D1A;
+  box-shadow: 0 0 0 3px rgba(26, 93, 26, 0.1);
   background-color: #fff;
 }
 

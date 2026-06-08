@@ -87,7 +87,6 @@ def seed_database():
         # Seed default products
         products_list = [
             Product(
-                id=1,
                 name="Artisan Idli & Dosa Batter",
                 category="traditional",
                 description="Stone-ground parboiled rice and urad dal batter, perfectly fermented for fluffy idlis and crispy dosas. 100% natural, no preservatives.",
@@ -99,7 +98,6 @@ def seed_database():
                 diet_type="Veg"
             ),
             Product(
-                id=2,
                 name="Artisan Ragi (Finger Millet) Batter",
                 category="millet",
                 description="Healthy, iron-rich finger millet and urad dal batter. Ideal for diabetic-friendly, nutritious breakfasts.",
@@ -111,7 +109,6 @@ def seed_database():
                 diet_type="Veg"
             ),
             Product(
-                id=3,
                 name="Crispy Medu Vada Batter",
                 category="traditional",
                 description="Specially ground premium black gram batter with a touch of peppercorn, curry leaves, and ginger. Ready to shape and deep fry.",
@@ -122,7 +119,6 @@ def seed_database():
                 is_available=True
             ),
             Product(
-                id=4,
                 name="Signature Idli Platter",
                 category="ready_to_eat",
                 description="Four steaming hot, pillow-soft idlis served with Amma's signature tomato-onion chutney, coconut chutney, and piping hot sambar.",
@@ -133,7 +129,6 @@ def seed_database():
                 is_available=True
             ),
             Product(
-                id=5,
                 name="Amma's Special Ghee Podi Dosa",
                 category="ready_to_eat",
                 description="Large, golden crispy crepe smeared with aromatic spiced lentil powder (podi) and pure home-refined cow ghee. Served with chutneys and sambar.",
@@ -144,7 +139,6 @@ def seed_database():
                 is_available=True
             ),
             Product(
-                id=6,
                 name="Malabar Parotta with Veg Kurma",
                 category="ready_to_eat",
                 description="Two flaky, multi-layered hand-stretched parottas served with a flavorful rich coconut gravy packed with garden fresh vegetables.",
@@ -155,7 +149,6 @@ def seed_database():
                 is_available=True
             ),
             Product(
-                id=7,
                 name="Premium Chapati (Half-Cooked Pack)",
                 category="ready_to_cook",
                 description="100% whole wheat chapatis, lightly toasted on a tawa. Just heat for 30 seconds on each side and serve hot. Preservative free.",
@@ -166,7 +159,6 @@ def seed_database():
                 is_available=True
             ),
             Product(
-                id=8,
                 name="Poori & Aloo Masala (Ready-to-Fry Pack)",
                 category="ready_to_cook",
                 description="Freshly rolled poori discs ready for deep frying, bundled with a vacuum-packed delicious potato onion masala curry.",
@@ -184,7 +176,6 @@ def seed_database():
         # Seed variants in batter_products table
         batters_list = [
             BatterProduct(
-                id=1,
                 product_name="Artisan Idli & Dosa Batter",
                 variant="Standard Pouch",
                 weight="1kg",
@@ -196,7 +187,6 @@ def seed_database():
                 image="/assets/Food images/Batters/Dosa Batter.webp"
             ),
             BatterProduct(
-                id=2,
                 product_name="Artisan Ragi (Finger Millet) Batter",
                 variant="Nutri Pack",
                 weight="1kg",
@@ -208,7 +198,6 @@ def seed_database():
                 image="/assets/Food images/Batters/Idli Batter.webp"
             ),
             BatterProduct(
-                id=3,
                 product_name="Crispy Medu Vada Batter",
                 variant="Standard Cup",
                 weight="500g",
@@ -332,23 +321,23 @@ def seed_database():
 
         print("Seeding live website activity traffic logs...")
         activity_logs = [
-            WebsiteActivity(ip_address="192.168.1.50", activity_type="page_view", timestamp=datetime.utcnow() - timedelta(minutes=1)),
-            WebsiteActivity(ip_address="192.168.1.51", activity_type="page_view", timestamp=datetime.utcnow() - timedelta(minutes=2)),
-            WebsiteActivity(ip_address="192.168.1.52", activity_type="page_view", timestamp=datetime.utcnow() - timedelta(minutes=3)),
-            WebsiteActivity(ip_address="192.168.1.53", activity_type="page_view", timestamp=datetime.utcnow() - timedelta(minutes=4)),
-            WebsiteActivity(ip_address="192.168.1.54", activity_type="page_view", timestamp=datetime.utcnow() - timedelta(minutes=8)),
+            WebsiteActivity(ip_address="192.168.1.50", activity_type="page_view"),
+            WebsiteActivity(ip_address="192.168.1.51", activity_type="page_view"),
+            WebsiteActivity(ip_address="192.168.1.52", activity_type="page_view"),
+            WebsiteActivity(ip_address="192.168.1.53", activity_type="page_view"),
+            WebsiteActivity(ip_address="192.168.1.54", activity_type="page_view"),
             
-            WebsiteActivity(ip_address="192.168.1.50", activity_type="product_view", product_id=1, timestamp=datetime.utcnow() - timedelta(minutes=1)),
-            WebsiteActivity(ip_address="192.168.1.51", activity_type="product_view", product_id=1, timestamp=datetime.utcnow() - timedelta(minutes=2)),
-            WebsiteActivity(ip_address="192.168.1.52", activity_type="product_view", product_id=2, timestamp=datetime.utcnow() - timedelta(minutes=3)),
-            WebsiteActivity(ip_address="192.168.1.53", activity_type="product_view", product_id=1, timestamp=datetime.utcnow() - timedelta(minutes=4)),
-            WebsiteActivity(ip_address="192.168.1.50", activity_type="product_view", product_id=4, timestamp=datetime.utcnow() - timedelta(minutes=5)),
+            WebsiteActivity(ip_address="192.168.1.50", activity_type="product_view", product_id=1),
+            WebsiteActivity(ip_address="192.168.1.51", activity_type="product_view", product_id=1),
+            WebsiteActivity(ip_address="192.168.1.52", activity_type="product_view", product_id=2),
+            WebsiteActivity(ip_address="192.168.1.53", activity_type="product_view", product_id=1),
+            WebsiteActivity(ip_address="192.168.1.50", activity_type="product_view", product_id=4),
             
-            WebsiteActivity(ip_address="192.168.1.50", activity_type="add_to_cart", product_id=1, timestamp=datetime.utcnow() - timedelta(minutes=1)),
-            WebsiteActivity(ip_address="192.168.1.52", activity_type="add_to_cart", product_id=2, timestamp=datetime.utcnow() - timedelta(minutes=3)),
+            WebsiteActivity(ip_address="192.168.1.50", activity_type="add_to_cart", product_id=1),
+            WebsiteActivity(ip_address="192.168.1.52", activity_type="add_to_cart", product_id=2),
             
-            WebsiteActivity(ip_address="192.168.1.53", activity_type="order_placed", timestamp=datetime.utcnow() - timedelta(minutes=4)),
-            WebsiteActivity(ip_address="192.168.1.51", activity_type="customer_registered", timestamp=datetime.utcnow() - timedelta(minutes=2))
+            WebsiteActivity(ip_address="192.168.1.53", activity_type="order_placed"),
+            WebsiteActivity(ip_address="192.168.1.51", activity_type="customer_registered")
         ]
         for act in activity_logs:
             db.session.add(act)

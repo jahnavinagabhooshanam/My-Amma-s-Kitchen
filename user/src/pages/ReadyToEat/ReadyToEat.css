@@ -73,10 +73,18 @@
 /* Category Filters */
 .rte-filters {
   display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
+  justify-content: flex-start;
+  flex-wrap: nowrap;
   gap: 12px;
   margin-bottom: 30px;
+  overflow-x: auto;
+  white-space: nowrap;
+  padding-bottom: 10px;
+  -webkit-overflow-scrolling: touch;
+}
+
+.rte-filters::-webkit-scrollbar {
+  display: none;
 }
 
 .rte-filter-chip {
@@ -412,5 +420,11 @@
   }
   .rte-hero-title {
     font-size: 2.5rem;
+  }
+}
+
+@media (min-width: 1200px) {
+  .rte-grid {
+    grid-template-columns: repeat(5, 1fr) !important;
   }
 }

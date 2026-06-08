@@ -1,1 +1,22 @@
 /* App-specific styles can go here, global styles are in index.css */
+
+.checkout-bottom-bar {
+  position: fixed;
+  bottom: 70px; /* Accounts for mobile BottomNav height */
+  left: 0;
+  width: 100%;
+  background: white;
+  padding: 15px 20px;
+  padding-bottom: calc(15px + env(safe-area-inset-bottom));
+  box-shadow: 0 -4px 20px rgba(0,0,0,0.08);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+@media (min-width: 769px) {
+  .checkout-bottom-bar {
+    bottom: 0; /* No BottomNav on desktop */
+  }
+}

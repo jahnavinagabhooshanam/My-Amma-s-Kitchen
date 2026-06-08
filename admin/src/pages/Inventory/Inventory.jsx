@@ -208,22 +208,22 @@ const Inventory = () => {
                         const isLow = item.remaining_stock < item.min_required;
                         return (
                           <tr key={item.id}>
-                            <td><strong>#RAW-{item.id}</strong></td>
-                            <td>
+                            <td data-label="Commodity Code"><strong>#RAW-{item.id}</strong></td>
+                            <td data-label="Item Name">
                               <strong>{item.product_name}</strong>
                             </td>
-                            <td>{item.stock} {item.unit}</td>
-                            <td>{item.stock_used} {item.unit}</td>
-                            <td style={{ fontSize: '15px', fontWeight: '700', color: 'var(--theme-color)' }}>
+                            <td data-label="Current Stock">{item.stock} {item.unit}</td>
+                            <td data-label="Stock Used">{item.stock_used} {item.unit}</td>
+                            <td data-label="Remaining Stock" style={{ fontSize: '15px', fontWeight: '700', color: 'var(--theme-color)' }}>
                               {item.remaining_stock} {item.unit}
                             </td>
-                            <td className="text-muted">{item.min_required} {item.unit}</td>
-                            <td>
+                            <td data-label="Minimum Threshold" className="text-muted">{item.min_required} {item.unit}</td>
+                            <td data-label="Stock Alert">
                               <span className={`badge-status ${isLow ? 'inactive' : 'approved'}`}>
                                 {isLow ? 'Low Stock Warning' : 'Healthy Level'}
                               </span>
                             </td>
-                            <td>
+                            <td data-label="Actions">
                               <div style={{ position: 'relative', display: 'inline-block' }} onMouseLeave={() => setActiveDropdown(null)}>
                                 <button 
                                   onClick={() => setActiveDropdown(activeDropdown === item.id ? null : item.id)}

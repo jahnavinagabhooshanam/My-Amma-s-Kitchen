@@ -4,6 +4,7 @@ import { AuthProvider } from './context/AuthContext';
 import Login from './pages/Login/Login';
 import AdminRoutes from './routes/AdminRoutes';
 import './App.css';
+import './assets/styles/responsive.css';
 
 function App() {
   return (

@@ -7,27 +7,27 @@
 
 :root {
   /* Color Palette - Premium Organic Kitchen Theme */
-  --primary-color: #C84B31;       /* Deep Terracotta Clay */
-  --primary-dark: #A73C26;        /* Warm Dark Earth */
-  --primary-light: #FBEBE8;       /* Soft Blush Pink */
-  --secondary-color: #2D5A27;     /* Fresh Sage Green */
-  --secondary-dark: #1E3F1A;      /* Rich Deep Green */
-  --secondary-light: #EAF2E8;     /* Pale Mint/Sage */
+  --primary-color: #2E8B57;       /* Primary Green */
+  --primary-dark: #0F3D2E;        /* Dark Green */
+  --primary-light: #73C69D;       /* Light Green */
+  --secondary-color: #FF6B35;     /* Orange CTA */
+  --secondary-dark: #ff5722;      /* Orange CTA Dark */
+  --secondary-light: #F5B941;     /* Gold Accent */
   
-  --bg-primary: #FCFBF7;          /* Premium Warm Cream/Ivory */
-  --bg-secondary: #FFFFFF;        /* Clean White */
-  --bg-tertiary: #F5F3E9;         /* Aged Parchment */
+  --bg-primary: #FAF8F3;          /* Cream Background */
+  --bg-secondary: #FFFFFF;        /* Pure White */
+  --bg-tertiary: #FAF8F3;         /* Cream Background */
   
-  --text-dark: #2B2A27;           /* Rich Charcoal Black */
-  --text-muted: #7A7870;          /* Warm Earthy Grey */
+  --text-dark: #1E1E1E;           /* Dark Text */
+  --text-muted: #666666;          /* Light Text */
   --text-light: #FFFFFF;          /* Pure White */
   
-  --border-color: #EAE6DB;        /* Warm Soft Border */
-  --border-focus: #C84B31;        /* Terracotta focus */
+  --border-color: #EAEAEA;        /* Border */
+  --border-focus: #2E8B57;        
   
-  --success: #27AE60;
-  --warning: #F39C12;
-  --danger: #E74C3C;
+  --success: #4CAF50;
+  --warning: #F5B941;
+  --danger: #FF3D00;
   --info: #2980B9;
 
   /* Typography */
@@ -74,6 +74,27 @@ html, body {
   line-height: 1.6;
   scroll-behavior: smooth;
   -webkit-font-smoothing: antialiased;
+  position: relative;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  background-image: 
+    url('data:image/svg+xml;utf8,<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><path d="M0,0 C50,0 100,50 100,100 L0,100 Z" fill="%232E8B57"/></svg>'),
+    url('data:image/svg+xml;utf8,<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><path d="M100,0 C50,0 0,50 0,100 L100,100 Z" fill="%232E8B57"/></svg>'),
+    url('data:image/svg+xml;utf8,<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><path d="M0,100 C50,100 100,50 100,0 L0,0 Z" fill="%232E8B57"/></svg>'),
+    url('data:image/svg+xml;utf8,<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><path d="M100,100 C50,100 0,50 0,0 L100,0 Z" fill="%232E8B57"/></svg>');
+  background-position: top left, top right, bottom left, bottom right;
+  background-size: 200px 200px;
+  background-repeat: no-repeat;
+  opacity: 0.04;
+  z-index: 0;
 }
 
 a {

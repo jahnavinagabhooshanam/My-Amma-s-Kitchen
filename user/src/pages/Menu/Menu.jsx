@@ -1,353 +1,208 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { motion } from 'framer-motion';
-import {
-  ChevronLeft, ChevronRight, Plus, Star,
-  BookOpen, Search, Feather
-} from 'lucide-react';
+import { Star, Clock, Plus, Search, LayoutGrid } from 'lucide-react';
 import apiClient from '../../services/api';
 import { useCart } from '../../context/CartContext';
 import DishDetailsModal from './DishDetailsModal';
-import logoImg from '../../assets/img/logo.png';
 import './Menu.css';
 
-/* ── Constants ── */
-const ITEMS_PER_PAGE = 9;
-
-const CATEGORY_ORDER = [
-  'breakfast', 'lunch', 'dinner',
-  'ready to eat', 'ready to cook',
-  'batter products', 'snacks', 'beverages'
-];
-
 const resolveImg = (path) => {
-  if (!path) return null;
+  if (!path) return 'https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=800&q=80';
   if (path.startsWith('http')) return path;
   const clean = path.replace(/^\/?(api\/)?assets\//, '');
-  return `http://localhost:5000/assets/${clean}`;
+  return `http://127.0.0.1:5000/assets/${clean}`;
 };
 
-const TODAY = new Date().toLocaleDateString('en-IN', {
-  weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'
-});
+const CATEGORY_ORDER = [
+  'All', 'Breakfast', 'Lunch', 'Dinner', 'Ready To Eat', 'Ready To Cook', 'Batter Products', 'Snacks', 'Curries', 'Combos', 'Bestsellers'
+];
 
-/* ══════════════════════════════════════════════════════════ */
+const CATEGORY_ICONS = {
+  'Breakfast': '🥞',
+  'Lunch': '🍱',
+  'Snacks': '🥟',
+  'Curries': '🍲',
+  'Combos': '🎁',
+  'Bestsellers': '⭐',
+  'Ready To Eat': '🍛',
+  'Ready To Cook': '🍳',
+  'Batter Products': '🥣',
+  'Dinner': '🥘'
+};
 
 const Menu = () => {
   const { addToCart } = useCart();
-
-
-
-  /* Book data */
-  const [loading,      setLoading]      = useState(true);
-  const [allProducts,  setAllProducts]  = useState([]);
-  const [grouped,      setGrouped]      = useState({});
-  const [catKeys,      setCatKeys]      = useState([]);
-  const [turnedCount,  setTurnedCount]  = useState(0);
+  
+  const [loading, setLoading] = useState(true);
+  const [allProducts, setAllProducts] = useState([]);
+  const [activeCategory, setActiveCategory] = useState('All');
   const [selectedDish, setSelectedDish] = useState(null);
-  const [searchQuery,  setSearchQuery]  = useState('');
-  const [searchResults,setSearchResults]= useState(null);
+  const [searchQuery, setSearchQuery] = useState('');
 
-  /* Fetch */
   useEffect(() => {
     const load = async () => {
       setLoading(true);
       try {
         const res = await apiClient.get('/products/', { params: { limit: 200 } });
-        const data = res.data || [];
-        setAllProducts(data);
-        const g = {};
-        data.forEach(p => {
-          const key = (p.category || 'specials')
-            .toLowerCase().replace(/_/g,' ').replace(/-/g,' ').trim();
-          if (!g[key]) g[key] = [];
-          g[key].push(p);
-        });
-        setGrouped(g);
-        const keys = [
-          ...CATEGORY_ORDER.filter(k => g[k]),
-          ...Object.keys(g).filter(k => !CATEGORY_ORDER.includes(k)),
-        ];
-        setCatKeys(keys);
-      } catch (e) { console.error(e); }
-      finally { setLoading(false); }
+        setAllProducts(res.data || []);
+      } catch (e) { 
+        console.error("Failed to load products", e); 
+      } finally { 
+        setLoading(false); 
+      }
     };
     load();
   }, []);
 
-
-
-  /* Search */
-  useEffect(() => {
-    const q = searchQuery.trim().toLowerCase();
-    if (!q) { setSearchResults(null); return; }
-    const hits = allProducts.filter(p =>
-      p.name?.toLowerCase().includes(q) || p.description?.toLowerCase().includes(q)
-    );
-    setSearchResults(hits);
-  }, [searchQuery, allProducts]);
-
-  /* Build pages: one page = ITEMS_PER_PAGE items */
-  const pages = useMemo(() => {
-    const list = [];
-    catKeys.forEach(key => {
-      const items = grouped[key] || [];
-      for (let i = 0; i < items.length; i += ITEMS_PER_PAGE) {
-        list.push({
-          catKey: key,
-          items: items.slice(i, i + ITEMS_PER_PAGE),
-          pageNum: list.length + 1,
-        });
+  const categories = useMemo(() => {
+    const cats = ['All'];
+    allProducts.forEach(p => {
+      if (p.category) {
+        const cleanCat = p.category.replace(/_/g, ' ').replace(/-/g, ' ');
+        const titleCase = cleanCat.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+        if (!cats.includes(titleCase)) cats.push(titleCase);
       }
     });
-    return list;
-  }, [catKeys, grouped]);
+    return cats.sort((a, b) => {
+      const idxA = CATEGORY_ORDER.indexOf(a);
+      const idxB = CATEGORY_ORDER.indexOf(b);
+      if (idxA !== -1 && idxB !== -1) return idxA - idxB;
+      if (idxA !== -1) return -1;
+      if (idxB !== -1) return 1;
+      return a.localeCompare(b);
+    });
+  }, [allProducts]);
 
-  const totalPages  = pages.length;
-  // Calculate max possible turns based on pairs of pages
-  const maxTurnedCount = Math.max(0, Math.floor((totalPages - 1) / 2));
-  const numLeaves   = Math.max(0, Math.ceil((totalPages - 1) / 2));
-  
-  const canNext     = turnedCount < maxTurnedCount;
-  const canPrev     = turnedCount > 0;
-  
-  // For the active bookmark tracking
-  const leftPageIndex = turnedCount * 2;
-  const rightPageIndex = turnedCount * 2 + 1;
-  const currentPage = pages[leftPageIndex] ?? pages[rightPageIndex] ?? null;
-
-  const goNext   = () => { if (canNext) setTurnedCount(c => c + 1); };
-  const goPrev   = () => { if (canPrev) setTurnedCount(c => c - 1); };
-  const jumpToCat = (key) => {
-    const idx = pages.findIndex(p => p.catKey === key);
-    if (idx !== -1) setTurnedCount(Math.floor(idx / 2));
-  };
-
-  /* z-index stacking */
-  const getZ = (i) => {
-    if (i === turnedCount) return 1000;
-    if (i < turnedCount)   return i + 1;
-    return 500 + (numLeaves - i);
-  };
-
-  /* ─── Render a single item row ─── */
-  const renderItem = (item) => (
-    <div key={item.id} className="menu-item-row" onClick={() => setSelectedDish(item)}>
-      <div
-        className={`diet-dot ${item.diet_type?.toLowerCase() === 'non-veg' ? 'nonveg' : 'veg'}`}
-        title={item.diet_type}
-      />
-      {item.image && (
-        <div className="menu-item-img-wrapper">
-          <img src={resolveImg(item.image)} alt={item.name} className="menu-item-img" loading="lazy" />
-        </div>
-      )}
-      <div className="menu-item-details-flex">
-        <div className="menu-item-header">
-          <h4 className="menu-item-name">{item.name}</h4>
-          <div className="menu-item-dots" />
-          <span className="menu-item-price">₹{item.price}</span>
-        </div>
-        <p className="menu-item-desc">
-          {item.description || 'Authentic home-style recipe, prepared fresh daily.'}
-        </p>
-      </div>
-      <button
-        className="add-btn-elegant"
-        disabled={item.in_stock === false}
-        onClick={e => { e.stopPropagation(); addToCart(item); }}
-        title={item.in_stock === false ? 'Sold Out' : 'Add to Order'}
-      >
-        <Plus size={13} />
-      </button>
-    </div>
-  );
-
-  /* ─── Render one page of items ─── */
-  const renderPage = (pageData, isRightSide = false) => {
-    /* Search mode */
-    if (searchResults !== null) {
-      if (!isRightSide) return <div className="page-right" />; // Hide on left side so it doesn't duplicate
-      return (
-        <div className="page-right">
-          <div className="right-cat-header">
-            <h2 className="right-cat-title" style={{ fontSize: '1.2rem' }}>Search Results</h2>
-            <div className="right-ornament">
-              <div className="right-ornament-line" />
-              <span className="right-ornament-star">✦</span>
-              <div className="right-ornament-line" />
-            </div>
-          </div>
-          <div className="search-results-label">
-            {searchResults.length} dish{searchResults.length !== 1 ? 'es' : ''} found
-            for &ldquo;{searchQuery}&rdquo;
-          </div>
-          <div className="menu-items-list" style={{ overflowY: 'auto' }}>
-            {searchResults.length === 0
-              ? <div style={{ textAlign: 'center', padding: '40px 0', color: 'var(--ink-light)', fontStyle: 'italic' }}>No dishes found.</div>
-              : searchResults.map(renderItem)
-            }
-          </div>
-        </div>
+  const filteredProducts = useMemo(() => {
+    let filtered = allProducts;
+    if (activeCategory !== 'All') {
+      filtered = filtered.filter(p => {
+        const cleanCat = (p.category || '').replace(/_/g, ' ').replace(/-/g, ' ');
+        const titleCase = cleanCat.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+        return titleCase === activeCategory;
+      });
+    }
+    if (searchQuery.trim()) {
+      const q = searchQuery.toLowerCase();
+      filtered = filtered.filter(p => 
+        p.name?.toLowerCase().includes(q) || p.description?.toLowerCase().includes(q)
       );
     }
+    return filtered;
+  }, [allProducts, activeCategory, searchQuery]);
 
-    /* Empty / end of menu */
-    if (!pageData) {
-      return (
-        <div className="page-right" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', opacity: 0.2 }}>
-          <div style={{ textAlign: 'center' }}>
-            <div style={{ fontSize: '3rem', marginBottom: 12 }}>✦</div>
-            <p style={{ fontFamily: "'Playfair Display',serif", letterSpacing: 4, color: 'var(--ink-light)', fontSize: '1rem' }}>
-              Amma's Kitchen
-            </p>
-            <div style={{ width: 60, height: 1, background: 'var(--gold)', margin: '12px auto' }} />
-            <p style={{ fontSize: '0.72rem', letterSpacing: 3, color: 'var(--ink-light)', textTransform: 'uppercase' }}>
-              Est. with Love
-            </p>
-          </div>
-        </div>
-      );
-    }
-
-    /* Normal page with items */
-    return (
-      <div className="page-right">
-        <div className="right-cat-header">
-          <h2 className="right-cat-title">{pageData.catKey.toUpperCase()}</h2>
-          <div className="right-ornament">
-            <div className="right-ornament-line" />
-            <span className="right-ornament-star">✦</span>
-            <div className="right-ornament-line" />
-          </div>
-        </div>
-        <div className="menu-items-list">
-          {pageData.items.map(renderItem)}
-        </div>
-        <div className="page-filler">
-          <div className="filler-ornament">✦</div>
-          <span className="filler-text">Prepared fresh with Amma's love</span>
-          <div className="filler-ornament">✦</div>
-        </div>
-        <div className="page-number">─── {pageData.pageNum} / {totalPages} ───</div>
-      </div>
-    );
-  };
-
-  /* ════════════════════════════════════════════
-     COVER PAGE
-     ════════════════════════════════════════════ */
-
-
-  /* ════════════════════════════════════════════
-     BOOK VIEW
-     ════════════════════════════════════════════ */
   return (
-    <motion.div
-      className="menu-page"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.5 }}
-    >
-      {/* Controls */}
-      <div className="book-controls">
-        <button className="book-btn" onClick={goPrev} disabled={!canPrev || loading}>
-          <ChevronLeft size={16} /> Prev
-        </button>
-        <span className="book-title-top">
-          <BookOpen size={16} /> Amma's Kitchen
-        </span>
-        <div className="book-search-wrap">
-          <Search size={13} className="book-search-icon" />
-          <input
-            className="book-search"
-            placeholder="Search dishes…"
+    <div className="app-menu-container pb-5 mb-5" style={{ background: '#FAF9F5', minHeight: '100vh' }}>
+      
+      {/* Search Bar - visible only on desktop since mobile has header search, but let's keep a functional one */}
+      <div className="app-menu-search d-none d-lg-block" style={{ padding: '20px', background: 'white' }}>
+        <div className="search-bar-app" style={{ maxWidth: '600px', margin: '0 auto' }}>
+          <Search size={18} color="var(--text-muted)" />
+          <input 
+            type="text" 
+            placeholder="Search for idli, dosa, batter..." 
             value={searchQuery}
-            onChange={e => setSearchQuery(e.target.value)}
+            onChange={(e) => setSearchQuery(e.target.value)}
           />
         </div>
-        <button className="book-btn" onClick={goNext} disabled={!canNext || loading}>
-          Next <ChevronRight size={16} />
-        </button>
       </div>
 
-      {/* Book stage */}
-      {loading ? (
-        <div className="menu-loading">
-          <div className="menu-loading-title">Opening Menu…</div>
-          <div className="menu-loading-sub">Preparing your dining experience</div>
-          <div className="menu-loading-dots">
-            <div className="menu-loading-dot" />
-            <div className="menu-loading-dot" />
-            <div className="menu-loading-dot" />
-          </div>
+      {/* Horizontal Filter Chips */}
+      <div className="app-menu-filters" style={{ background: 'white', padding: '15px 20px', position: 'sticky', top: 0, zIndex: 100, borderBottom: '1px solid #EAEAEA' }}>
+        <div style={{ display: 'flex', gap: 12, overflowX: 'auto', scrollbarWidth: 'none', paddingBottom: 5 }}>
+          {categories.map(cat => (
+            <button
+              key={cat}
+              onClick={() => setActiveCategory(cat)}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px',
+                padding: '8px 20px',
+                borderRadius: '20px',
+                border: activeCategory === cat ? 'none' : '1px solid #EAEAEA',
+                background: activeCategory === cat ? 'var(--primary-color)' : 'white',
+                color: activeCategory === cat ? 'white' : 'var(--text-dark)',
+                fontWeight: 600,
+                fontSize: 13,
+                whiteSpace: 'nowrap',
+                transition: '0.2s ease'
+              }}
+            >
+              {cat === 'All' ? <LayoutGrid size={14} /> : (CATEGORY_ICONS[cat] && <span style={{fontSize: 14}}>{CATEGORY_ICONS[cat]}</span>)}
+              {cat}
+            </button>
+          ))}
         </div>
-      ) : (
-        <div className="book-stage" style={{ perspective: '2400px', perspectiveOrigin: '50% 50%' }}>
+      </div>
 
-          {/* Static background: both halves same ivory */}
-          <div className="book-inner">
-            {/* Inner Left: Page 0 */}
-            <div className="book-bg-half left">
-              {renderPage(pages[0], false)}
-            </div>
-            {/* Inner Right: Empty (shown when all leaves turned) */}
-            <div className="book-bg-half right">
-              {renderPage(null, true)}
-            </div>
+      {/* Product List */}
+      <div className="app-menu-list desktop-container" style={{ padding: '20px', margin: '0 auto' }}>
+        {loading ? (
+          <div style={{ textAlign: 'center', padding: '50px 0' }}>
+            <div className="spinner-border text-primary" role="status"></div>
+            <p className="mt-3 text-muted">Loading menu...</p>
           </div>
-
-          {/* Spine */}
-          <div className="book-spine" />
-
-          {/* Category bookmarks */}
-          <div className="category-bookmark-rail">
-            {catKeys.map(key => (
-              <button
-                key={key}
-                className={`category-bookmark ${currentPage?.catKey === key ? 'bk-active' : ''}`}
-                onClick={() => { setSearchQuery(''); jumpToCat(key); }}
-                title={key.toUpperCase()}
-              >
-                {key.slice(0, 8).toUpperCase()}
-              </button>
-            ))}
+        ) : filteredProducts.length === 0 ? (
+          <div style={{ textAlign: 'center', padding: '50px 0' }}>
+            <p className="text-muted">No dishes found matching your criteria.</p>
           </div>
-
-          {/* Leaves — each leaf front = right page (current), back = left page of next spread */}
-          {Array.from({ length: numLeaves }).map((_, i) => {
-            const isTurned = i < turnedCount;
-            const frontPage = pages[i * 2 + 1];
-            const backPage = pages[i * 2 + 2];
-
-            return (
-              <motion.div
-                key={i}
-                className="book-leaf"
-                initial={false}
-                animate={{ rotateY: isTurned ? -180 : 0 }}
-                transition={{ duration: 0.75, ease: [0.4, 0, 0.2, 1] }}
-                style={{ zIndex: getZ(i) }}
+        ) : (
+          <div className="app-food-list" style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+            {filteredProducts.map((item, i) => (
+              <motion.div 
+                key={item.id || i}
+                initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}
+                className="app-food-card-horizontal" 
+                style={{ display: 'flex', flexDirection: 'row-reverse', gap: 15, padding: 15, background: 'white', borderRadius: 16, border: '1px solid #EAEAEA', boxShadow: '0 2px 8px rgba(0,0,0,0.02)' }}
+                onClick={() => setSelectedDish(item)}
               >
-                {/* FRONT — right side when unturned */}
-                <div className="leaf-face leaf-front">
-                  {renderPage(frontPage, true)}
+                <div className="menu-desktop-img" style={{ position: 'relative', width: 130, height: 130, flexShrink: 0 }}>
+                  <img src={resolveImg(item.image)} alt={item.name} style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: 12 }} />
+                  <button 
+                    onClick={(e) => { e.stopPropagation(); addToCart(item); }}
+                    disabled={item.in_stock === false}
+                    style={{ 
+                      position: 'absolute', bottom: -12, left: '50%', transform: 'translateX(-50%)', 
+                      background: 'white', color: item.in_stock === false ? 'gray' : 'var(--primary-color)', 
+                      border: '1px solid #EAEAEA', borderRadius: 8, padding: '6px 24px', 
+                      fontSize: 13, fontWeight: 800, boxShadow: '0 4px 10px rgba(0,0,0,0.1)',
+                      whiteSpace: 'nowrap'
+                    }}
+                  >
+                    {item.in_stock === false ? 'SOLD OUT' : 'ADD +'}
+                  </button>
                 </div>
-                {/* BACK — left side when turned */}
-                <div className="leaf-face leaf-back">
-                  {renderPage(backPage, false)}
+
+                <div className="menu-desktop-text" style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6 }}>
+                    <div className={`diet-dot ${item.diet_type?.toLowerCase() === 'non-veg' ? 'nonveg' : 'veg'}`} style={{ width: 12, height: 12, border: `1px solid ${item.diet_type?.toLowerCase() === 'non-veg' ? '#E74C3C' : '#27AE60'}`, padding: 2, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      <div style={{ width: 6, height: 6, borderRadius: '50%', background: item.diet_type?.toLowerCase() === 'non-veg' ? '#E74C3C' : '#27AE60' }}></div>
+                    </div>
+                    {item.is_bestseller && <span style={{ fontSize: 10, color: '#E84C3D', fontWeight: 700, background: '#FDF2F0', padding: '2px 6px', borderRadius: 4 }}>BESTSELLER</span>}
+                  </div>
+                  <h4 style={{ fontSize: 16, fontWeight: 700, marginBottom: 4, color: 'var(--text-dark)' }}>{item.name}</h4>
+                  <div style={{ fontSize: 15, fontWeight: 600, color: 'var(--text-dark)', marginBottom: 8 }}>₹{item.price}</div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: 11, color: 'var(--text-muted)', marginBottom: 8 }}>
+                    <span style={{ display: 'flex', alignItems: 'center', gap: 2, background: '#F5F5F0', padding: '2px 6px', borderRadius: 4 }}><Star size={10} fill="var(--warning)" color="var(--warning)"/> 4.5</span>
+                    <span><Clock size={10}/> 20-30 mins</span>
+                  </div>
+                  <p style={{ fontSize: 12, color: 'var(--text-muted)', lineHeight: 1.4, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+                    {item.description || 'Authentic south indian delicacy prepared with love and premium ingredients.'}
+                  </p>
                 </div>
               </motion.div>
-            );
-          })}
-        </div>
-      )}
+            ))}
+          </div>
+        )}
+      </div>
 
       <DishDetailsModal
         dish={selectedDish}
         onClose={() => setSelectedDish(null)}
         resolveImagePath={resolveImg}
       />
-    </motion.div>
+    </div>
   );
 };
 

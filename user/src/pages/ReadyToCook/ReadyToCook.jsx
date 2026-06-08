@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useCart } from '../../context/CartContext';
 import { resolveImagePath } from '../../components/FoodCard';
-import { Clock, ShieldCheck, Leaf, Flame, Sparkles } from 'lucide-react';
+import { Clock, ShieldCheck, Leaf, Flame, Sparkles, LayoutGrid, Search, Filter } from 'lucide-react';
 import apiClient from '../../services/api';
 import SEO from '../../components/SEO';
 import './ReadyToCook.css';
@@ -63,9 +63,18 @@ const ReadyToCook = () => {
   const { addToCart } = useCart();
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [activeCategory, setActiveCategory] = useState('All');
+  const [activeCategory, setActiveCategory] = useState('All Items');
+  const [dietFilter, setDietFilter] = useState('All');
+  const [search, setSearch] = useState('');
 
-  const CATEGORIES = ['All', 'Ready To Cook', 'Batter', 'Breakfast', 'Snacks', 'Popular', 'Veg', 'Non-Veg'];
+  const CATEGORIES = ['All Items', 'Batter', 'Breakfast', 'Snacks', 'Popular'];
+  const CATEGORY_ICONS = {
+    'All Items': <LayoutGrid size={16} />,
+    'Batter': '🏺',
+    'Breakfast': '🍳',
+    'Snacks': '🥟',
+    'Popular': '🌟'
+  };
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -91,15 +100,28 @@ const ReadyToCook = () => {
 
   // Filtering logic
   const getFilteredProducts = () => {
-    if (activeCategory === 'All') return products;
-    if (activeCategory === 'Batter') return products.filter(p => ['traditional', 'millet', 'health', 'batter_products', 'family_packs', 'premium'].includes(p.category) || p.name.toLowerCase().includes('batter') || p.name.toLowerCase().includes('dosa'));
-    if (activeCategory === 'Ready To Cook') return products.filter(p => p.category === 'ready_to_cook' || p.category === 'ready-to-cook');
-    if (activeCategory === 'Breakfast') return products.filter(p => p.name.toLowerCase().includes('batter') || p.name.toLowerCase().includes('idli'));
-    if (activeCategory === 'Snacks') return products.filter(p => p.name.toLowerCase().includes('tikka') || p.name.toLowerCase().includes('snack'));
-    if (activeCategory === 'Popular') return products.filter(p => p.id === 'bat-1' || p.id === 'rtc-2' || p.name.includes('Premium') || p.name.includes('Sambar'));
-    if (activeCategory === 'Veg') return products.filter(p => p.diet_type === 'Veg' || !p.diet_type);
-    if (activeCategory === 'Non-Veg') return products.filter(p => p.diet_type === 'Non-Veg');
-    return products;
+    let filtered = products;
+    if (activeCategory === 'Batter') filtered = products.filter(p => ['traditional', 'millet', 'health', 'batter_products', 'family_packs', 'premium'].includes(p.category) || p.name.toLowerCase().includes('batter') || p.name.toLowerCase().includes('dosa'));
+    else if (activeCategory === 'Breakfast') filtered = products.filter(p => p.name.toLowerCase().includes('batter') || p.name.toLowerCase().includes('idli'));
+    else if (activeCategory === 'Snacks') filtered = products.filter(p => p.name.toLowerCase().includes('tikka') || p.name.toLowerCase().includes('snack'));
+    else if (activeCategory === 'Popular') filtered = products.filter(p => p.id === 'bat-1' || p.id === 'rtc-2' || p.name.includes('Premium') || p.name.includes('Sambar'));
+
+    if (dietFilter === 'Veg') {
+      filtered = filtered.filter(p => {
+        const isNonVegItem = p.type === 'Non-Veg' || p.diet_type === 'Non-Veg' || (['chicken', 'mutton', 'fish', 'egg', 'prawn', 'crab', 'beef', 'pork', 'meat', 'biriyani', 'prawns'].some(keyword => p.name.toLowerCase().includes(keyword)) && !p.name.toLowerCase().includes('veg bir'));
+        return !isNonVegItem;
+      });
+    } else if (dietFilter === 'Non-Veg') {
+      filtered = filtered.filter(p => {
+        const isNonVegItem = p.type === 'Non-Veg' || p.diet_type === 'Non-Veg' || (['chicken', 'mutton', 'fish', 'egg', 'prawn', 'crab', 'beef', 'pork', 'meat', 'biriyani', 'prawns'].some(keyword => p.name.toLowerCase().includes(keyword)) && !p.name.toLowerCase().includes('veg bir'));
+        return isNonVegItem;
+      });
+    }
+
+    if (search.trim() !== '') {
+      filtered = filtered.filter(p => p.name.toLowerCase().includes(search.toLowerCase()) || (p.description && p.description.toLowerCase().includes(search.toLowerCase())));
+    }
+    return filtered;
   };
 
   const filteredProducts = getFilteredProducts();
@@ -114,8 +136,35 @@ const ReadyToCook = () => {
       
       <div className="container" style={{ maxWidth: '1400px' }}>
         
-        <div className="rtc-header">
-          <h1 className="rtc-title">Artisan Batters & Meal Kits</h1>
+        {/* Search & Filter Bar */}
+        <div style={{ display: 'flex', flexDirection: 'column', marginBottom: '30px' }}>
+          <div className="search-filter-row" style={{ display: 'flex', gap: 15, alignItems: 'center' }}>
+            <div className="search-input-col" style={{ flex: 1, position: 'relative', maxWidth: '600px' }}>
+              <Search size={20} color="#999" className="search-icon" style={{ position: 'absolute', left: 20, top: '50%', transform: 'translateY(-50%)' }} />
+              <input 
+                type="text" 
+                className="search-input-field"
+                placeholder="Search for batters, curries, meals..." 
+                value={search}
+                onChange={e => setSearch(e.target.value)}
+                style={{ width: '100%', padding: '16px 20px 16px 50px', borderRadius: '30px', border: '1px solid #EAEAEA', fontSize: '1rem', outline: 'none', background: 'white', boxShadow: '0 2px 10px rgba(0,0,0,0.02)' }}
+              />
+            </div>
+            <div className="filter-select-col" style={{ position: 'relative' }}>
+              <Filter size={18} color="#2C1A0E" className="filter-icon" style={{ position: 'absolute', left: 20, top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }} />
+              <select 
+                className="filter-select-field"
+                value={dietFilter} 
+                onChange={(e) => setDietFilter(e.target.value)}
+                style={{ appearance: 'none', padding: '16px 40px 16px 48px', borderRadius: '30px', border: '1px solid #EAEAEA', background: 'white', fontWeight: 600, color: '#2C1A0E', boxShadow: '0 2px 10px rgba(0,0,0,0.02)', cursor: 'pointer', outline: 'none' }}
+              >
+                <option value="All">All Diet</option>
+                <option value="Veg">Vegetarian 🌿</option>
+                <option value="Non-Veg">Non-Veg 🍗</option>
+              </select>
+              <div className="filter-arrow" style={{ position: 'absolute', right: 20, top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none', fontSize: '0.8rem', color: '#666' }}>▼</div>
+            </div>
+          </div>
         </div>
 
         {/* Category Filter Chips */}
@@ -125,8 +174,9 @@ const ReadyToCook = () => {
               key={cat}
               className={`rtc-filter-chip ${activeCategory === cat ? 'active' : ''}`}
               onClick={() => setActiveCategory(cat)}
+              style={{ display: 'flex', alignItems: 'center', gap: '8px' }}
             >
-              {cat}
+              {CATEGORY_ICONS[cat]} {cat}
             </button>
           ))}
         </div>
@@ -137,8 +187,8 @@ const ReadyToCook = () => {
           </div>
         ) : (
           <>
-            {/* Featured Product Section - Shows only on "All" or "Popular" */}
-            {(activeCategory === 'All' || activeCategory === 'Popular') && featuredProduct && (
+            {/* Featured Product Section - Shows only on "All Items" or "Popular" */}
+            {(activeCategory === 'All Items' || activeCategory === 'Popular') && featuredProduct && (
               <div className="rtc-featured-section">
                 <div className="rtc-featured-img-wrapper">
                   <img src={resolveImagePath(featuredProduct.image)} alt={featuredProduct.name} className="rtc-featured-img" />
@@ -155,8 +205,8 @@ const ReadyToCook = () => {
               </div>
             )}
 
-            {/* Trending Today - Shows only on "All" */}
-            {activeCategory === 'All' && trendingProducts.length > 0 && (
+            {/* Trending Today - Shows only on "All Items" */}
+            {activeCategory === 'All Items' && trendingProducts.length > 0 && (
               <div style={{ marginBottom: '60px' }}>
                 <h3 className="rtc-section-title"><Flame color="#E91E63" /> Trending Today</h3>
                 <div className="rtc-grid">

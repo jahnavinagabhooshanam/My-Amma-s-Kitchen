@@ -303,8 +303,8 @@ const BulkOrders = () => {
                   <tbody>
                     {filteredBulks.map((b) => (
                       <tr key={b.id}>
-                        <td><strong>#BULK-{b.id}</strong></td>
-                        <td>
+                        <td data-label="Inquiry ID"><strong>#BULK-{b.id}</strong></td>
+                        <td data-label="Customer Details">
                           <strong>{b.customer_name}</strong>
                           <div style={{ fontSize: '11px', color: '#888', marginTop: '2px', display: 'flex', alignItems: 'center', gap: '4px' }}>
                             <Mail size={10} />{b.email}
@@ -313,22 +313,22 @@ const BulkOrders = () => {
                             <Phone size={10} />{b.phone}
                           </div>
                         </td>
-                        <td>
+                        <td data-label="Event Specifications">
                           <div><strong>Type:</strong> {b.company || 'Catering'}</div>
                           <div style={{ fontSize: '12px' }}><strong>Guests:</strong> {b.expected_guests} Plates</div>
                           <div style={{ fontSize: '12px', color: 'var(--theme-color)', fontWeight: '700' }}>
                             <strong>Date:</strong> {b.event_date}
                           </div>
                         </td>
-                        <td style={{ fontSize: '12px', fontStyle: 'italic', maxWidth: '200px' }}>
+                        <td data-label="Notes / Menu" style={{ fontSize: '12px', fontStyle: 'italic', maxWidth: '200px' }}>
                           "{b.items_requested || 'No special requirements listed.'}"
                         </td>
-                        <td>
+                        <td data-label="Invoice">
                           <span className={`badge-status ${b.invoice_generated ? 'completed' : 'pending'}`}>
                             {b.invoice_generated ? 'Issued (GST)' : 'Pending'}
                           </span>
                         </td>
-                        <td>
+                        <td data-label="Assign Partner">
                           <select
                             value={b.assigned_partner_id || ''}
                             onChange={(e) => handlePartnerChange(b.id, e.target.value)}
@@ -340,7 +340,7 @@ const BulkOrders = () => {
                             ))}
                           </select>
                         </td>
-                        <td>
+                        <td data-label="Status Moderation">
                           <select
                             value={b.status}
                             onChange={(e) => handleStatusUpdate(b.id, e.target.value)}
@@ -351,7 +351,7 @@ const BulkOrders = () => {
                             <option value="Rejected">Rejected</option>
                           </select>
                         </td>
-                        <td>
+                        <td data-label="Actions">
                           <div style={{ display: 'flex', gap: '5px', flexDirection: 'column' }}>
                             <button onClick={() => handleOpenQuoteModal(b)} className="th-btn" style={{ padding: '6px 10px', fontSize: '12px', border: 'none', cursor: 'pointer', borderRadius: '8px', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
                               <FileText size={12} /> GST Invoice

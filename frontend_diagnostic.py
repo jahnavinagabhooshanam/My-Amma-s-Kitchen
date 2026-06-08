@@ -34,7 +34,7 @@ if response.status_code == 200:
     token = data.get('token')
     user = data.get('user', {})
     
-    print(f"  ✓ Login successful")
+    print(f"  [SUCCESS] Login successful")
     print(f"  Token received: {token[:50]}...")
     print(f"  User: {user.get('name')} ({user.get('email')})")
     
@@ -42,8 +42,8 @@ if response.status_code == 200:
     print("\n[STEP 3] Frontend stores token in localStorage")
     browser_storage['amma_token'] = token
     browser_storage['auth_provider'] = 'custom'
-    print(f"  ✓ localStorage['amma_token'] = '{token[:50]}...'")
-    print(f"  ✓ localStorage['auth_provider'] = 'custom'")
+    print(f"  [SUCCESS] localStorage['amma_token'] = '{token[:50]}...'")
+    print(f"  [SUCCESS] localStorage['auth_provider'] = 'custom'")
     
     # Step 4: Frontend makes authenticated requests
     print("\n[STEP 4] Frontend makes authenticated API calls")
@@ -57,18 +57,18 @@ if response.status_code == 200:
     response = requests.get(f"{BASE_URL}/cart", headers=headers)
     print(f"    Status: {response.status_code}")
     if response.status_code == 200:
-        print(f"    ✓ Cart loaded: {response.json()}")
+        print(f"    [SUCCESS] Cart loaded: {response.json()}")
     else:
-        print(f"    ✗ FAILED: {response.json()}")
+        print(f"    [FAILED] FAILED: {response.json()}")
     
     # Request 2: Get Orders
     print("\n  [4b] GET /orders with Authorization header")
     response = requests.get(f"{BASE_URL}/orders", headers=headers)
     print(f"    Status: {response.status_code}")
     if response.status_code == 200:
-        print(f"    ✓ Orders loaded: {response.json()}")
+        print(f"    [SUCCESS] Orders loaded: {response.json()}")
     else:
-        print(f"    ✗ FAILED: {response.json()}")
+        print(f"    [FAILED] FAILED: {response.json()}")
     
     # Request 3: Add to Cart
     print("\n  [4c] POST /cart (add item) with Authorization header")
@@ -79,9 +79,9 @@ if response.status_code == 200:
     response = requests.post(f"{BASE_URL}/cart", json=cart_payload, headers=headers)
     print(f"    Status: {response.status_code}")
     if response.status_code == 200:
-        print(f"    ✓ Item added: {response.json()}")
+        print(f"    [SUCCESS] Item added: {response.json()}")
     else:
-        print(f"    ✗ FAILED: {response.json()}")
+        print(f"    [FAILED] FAILED: {response.json()}")
     
     # Request 4: Get Profile
     print("\n  [4d] GET /auth/profile with Authorization header")
@@ -89,9 +89,9 @@ if response.status_code == 200:
     print(f"    Status: {response.status_code}")
     if response.status_code == 200:
         profile = response.json()
-        print(f"    ✓ Profile loaded: {profile.get('user', {}).get('name')}")
+        print(f"    [SUCCESS] Profile loaded: {profile.get('user', {}).get('name')}")
     else:
-        print(f"    ✗ FAILED: {response.json()}")
+        print(f"    [FAILED] FAILED: {response.json()}")
     
     # Step 5: Verify token is being sent correctly
     print("\n[STEP 5] Verify API interceptor behavior")
@@ -107,7 +107,7 @@ if response.status_code == 200:
     print(f"  Token is valid: {exp_time > datetime.utcnow()}")
     
 else:
-    print(f"  ✗ Login failed with status {response.status_code}")
+    print(f"  [FAILED] Login failed with status {response.status_code}")
     print(f"  Response: {response.json()}")
 
 print("\n" + "=" * 80)
@@ -116,7 +116,7 @@ print("=" * 80)
 
 print("""
 KEY FINDINGS:
-- If all tests above show ✓, the backend auth is working correctly
+- If all tests above show [SUCCESS], the backend auth is working correctly
 - Frontend should store token in localStorage['amma_token']
 - Frontend should send Authorization: Bearer {token} header with each request
 - If cart/orders return 200, the auth flow is complete

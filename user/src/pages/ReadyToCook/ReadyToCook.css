@@ -23,10 +23,18 @@
 /* Category Chips */
 .rtc-filters {
   display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
+  justify-content: flex-start;
+  flex-wrap: nowrap;
   gap: 12px;
   margin-bottom: 50px;
+  overflow-x: auto;
+  white-space: nowrap;
+  padding-bottom: 10px;
+  -webkit-overflow-scrolling: touch;
+}
+
+.rtc-filters::-webkit-scrollbar {
+  display: none;
 }
 
 .rtc-filter-chip {
@@ -42,15 +50,15 @@
 }
 
 .rtc-filter-chip:hover {
-  border-color: #8B1A10;
-  color: #8B1A10;
+  border-color: #1A5D1A;
+  color: #1A5D1A;
 }
 
 .rtc-filter-chip.active {
-  background: #8B1A10;
+  background: #1A5D1A;
   color: white;
-  border-color: #8B1A10;
-  box-shadow: 0 4px 12px rgba(139, 26, 16, 0.2);
+  border-color: #1A5D1A;
+  box-shadow: 0 4px 12px rgba(26, 93, 26, 0.2);
 }
 
 /* Featured Section */
@@ -120,12 +128,12 @@
 .rtc-featured-price {
   font-size: 1.8rem;
   font-weight: 700;
-  color: #8B1A10;
+  color: #000;
   margin-bottom: 30px;
 }
 
 .rtc-featured-btn {
-  background: #8B1A10;
+  background: #2E7D32;
   color: white;
   border: none;
   padding: 16px 36px;
@@ -134,13 +142,13 @@
   border-radius: 12px;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 15px rgba(139, 26, 16, 0.2);
+  box-shadow: 0 4px 15px rgba(46, 125, 50, 0.2);
 }
 
 .rtc-featured-btn:hover {
-  background: #6D140C;
+  background: #1B5E20;
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(139, 26, 16, 0.3);
+  box-shadow: 0 6px 20px rgba(46, 125, 50, 0.3);
 }
 
 /* Section Titles */
@@ -294,13 +302,13 @@
 .rtc-card-price {
   font-size: 1.4rem;
   font-weight: 700;
-  color: #8B1A10;
+  color: #000;
 }
 
 .rtc-add-btn {
   background: white;
-  border: 1.5px solid #8B1A10;
-  color: #8B1A10;
+  border: 1.5px solid #2E7D32;
+  color: #2E7D32;
   padding: 8px 16px;
   border-radius: 8px;
   font-weight: 600;
@@ -310,7 +318,7 @@
 }
 
 .rtc-card:hover .rtc-add-btn {
-  background: #8B1A10;
+  background: #2E7D32;
   color: white;
 }
 

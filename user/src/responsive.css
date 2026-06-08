@@ -1,0 +1,139 @@
+/* 
+ * Amma's Kitchen Responsive Rules
+ * Breakpoint strategy: Mobile First (for new components), but handling desktop degradation
+ */
+
+/* =========================================================
+   1. MOBILE (320px - 480px)
+   ========================================================= */
+@media (max-width: 480px) {
+  /* Hide desktop-specific elements */
+  .desktop-only { display: none !important; }
+  .mobile-only { display: block !important; }
+  .mobile-flex { display: flex !important; }
+
+  /* Body & Layout adjustments */
+  body {
+    padding-bottom: 70px; /* Space for Bottom Navigation */
+  }
+
+  /* Utility classes for Mobile */
+  .mobile-hide-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .mobile-hide-scrollbar {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+  }
+  
+  .horizontal-carousel {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    gap: 15px;
+    padding: 10px 20px;
+    margin: 0 -20px; /* Bleed to edges */
+  }
+  .horizontal-carousel > * {
+    scroll-snap-align: center;
+    flex-shrink: 0;
+  }
+
+  /* Compact Product Cards */
+  .mobile-compact-card {
+    padding: 15px !important;
+  }
+  .mobile-compact-img {
+    height: 140px !important;
+    margin-bottom: 10px !important;
+  }
+  .mobile-compact-title {
+    font-size: 18px !important;
+  }
+  .mobile-compact-desc {
+    display: none !important;
+  }
+  .mobile-compact-btn {
+    padding: 8px 15px !important;
+    font-size: 14px !important;
+  }
+
+  /* Hero Section */
+  .mobile-hero-padding {
+    padding-top: 15px !important;
+  }
+  .mobile-hero-height {
+    min-height: 300px !important;
+    padding: 20px !important;
+  }
+  .mobile-hero-height .premium-hero-title {
+    font-size: 32px !important;
+    line-height: 1.2 !important;
+  }
+  .mobile-hero-height .premium-hero-desc {
+    font-size: 14px !important;
+  }
+
+  /* Floating Buttons */
+  .pf-back-top {
+    bottom: 90px !important;
+  }
+  .pf-whatsapp-float {
+    bottom: 155px !important;
+  }
+}
+
+/* =========================================================
+   2. TABLET (481px - 768px)
+   ========================================================= */
+@media (min-width: 481px) and (max-width: 768px) {
+  .desktop-only { display: none !important; }
+  .tablet-only { display: block !important; }
+  .mobile-only { display: none !important; }
+  
+  body {
+    padding-bottom: 70px;
+  }
+
+  .horizontal-carousel {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    gap: 20px;
+  }
+}
+
+/* =========================================================
+   3. LAPTOP (769px - 1440px)
+   ========================================================= */
+@media (min-width: 769px) and (max-width: 1440px) {
+  .mobile-only { display: none !important; }
+  .desktop-only { display: block !important; }
+}
+
+/* =========================================================
+   4. DESKTOP (1441px - 2560px)
+   ========================================================= */
+@media (min-width: 1441px) and (max-width: 2560px) {
+  .mobile-only { display: none !important; }
+  .desktop-only { display: block !important; }
+}
+
+/* =========================================================
+   5. TV / ULTRALOCAL (2560px+)
+   ========================================================= */
+@media (min-width: 2561px) {
+  .mobile-only { display: none !important; }
+  .desktop-only { display: block !important; }
+  
+  /* TV Scaling */
+  html {
+    font-size: 130%; /* Upscale everything slightly */
+  }
+  .container {
+    max-width: 2400px !important;
+  }
+}
+
+/* Global Utility */
+.mobile-only { display: none; }

@@ -115,7 +115,6 @@ def seed_food_images():
                 
                 # Create corresponding BatterProduct variant record
                 bp = BatterProduct(
-                    id=p.id,
                     product_name=display_name,
                     variant='1kg Pouch',
                     weight='1kg',

@@ -326,7 +326,7 @@ const Settings = () => {
           )}
 
           {/* Section tabs */}
-          <div style={{ display: 'flex', gap: '15px', borderBottom: '2px solid #EAE6DB', marginBottom: '25px', paddingBottom: '0', flexWrap: 'wrap' }}>
+          <div className="module-tabs">
             {[
               { id: 'rbac', label: 'Role Management' },
               { id: 'staff', label: 'Staff Management' },
@@ -450,7 +450,7 @@ const Settings = () => {
                       <tbody>
                         {filteredUsers.map((u) => (
                           <tr key={u.id}>
-                            <td>
+                            <td data-label="Name">
                               <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                                 <div style={{ width: '36px', height: '36px', borderRadius: '50%', backgroundColor: '#E2EBD9', display: 'flex', justifyContent: 'center', alignItems: 'center', color: '#1B3D2B', fontWeight: '700' }}>
                                   {u.name.charAt(0).toUpperCase()}
@@ -458,9 +458,9 @@ const Settings = () => {
                                 <strong>{u.name}</strong>
                               </div>
                             </td>
-                            <td>{u.email}</td>
-                            <td>{u.phone || 'N/A'}</td>
-                            <td>
+                            <td data-label="Email">{u.email}</td>
+                            <td data-label="Phone">{u.phone || 'N/A'}</td>
+                            <td data-label="Role">
                               <span style={{
                                 padding: '4px 8px', borderRadius: '12px', fontSize: '11px', fontWeight: '600',
                                 backgroundColor: u.role === 'admin' ? '#FCF3CF' : u.role === 'manager' ? '#EBF5FB' : u.role === 'kitchen_staff' ? '#E8F8F5' : '#FEF9E7',
@@ -469,7 +469,7 @@ const Settings = () => {
                                 {u.role.replace('_', ' ').toUpperCase()}
                               </span>
                             </td>
-                            <td>
+                            <td data-label="Status">
                               <button 
                                 onClick={() => handleToggleStaffStatus(u)}
                                 style={{
@@ -481,7 +481,7 @@ const Settings = () => {
                                 {u.status}
                               </button>
                             </td>
-                            <td>
+                            <td data-label="Actions">
                               <div style={{ position: 'relative', display: 'inline-block' }} onMouseLeave={() => setActiveDropdown(null)}>
                                 <button 
                                   onClick={() => setActiveDropdown(activeDropdown === u.id ? null : u.id)}

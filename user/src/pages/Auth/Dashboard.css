@@ -1,13 +1,19 @@
 /* Dashboard.css */
 :root {
-  --dash-bg: #FAF9F6; /* Warm Ivory */
+  --dash-bg: #FAF9F6;
+  /* Warm Ivory */
   --dash-card: #FFFFFF;
-  --dash-primary: #0A192F; /* Deep Navy */
-  --dash-accent: #800020; /* Luxury Burgundy */
-  --dash-secondary: #D4AF37; /* Soft Gold */
-  --dash-text: #333333; /* Charcoal */
+  --dash-primary: #0A192F;
+  /* Deep Navy */
+  --dash-accent: #800020;
+  /* Luxury Burgundy */
+  --dash-secondary: #D4AF37;
+  /* Soft Gold */
+  --dash-text: #333333;
+  /* Charcoal */
   --dash-text-light: #666666;
-  --dash-success: #50C878; /* Emerald */
+  --dash-success: #50C878;
+  /* Emerald */
   --dash-border: rgba(10, 25, 47, 0.08);
 }
 
@@ -88,20 +94,53 @@
 }
 
 /* Specific Section Grid Spans */
-.span-12 { grid-column: span 12; }
-.span-8 { grid-column: span 8; }
-.span-4 { grid-column: span 4; }
-.span-6 { grid-column: span 6; }
-.span-3 { grid-column: span 3; }
-.span-9 { grid-column: span 9; }
-.span-10 { grid-column: span 10; }
+.span-12 {
+  grid-column: span 12;
+}
+
+.span-8 {
+  grid-column: span 8;
+}
+
+.span-4 {
+  grid-column: span 4;
+}
+
+.span-6 {
+  grid-column: span 6;
+}
+
+.span-3 {
+  grid-column: span 3;
+}
+
+.span-9 {
+  grid-column: span 9;
+}
+
+.span-10 {
+  grid-column: span 10;
+}
 
 @media (max-width: 1024px) {
-  .span-8, .span-4, .span-9, .span-3, .span-10 { grid-column: span 12; }
+
+  .span-8,
+  .span-4,
+  .span-9,
+  .span-3,
+  .span-10 {
+    grid-column: span 12;
+  }
 }
+
 @media (max-width: 768px) {
-  .span-6 { grid-column: span 12; }
-  .welcome-text h1 { font-size: 2.5rem; }
+  .span-6 {
+    grid-column: span 12;
+  }
+
+  .welcome-text h1 {
+    font-size: 2.5rem;
+  }
 }
 
 .food-card-mini {
@@ -237,7 +276,7 @@
   right: -50%;
   width: 200px;
   height: 200px;
-  background: radial-gradient(circle, rgba(212,175,55,0.2) 0%, rgba(0,0,0,0) 70%);
+  background: radial-gradient(circle, rgba(212, 175, 55, 0.2) 0%, rgba(0, 0, 0, 0) 70%);
   border-radius: 50%;
 }
 
@@ -251,7 +290,7 @@
 }
 
 .progress-bar-bg {
-  background: rgba(255,255,255,0.2);
+  background: rgba(255, 255, 255, 0.2);
   height: 6px;
   border-radius: 6px;
   margin-top: 20px;
@@ -350,7 +389,7 @@
   justify-content: center;
   color: var(--dash-primary);
   cursor: pointer;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   transition: all 0.3s ease;
   z-index: 2;
 }
@@ -379,7 +418,7 @@
   left: -50px;
   width: 150px;
   height: 150px;
-  background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(0,0,0,0) 70%);
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, rgba(0, 0, 0, 0) 70%);
   border-radius: 50%;
 }
 
@@ -426,7 +465,7 @@
   color: var(--dash-primary);
   cursor: pointer;
   transition: all 0.2s ease;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
 }
 
 .action-icon-btn:hover {
@@ -434,6 +473,7 @@
   color: white;
   transform: translateY(-2px);
 }
+
 /* --- PREMIUM DASHBOARD ENHANCEMENTS --- */
 .premium-hero {
   border-radius: 24px;
@@ -444,7 +484,7 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-  box-shadow: 0 20px 50px rgba(0,0,0,0.15);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
   position: relative;
   overflow: hidden;
   margin-bottom: 30px;
@@ -470,7 +510,7 @@
   margin: 0;
   line-height: 1.1;
   color: #ffffff;
-  text-shadow: 0 4px 16px rgba(0,0,0,0.5);
+  text-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
 }
 
 .hero-subtitle {
@@ -478,7 +518,7 @@
   color: rgba(255, 255, 255, 0.88);
   margin-top: 10px;
   margin-bottom: 40px;
-  text-shadow: 0 2px 8px rgba(0,0,0,0.4);
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
 }
 
 .hero-special-box {
@@ -509,7 +549,7 @@
   font-size: 1.8rem;
   margin: 10px 0;
   color: #ffffff;
-  text-shadow: 0 2px 6px rgba(0,0,0,0.3);
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
 }
 
 .special-stats {
@@ -541,7 +581,7 @@
 
 .premium-btn:hover {
   transform: translateY(-2px);
-  box-shadow: 0 10px 20px rgba(255,255,255,0.2);
+  box-shadow: 0 10px 20px rgba(255, 255, 255, 0.2);
 }
 
 .pulse-grid {
@@ -582,13 +622,13 @@
   font-weight: 600;
   color: var(--dash-primary);
   cursor: pointer;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
   transition: all 0.3s ease;
 }
 
 .quick-action-btn:hover {
   transform: translateY(-4px);
-  box-shadow: 0 10px 20px rgba(0,0,0,0.06);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.06);
   border-color: var(--dash-secondary);
   color: var(--dash-secondary);
 }
@@ -626,8 +666,11 @@
 
 .trending-overlay {
   position: absolute;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background: rgba(0,0,0,0.3);
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.3);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -698,7 +741,7 @@
 .tab-btn.active {
   background: white;
   color: var(--dash-primary);
-  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
 .recommendation-context {
@@ -801,7 +844,9 @@
 }
 
 @keyframes progress {
-  0% { stroke-dasharray: 0 100; }
+  0% {
+    stroke-dasharray: 0 100;
+  }
 }
 
 .percentage {
@@ -887,8 +932,13 @@
   color: var(--dash-primary);
 }
 
-.text-accent { color: var(--dash-accent); }
-.text-success { color: var(--dash-success); }
+.text-accent {
+  color: var(--dash-accent);
+}
+
+.text-success {
+  color: var(--dash-success);
+}
 
 /* Premium Rewards */
 .rewards-card-premium {
@@ -932,7 +982,7 @@
 }
 
 .progress-container {
-  background: rgba(255,255,255,0.1);
+  background: rgba(255, 255, 255, 0.1);
   padding: 20px;
   border-radius: 16px;
 }
@@ -947,7 +997,7 @@
 
 .progress-track {
   height: 8px;
-  background: rgba(0,0,0,0.2);
+  background: rgba(0, 0, 0, 0.2);
   border-radius: 10px;
   overflow: hidden;
   margin-bottom: 12px;
@@ -962,14 +1012,17 @@
 
 .progress-glow {
   position: absolute;
-  top: 0; right: 0; bottom: 0; left: 0;
-  box-shadow: 0 0 10px rgba(212,175,55,0.8);
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  box-shadow: 0 0 10px rgba(212, 175, 55, 0.8);
 }
 
 .reward-unlock {
   margin: 0;
   font-size: 0.85rem;
-  color: rgba(255,255,255,0.8);
+  color: rgba(255, 255, 255, 0.8);
 }
 
 .reward-unlock strong {
@@ -1054,7 +1107,7 @@
 }
 
 .festival-overlay {
-  background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.2) 100%);
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0.2) 100%);
   height: 100%;
   padding: 30px;
   display: flex;
@@ -1088,9 +1141,9 @@
 }
 
 .festival-btn {
-  background: rgba(255,255,255,0.2);
+  background: rgba(255, 255, 255, 0.2);
   backdrop-filter: blur(5px);
-  border: 1px solid rgba(255,255,255,0.3);
+  border: 1px solid rgba(255, 255, 255, 0.3);
   color: white;
   padding: 10px;
   border-radius: 50px;
@@ -1100,10 +1153,11 @@
 }
 
 .festival-btn:hover {
-  background: rgba(255,255,255,0.3);
+  background: rgba(255, 255, 255, 0.3);
 }
 
 @media (max-width: 1024px) {
+
   .pulse-grid,
   .trending-grid,
   .recommends-grid {

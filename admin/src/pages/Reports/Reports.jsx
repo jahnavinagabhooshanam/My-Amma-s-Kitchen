@@ -300,7 +300,7 @@ const Reports = () => {
           )}
 
           {/* Tab buttons */}
-          <div style={{ display: 'flex', gap: '15px', borderBottom: '2px solid #EAE6DB', marginBottom: '25px', paddingBottom: '0', flexWrap: 'wrap' }}>
+          <div className="module-tabs">
             <button 
               onClick={() => navigate('/admin/reports?tab=revenue')}
               style={{
@@ -427,7 +427,7 @@ const Reports = () => {
                                   cellHtml = <span className={`badge-status ${statusClass}`}>{cellVal}</span>;
                                 }
 
-                                return <td key={cellIdx}>{cellHtml}</td>;
+                                return <td key={cellIdx} data-label={cellKey.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}>{cellHtml}</td>;
                               })}
                             </tr>
                           ))}
@@ -563,16 +563,16 @@ const Reports = () => {
                           <tbody>
                             {overheads.map(o => (
                               <tr key={o.id}>
-                                <td><strong>{o.category}</strong></td>
-                                <td className="text-muted">{o.frequency}</td>
-                                <td>
+                                <td data-label="Expense Category"><strong>{o.category}</strong></td>
+                                <td data-label="Frequency" className="text-muted">{o.frequency}</td>
+                                <td data-label="Status">
                                   <span style={{
                                     padding: '3px 8px', borderRadius: '10px', fontSize: '11px', fontWeight: '600',
                                     backgroundColor: o.status === 'Paid' ? '#D4EFDF' : '#FCF3CF',
                                     color: o.status === 'Paid' ? '#196F3D' : '#7D6608'
                                   }}>{o.status}</span>
                                 </td>
-                                <td style={{ fontWeight: '700' }}>₹{o.amount.toFixed(2)}</td>
+                                <td data-label="Amount" style={{ fontWeight: '700' }}>₹{o.amount.toFixed(2)}</td>
                               </tr>
                             ))}
                           </tbody>

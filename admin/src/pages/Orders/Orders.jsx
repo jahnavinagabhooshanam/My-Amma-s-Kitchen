@@ -308,7 +308,7 @@ const Orders = () => {
           )}
 
           {/* Tab switches */}
-          <div style={{ display: 'flex', gap: '15px', borderBottom: '2px solid #EAE6DB', marginBottom: '25px', paddingBottom: '0', flexWrap: 'wrap' }}>
+          <div className="module-tabs">
             {[
               { id: 'all', label: 'All Orders' },
               { id: 'rte', label: 'Ready To Eat Orders' },
@@ -388,18 +388,18 @@ const Orders = () => {
                       <tbody>
                         {filteredOrders.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage).map((o) => (
                           <tr key={o.id}>
-                            <td>#ORD-{o.id}</td>
-                            <td>
+                            <td data-label="Order ID">#ORD-{o.id}</td>
+                            <td data-label="Customer">
                               <strong>{o.customer_name}</strong>
                               <div className="text-muted" style={{ fontSize: '11px' }}>{o.phone}</div>
                             </td>
-                            <td>
+                            <td data-label="Ordered Items Summary">
                               <div style={{ maxWidth: '240px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                                 {o.items?.map(it => `${it.quantity}x ${it.product_name}`).join(", ") || 'No Items'}
                               </div>
                             </td>
-                            <td style={{ fontWeight: '700' }}>₹{o.total.toFixed(2)}</td>
-                            <td>
+                            <td data-label="Total Amount" style={{ fontWeight: '700' }}>₹{o.total.toFixed(2)}</td>
+                            <td data-label="Payment Status">
                               <span style={{
                                 padding: '3px 8px', borderRadius: '8px', fontSize: '10px', fontWeight: '700',
                                 backgroundColor: o.payment_status === 'Paid' ? '#D4EFDF' : '#FCF3CF',
@@ -408,7 +408,7 @@ const Orders = () => {
                                 {o.payment_status || 'Pending'}
                               </span>
                             </td>
-                            <td>
+                            <td data-label="Delivery Status">
                               <select 
                                 value={o.status} 
                                 onChange={(e) => handleStatusChange(o.id, e.target.value)}
@@ -423,10 +423,10 @@ const Orders = () => {
                                 <option value="Cancelled">Cancelled</option>
                               </select>
                             </td>
-                            <td className="text-muted" style={{ fontSize: '12px' }}>
+                            <td data-label="Date Placed" className="text-muted" style={{ fontSize: '12px' }}>
                               {o.created_at ? new Date(o.created_at).toLocaleDateString() : 'N/A'}
                             </td>
-                            <td>
+                            <td data-label="Actions">
                               <button onClick={() => setSelectedOrder(o)} className="btn-secondary" style={{ padding: '6px 12px', fontSize: '12px', display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
                                 <Eye size={14} /> View Details
                               </button>
@@ -458,12 +458,12 @@ const Orders = () => {
                           
                           return (
                             <tr key={o.id}>
-                              <td>#ORD-{o.id}</td>
-                              <td>
+                              <td data-label="Order ID">#ORD-{o.id}</td>
+                              <td data-label="Customer Details">
                                 <strong>{o.customer_name}</strong>
                                 <div className="text-muted" style={{ fontSize: '11px' }}>{o.phone}</div>
                               </td>
-                              <td>
+                              <td data-label="RTE Dishes Checklist">
                                 <ul style={{ margin: 0, paddingLeft: '20px', listStyleType: 'square' }}>
                                   {rteItems.map((item, idx) => (
                                     <li key={idx} style={{ fontSize: '13px', margin: '4px 0' }}>
@@ -472,7 +472,7 @@ const Orders = () => {
                                   ))}
                                 </ul>
                               </td>
-                              <td>
+                              <td data-label="Current Status">
                                 <span style={{
                                   padding: '4px 10px', borderRadius: '12px', fontSize: '11px', fontWeight: '700',
                                   backgroundColor: o.status === 'Preparing' ? '#FCF3CF' : o.status === 'Packed' || o.status === 'Delivered' ? '#D4EFDF' : '#EBF5FB',
@@ -481,7 +481,7 @@ const Orders = () => {
                                   {o.status}
                                 </span>
                               </td>
-                              <td>
+                              <td data-label="Actions">
                                 <div style={{ display: 'flex', gap: '8px' }}>
                                   {o.status !== 'Preparing' && o.status !== 'Packed' && o.status !== 'Delivered' && (
                                     <button 
@@ -539,12 +539,12 @@ const Orders = () => {
                           
                           return (
                             <tr key={o.id}>
-                              <td>#ORD-{o.id}</td>
-                              <td>
+                              <td data-label="Order ID">#ORD-{o.id}</td>
+                              <td data-label="Customer Details">
                                 <strong>{o.customer_name}</strong>
                                 <div className="text-muted" style={{ fontSize: '11px' }}>{o.phone}</div>
                               </td>
-                              <td>
+                              <td data-label="RTC & Batter Checklist">
                                 <ul style={{ margin: 0, paddingLeft: '20px', listStyleType: 'square' }}>
                                   {rtcItems.map((item, idx) => (
                                     <li key={idx} style={{ fontSize: '13px', margin: '4px 0' }}>
@@ -556,7 +556,7 @@ const Orders = () => {
                                   ))}
                                 </ul>
                               </td>
-                              <td>
+                              <td data-label="Current Status">
                                 <span style={{
                                   padding: '4px 10px', borderRadius: '12px', fontSize: '11px', fontWeight: '700',
                                   backgroundColor: o.status === 'Preparing' ? '#FCF3CF' : o.status === 'Packed' || o.status === 'Delivered' ? '#D4EFDF' : '#EBF5FB',
@@ -565,7 +565,7 @@ const Orders = () => {
                                   {o.status}
                                 </span>
                               </td>
-                              <td>
+                              <td data-label="Actions">
                                 <div style={{ display: 'flex', gap: '8px' }}>
                                   {o.status !== 'Preparing' && o.status !== 'Packed' && o.status !== 'Delivered' && (
                                     <button 

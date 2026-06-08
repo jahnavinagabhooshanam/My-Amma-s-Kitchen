@@ -129,6 +129,9 @@ def create_product():
     db.session.add(new_prod)
     db.session.commit()
     
+    from app import clear_cache
+    clear_cache()
+    
     emit_update('product_updated', {'action': 'create', 'product': new_prod.to_dict()})
     
     return jsonify({
@@ -227,6 +230,10 @@ def delete_product(product_id):
 
     db.session.delete(p)
     db.session.commit()
+    
+    from app import clear_cache
+    clear_cache()
+    
     emit_update('product_updated', {'action': 'delete', 'product_id': product_id})
     return jsonify({"message": "Product deleted successfully"}), 200
 

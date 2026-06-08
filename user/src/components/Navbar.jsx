@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Link, NavLink, useNavigate } from 'react-router-dom';
+import { Link, NavLink, useNavigate, useLocation } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
-import logoImg from '../assets/img/logo.png';
+import logoImg from '../assets/img/my-ammas-logo-new.jpg';
 import apiClient from '../services/api';
 
 const Navbar = () => {
@@ -11,6 +12,7 @@ const Navbar = () => {
   const [cartOpen, setCartOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
 
   const [config, setConfig] = useState({
     banner: "✨ Amma's Special Deal: 15% Off Your First Artisan Batter Order! Code: AMMA20 ✨",
@@ -25,6 +27,63 @@ const Navbar = () => {
 
   const [notifications, setNotifications] = useState([]);
   const [activeBannerOffer, setActiveBannerOffer] = useState(null);
+  
+  // Location States
+  const [currentLocation, setCurrentLocation] = useState('Click to set your location');
+  const [isLocating, setIsLocating] = useState(false);
+
+  useEffect(() => {
+    const savedLoc = localStorage.getItem('userLocation');
+    if (savedLoc) {
+      setCurrentLocation(savedLoc);
+    } else {
+      // Default placeholder if none saved
+      setCurrentLocation('8 Chennaikothapalli Rd, Hosur');
+    }
+  }, []);
+
+  const handleGetLocation = () => {
+    if (!navigator.geolocation) {
+      alert('Geolocation is not supported by your browser');
+      return;
+    }
+    
+    setIsLocating(true);
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        try {
+          const { latitude, longitude } = position.coords;
+          // Use OpenStreetMap Nominatim API for reverse geocoding
+          const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&zoom=18&addressdetails=1`);
+          const data = await res.json();
+          
+          if (data && data.address) {
+            // Format a nice short address
+            const road = data.address.road || data.address.suburb || data.address.neighbourhood || '';
+            const city = data.address.city || data.address.town || data.address.county || '';
+            const newLoc = road && city ? `${road}, ${city}` : (data.display_name.split(',').slice(0,2).join(','));
+            
+            setCurrentLocation(newLoc);
+            localStorage.setItem('userLocation', newLoc);
+          } else {
+            setCurrentLocation('Location found');
+          }
+        } catch (err) {
+          console.error("Error getting location name:", err);
+          setCurrentLocation('Location found (Unnamed)');
+        } finally {
+          setIsLocating(false);
+        }
+      },
+      (err) => {
+        console.error(err);
+        setIsLocating(false);
+        if (err.code === 1) alert('Please allow location permissions to use this feature.');
+        else alert('Failed to get location. Try again.');
+      },
+      { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+    );
+  };
 
   useEffect(() => {
     const fetchActiveBanner = async () => {
@@ -63,7 +122,6 @@ const Navbar = () => {
       }
     };
     fetchNotifications();
-    // Refresh notifications every 30 seconds
     const interval = setInterval(fetchNotifications, 30000);
     return () => clearInterval(interval);
   }, [user]);
@@ -76,24 +134,90 @@ const Navbar = () => {
     navigate('/cart');
   };
 
+  const path = location.pathname;
+
+  // Render Mobile Native App Header
+  const renderMobileHeader = () => {
+    if (path === '/') {
+      return (
+        <div className="app-header-home d-lg-none">
+          <div className="app-header-row" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '15px' }}>
+            <button onClick={handleToggleMobileMenu} style={{ background: 'none', border: 'none', padding: 0, fontSize: '20px', color: 'var(--text-dark)' }}>
+              <i className="fas fa-bars"></i>
+            </button>
+            <img src={logoImg} alt="Amma's Kitchen" className="app-logo" style={{ height: '60px', objectFit: 'contain' }} />
+            <Link to="/cart" className={`cart-btn-app ${isCartAnimating ? 'cart-bump' : ''}`} style={{ position: 'relative', fontSize: '22px', color: 'var(--text-dark)', textDecoration: 'none' }}>
+              <i className="fa-regular fa-cart-shopping"></i>
+              {cartCount > 0 && <span className="badge" style={{ position: 'absolute', top: '-6px', right: '-8px', background: 'var(--danger)', color: 'white', fontSize: '10px', minWidth: '18px', height: '18px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 0 }}>{cartCount}</span>}
+            </Link>
+          </div>
+          <div className="app-location-row" onClick={handleGetLocation} style={{ cursor: 'pointer', display: 'flex', alignItems: 'center' }}>
+            <i className={`fas ${isLocating ? 'fa-spinner fa-spin' : 'fa-map-marker-alt'}`} style={{ color: '#2E8B57', marginRight: '10px', fontSize: '18px' }}></i>
+            <div className="loc-text" style={{ flex: 1, overflow: 'hidden' }}>
+              <div className="loc-title" style={{ fontSize: '12px', fontWeight: '700', color: 'var(--text-dark)' }}>
+                Deliver to <i className="fas fa-chevron-down" style={{ fontSize: '10px', marginLeft: '4px', color: 'var(--primary-color)' }}></i>
+              </div>
+              <div className="loc-desc" style={{ fontSize: '11px', color: 'var(--text-muted)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                {isLocating ? 'Detecting location...' : currentLocation}
+              </div>
+            </div>
+          </div>
+          <div className="app-search-row">
+            <div className="search-bar-app" onClick={() => navigate('/menu')}>
+              <i className="fas fa-search"></i>
+              <input type="text" placeholder="Search 'Idli, Dosa, Meals...'" readOnly />
+              <i className="fas fa-microphone" style={{ color: '#2E8B57' }}></i>
+            </div>
+          </div>
+        </div>
+      );
+    } else {
+      let title = "Amma's Kitchen";
+      if (path === '/cart') title = "My Cart";
+      else if (path === '/account') title = "My Profile";
+      else if (path === '/orders') title = "My Orders";
+      else if (path === '/menu') title = "Menu";
+      else if (path === '/offers') title = "Offers";
+      else if (path === '/ready-to-eat') title = "Ready To Eat";
+      else if (path === '/ready-to-cook') title = "Ready To Cook";
+      else if (path === '/bulk-orders') title = "Bulk Orders";
+      else if (path === '/certificates') title = "Certificates";
+      else if (path === '/contact') title = "Contact";
+      else if (path === '/wishlist') title = "Wishlist";
+      else if (path === '/login') title = "Login";
+      else if (path === '/register') title = "Register";
+
+      return (
+        <div className="app-header-inner d-lg-none">
+          <button onClick={handleToggleMobileMenu} style={{ background: 'none', border: 'none', padding: 0, fontSize: '20px', color: 'var(--text-dark)' }}><i className="fas fa-bars"></i></button>
+          <h2 className="inner-page-title" style={{ fontFamily: "'Playfair Display', Georgia, serif", color: '#0F400F', fontWeight: '700', margin: 0, fontSize: '24px' }}>{title}</h2>
+          {path === '/menu' ? (
+            <button><i className="fas fa-search"></i></button>
+          ) : path === '/account' ? (
+            <button><i className="fas fa-cog"></i></button>
+          ) : path === '/cart' ? (
+             <Link to="/cart" style={{ color: 'var(--text-dark)' }}>
+               <i className="fa-regular fa-cart-shopping"></i>
+             </Link>
+          ) : (
+            <div style={{ width: '40px' }}></div>
+          )}
+        </div>
+      );
+    }
+  };
+
   return (
     <>
-      {(activeBannerOffer || config.banner) && (
-        <div style={{
-          backgroundColor: 'var(--primary-color)',
-          color: 'white',
-          textAlign: 'center',
-          padding: '6px 12px',
-          fontSize: '13px',
-          fontWeight: '600',
-          fontFamily: "'Jost', sans-serif"
-        }}>
-          {activeBannerOffer ? activeBannerOffer.title : config.banner}
-        </div>
-      )}
-      <header className="th-header header-default">
+      {/* Mobile Header Native App Style */}
+      {renderMobileHeader()}
+
+
+
+      {/* Desktop Header */}
+      <header className="th-header header-default d-none d-lg-block">
         {/* Top Info Bar */}
-        <div className="header-top d-sm-block d-none">
+        <div className="header-top premium-contact-bar">
           <div className="container-fluid px-4 px-lg-5">
             <div className="row justify-content-center justify-content-lg-between align-items-center gy-2">
               <div className="col-auto">
@@ -135,16 +259,16 @@ const Navbar = () => {
         </div>
 
         {/* Main Sticky Navbar Wrapper */}
-        <div className="sticky-wrapper">
-          <div className="menu-area">
+        <div className="sticky-wrapper premium-navbar">
+          <div className="menu-area" style={{ width: '100%' }}>
             <div className="container-fluid px-2 px-xl-4">
               <div className="row align-items-center justify-content-between flex-nowrap">
 
                 {/* Logo */}
-                <div className="col-auto flex-shrink-0">
-                  <div className="header-logo">
+                <div className="col-auto flex-shrink-0 mx-auto mx-lg-0">
+                  <div className="header-logo premium-navbar-logo">
                     <Link to="/">
-                      <img src={logoImg} alt="Amma's Kitchen Logo" style={{ maxHeight: '180px', width: 'auto' }} />
+                      <img src={logoImg} alt="Amma's Kitchen Logo" />
                     </Link>
                   </div>
                 </div>
@@ -171,14 +295,12 @@ const Navbar = () => {
                 <div className="col-auto flex-shrink-0">
                   <div className="header-button d-flex align-items-center">
                     
-                    {/* User Profile / Login (Desktop Only) */}
+                    {/* User Profile / Login */}
                     <div className="d-none d-lg-flex align-items-center me-3">
                       {user ? (
                         <>
                           <div className="dropdown me-3">
-                            <button className="icon-btn" type="button" data-bs-toggle="dropdown" aria-expanded="false" onClick={() => {
-                              // Optional: Mark as read here or handle differently
-                            }}>
+                            <button className="premium-user-action" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                               <span className="badge bg-danger" style={{ position: 'absolute', top: -5, right: -5, fontSize: '10px' }}>
                                 {notifications.filter(n => !n.is_read).length > 0 ? notifications.filter(n => !n.is_read).length : ''}
                               </span>
@@ -201,17 +323,11 @@ const Navbar = () => {
                           </div>
 
                           <Link to="/account" style={{ display: 'flex', alignItems: 'center', gap: '8px', textDecoration: 'none', color: 'inherit' }} title="My Account">
-                            <div style={{
-                              width: '38px', height: '38px', borderRadius: '50%',
-                              backgroundColor: 'var(--primary-color)', color: 'white',
-                              display: 'flex', alignItems: 'center', justifyContent: 'center',
-                              fontWeight: 'bold', fontSize: '14px', overflow: 'hidden',
-                              border: '2px solid var(--border-color)', boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
-                            }}>
+                            <div className="premium-user-action" style={{ padding: 0, overflow: 'hidden' }}>
                               {user.profile_image ? (
                                 <img src={user.profile_image} alt="Avatar" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                               ) : (
-                                (user.name || 'U').charAt(0).toUpperCase()
+                                <span style={{ color: 'var(--primary-color)', fontSize: '24px' }}>{(user.name || 'U').charAt(0).toUpperCase()}</span>
                               )}
                             </div>
                             <span style={{ fontWeight: '600', fontSize: '14px', fontFamily: "'Jost', sans-serif" }}>
@@ -227,31 +343,16 @@ const Navbar = () => {
                       )}
                     </div>
 
-                    {/* Cart Button (All Screens) */}
-                    <button type="button" onClick={handleToggleCart} className={`icon-btn ${isCartAnimating ? 'cart-bump' : ''}`}>
-                      <span className="badge">{cartCount}</span>
+                    {/* Cart Button */}
+                    <button type="button" onClick={handleToggleCart} className={`premium-user-action ${isCartAnimating ? 'cart-bump' : ''}`}>
+                      <span className="badge bg-danger" style={{ position: 'absolute', top: '-4px', right: '-4px', fontSize: '11px', borderRadius: '50%', minWidth: '20px', height: '20px', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '0' }}>{cartCount}</span>
                       <i className="fa-regular fa-cart-shopping"></i>
                     </button>
-                    <style>{`
-                      @keyframes cartBump {
-                        0% { transform: scale(1); }
-                        50% { transform: scale(1.3); }
-                        100% { transform: scale(1); }
-                      }
-                      .cart-bump {
-                        animation: cartBump 0.3s ease-out;
-                      }
-                    `}</style>
 
-                    {/* View Cart Button (Desktop Only) */}
-                    <Link to="/cart" className="th-btn style9 th-icon d-none d-xl-inline-flex ms-2">
+                    {/* View Cart Button */}
+                    <Link to="/cart" className="premium-cart-btn d-none d-xl-inline-flex ms-2">
                       View Cart <i className="fa-light fa-arrow-right"></i>
                     </Link>
-
-                    {/* Mobile Menu Toggle (Mobile Only) */}
-                    <button type="button" onClick={handleToggleMobileMenu} className="icon-btn th-menu-toggle d-lg-none ms-2">
-                      <i className="far fa-bars"></i>
-                    </button>
                     
                   </div>
                 </div>
@@ -262,44 +363,211 @@ const Navbar = () => {
         </div>
       </header>
 
-      {/* Responsive Mobile Navigation Drawer */}
-      <div className={`th-menu-wrapper ${mobileMenuOpen ? 'th-body-visible' : ''}`}>
-        <div className="th-menu-area text-center">
-          <button className="th-menu-toggle" onClick={handleToggleMobileMenu}><i className="fal fa-times"></i></button>
-          <div className="mobile-logo">
-            <Link to="/" onClick={handleToggleMobileMenu}>
-              <img src={logoImg} alt="Amma Logo" style={{ maxHeight: '110px', width: 'auto' }} />
-            </Link>
-          </div>
-              <div className="th-mobile-menu">
-            <ul>
-              <li><Link to="/" onClick={handleToggleMobileMenu}>HOME</Link></li>
-              <li><Link to="/menu" onClick={handleToggleMobileMenu}>MENU</Link></li>
-              <li><Link to="/ready-to-eat" onClick={handleToggleMobileMenu}>READY TO EAT</Link></li>
-              <li><Link to="/ready-to-cook" onClick={handleToggleMobileMenu}>READY TO COOK</Link></li>
-              <li><Link to="/bulk-orders" onClick={handleToggleMobileMenu}>BULK ORDERS</Link></li>
-                  <li><Link to="/certificates" onClick={handleToggleMobileMenu}>CERTIFICATES</Link></li>
-                  <li><Link to="/contact" onClick={handleToggleMobileMenu}>CONTACT</Link></li>
-              {user ? (
-                <>
-                  <li><Link to="/account" onClick={handleToggleMobileMenu}>MY ACCOUNT</Link></li>
-                  <li><button onClick={() => { logout(); handleToggleMobileMenu(); }} style={{ background: 'none', border: 'none', padding: 0, color: 'inherit', fontWeight: 'bold' }}>LOGOUT</button></li>
-                  {user.role === 'admin' && <li><Link to="/admin/dashboard" onClick={handleToggleMobileMenu} style={{ color: '#E84C3D' }}>ADMIN PANEL</Link></li>}
-                </>
-              ) : (
-                <>
-                  <li><Link to="/login" onClick={handleToggleMobileMenu}>LOGIN</Link></li>
-                  <li><Link to="/register" onClick={handleToggleMobileMenu}>REGISTER</Link></li>
-                  <li><Link to="/admin/dashboard" onClick={handleToggleMobileMenu}>ADMIN SIGN IN</Link></li>
-                </>
-              )}
-            </ul>
-          </div>
-        </div>
-      </div>
+      {/* Responsive Mobile Navigation Drawer (Framer Motion) */}
+      <AnimatePresence>
+        {mobileMenuOpen && (
+          <>
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 0.6 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.3 }}
+              style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', backgroundColor: 'black', zIndex: 9999 }}
+              onClick={handleToggleMobileMenu}
+            />
+            <motion.div 
+              initial={{ x: '-100%' }}
+              animate={{ x: 0 }}
+              exit={{ x: '-100%' }}
+              transition={{ type: 'tween', duration: 0.3, ease: 'easeOut' }}
+              style={{ 
+                position: 'fixed', top: 0, left: 0, width: '85%', maxWidth: '350px', height: '100%', 
+                backgroundColor: '#FFFFFF', zIndex: 10000, boxShadow: '5px 0 25px rgba(0,0,0,0.1)', 
+                display: 'flex', flexDirection: 'column',
+                borderTopRightRadius: '24px', borderBottomRightRadius: '24px', overflow: 'hidden'
+              }}
+            >
+              {/* Header Section */}
+              <div style={{ 
+                background: 'linear-gradient(135deg, #074026 0%, #032112 100%)', 
+                padding: '40px 20px 25px 20px', 
+                display: 'flex', 
+                flexDirection: 'column',
+                alignItems: 'center',
+                position: 'relative',
+                borderBottomRightRadius: '32px',
+                borderBottomLeftRadius: '32px',
+                overflow: 'hidden',
+                boxShadow: '0 15px 35px rgba(3, 33, 18, 0.25)'
+              }}>
+                {/* Elegant SVG Leaf Watermarks */}
+                <svg style={{ position: 'absolute', width: '220px', height: '220px', top: '-40px', right: '-60px', opacity: 0.04, transform: 'rotate(15deg)' }} viewBox="0 0 100 100" fill="#FFFFFF">
+                  <path d="M 5 95 C 5 40 40 5 95 5 C 95 60 60 95 5 95 Z" />
+                </svg>
+                <svg style={{ position: 'absolute', width: '180px', height: '180px', bottom: '-60px', left: '-50px', opacity: 0.03, transform: 'rotate(-45deg)' }} viewBox="0 0 100 100" fill="#FFFFFF">
+                  <path d="M 5 95 C 5 40 40 5 95 5 C 95 60 60 95 5 95 Z" />
+                </svg>
 
-      {/* Sliding Minicart Side Drawer */}
-      <div className={`sidemenu-wrapper sidemenu-cart ${cartOpen ? 'show' : ''}`} style={{ zIndex: 10000 }}>
+                {/* Close Button */}
+                <button onClick={handleToggleMobileMenu} style={{ 
+                  position: 'absolute', top: '22px', right: '22px',
+                  background: '#FFFFFF', border: 'none', borderRadius: '50%',
+                  width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  cursor: 'pointer', boxShadow: '0 4px 10px rgba(0,0,0,0.15)', zIndex: 10,
+                  transition: 'transform 0.2s ease, background 0.2s ease'
+                }}>
+                  <svg width="12" height="12" viewBox="0 0 14 14" fill="none" stroke="#222222" strokeWidth="1.2">
+                    <path d="M1 1L13 13M1 13L13 1" strokeLinecap="round"/>
+                  </svg>
+                </button>
+                
+                {/* Brand Logo Composition */}
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', zIndex: 10 }}>
+                   {/* Steam Marks */}
+                   <div style={{ display: 'flex', gap: '6px', marginBottom: '8px' }}>
+                     <svg width="6" height="11" viewBox="0 0 8 16" fill="none" stroke="#F5B941" strokeWidth="2.5" strokeLinecap="round" style={{ transform: 'translateY(4px) rotate(15deg)', opacity: 0.75 }}>
+                       <path d="M2,14 C6,10 0,6 4,2" />
+                     </svg>
+                     <svg width="6" height="12" viewBox="0 0 8 16" fill="none" stroke="#F5B941" strokeWidth="2.5" strokeLinecap="round" style={{ transform: 'translateY(-1px) rotate(15deg)' }}>
+                       <path d="M2,14 C6,10 0,6 4,2" />
+                     </svg>
+                     <svg width="6" height="11" viewBox="0 0 8 16" fill="none" stroke="#F5B941" strokeWidth="2.5" strokeLinecap="round" style={{ transform: 'translateY(4px) rotate(15deg)', opacity: 0.75 }}>
+                       <path d="M2,14 C6,10 0,6 4,2" />
+                     </svg>
+                   </div>
+                   
+                   {/* Amma's Text */}
+                   <div style={{ color: '#FFFFFF', fontSize: '28px', fontFamily: "'Playfair Display', Georgia, serif", fontWeight: '700', lineHeight: '1', letterSpacing: '0px', marginBottom: '8px', textShadow: '0 2px 8px rgba(0,0,0,0.2)' }}>
+                     My Amma's
+                   </div>
+                   
+                   {/* KITCHEN with lines */}
+                   <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '10px' }}>
+                     <div style={{ width: '20px', height: '1px', background: 'rgba(245, 185, 65, 0.5)' }}></div>
+                     <div style={{ color: '#F5B941', fontSize: '10px', fontFamily: "'Inter', sans-serif", fontWeight: '800', letterSpacing: '4px', transform: 'translateX(2px)' }}>KITCHEN</div>
+                     <div style={{ width: '20px', height: '1px', background: 'rgba(245, 185, 65, 0.5)' }}></div>
+                   </div>
+                   
+                   {/* Tagline */}
+                   <div style={{ color: 'rgba(255, 255, 255, 0.85)', fontSize: '11px', fontFamily: "'Inter', sans-serif", fontWeight: '400', letterSpacing: '0.5px' }}>
+                     Just Like Amma Made It
+                   </div>
+                </div>
+              </div>
+
+              {/* Menu Links */}
+              <div style={{ flex: 1, overflowY: 'auto', padding: '15px 20px' }}>
+                <div style={{ 
+                  background: 'white', borderRadius: '16px', padding: '10px 0' 
+                }}>
+                  <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column' }}>
+                    
+                    {[
+                      { to: '/', icon: 'fas fa-home', text: 'HOME', color: '#2E8B57', bg: 'rgba(46, 139, 87, 0.1)' },
+                      { to: '/menu', icon: 'fas fa-utensils', text: 'MENU', color: '#2E8B57', bg: 'rgba(46, 139, 87, 0.1)' },
+                      { to: '/ready-to-eat', icon: 'fas fa-concierge-bell', text: 'READY TO EAT', color: '#FF8C00', bg: 'rgba(255, 140, 0, 0.1)' },
+                      { to: '/ready-to-cook', icon: 'fas fa-search', text: 'READY TO COOK', color: '#8A2BE2', bg: 'rgba(138, 43, 226, 0.1)' },
+                      { to: '/bulk-orders', icon: 'fas fa-box-open', text: 'BULK ORDERS', color: '#8B4513', bg: 'rgba(139, 69, 19, 0.1)' },
+                      { to: '/certificates', icon: 'fas fa-award', text: 'CERTIFICATES', color: '#DAA520', bg: 'rgba(218, 165, 32, 0.1)' },
+                      { to: '/contact', icon: 'fas fa-phone-alt', text: 'CONTACT', color: '#FF6347', bg: 'rgba(255, 99, 71, 0.1)' },
+                    ].map((item, idx) => {
+                      const active = location.pathname === item.to;
+                      return (
+                        <React.Fragment key={idx}>
+                          <li style={{ padding: '0 10px', margin: '2px 0' }}>
+                            <Link to={item.to} onClick={handleToggleMobileMenu} style={{ 
+                              display: 'flex', alignItems: 'center', padding: '8px 12px', textDecoration: 'none', 
+                              color: '#1A1A1A', fontWeight: '600', fontSize: '13px', 
+                              border: active ? '1px solid #2E8B57' : '1px solid transparent', 
+                              borderRadius: '8px', 
+                              background: active ? '#F2F8F5' : 'transparent',
+                              transition: 'all 0.2s ease'
+                            }}>
+                              <div style={{ width: '28px', height: '28px', borderRadius: '6px', background: item.bg, display: 'flex', alignItems: 'center', justifyContent: 'center', marginRight: '15px' }}>
+                                <i className={item.icon} style={{ color: item.color, fontSize: '13px' }}></i>
+                              </div>
+                              <span style={{ letterSpacing: '0.3px' }}>{item.text}</span>
+                            </Link>
+                          </li>
+                          {!active && <div style={{ height: '1px', background: '#F5F5F5', margin: '0 20px' }}></div>}
+                        </React.Fragment>
+                      );
+                    })}
+
+                    {user && [
+                      { to: '/account', icon: 'fas fa-user', text: 'PROFILE', color: '#4B0082', bg: 'rgba(75, 0, 130, 0.1)' },
+                      { to: '/orders', icon: 'fas fa-clipboard-list', text: 'MY ORDERS', color: '#1E90FF', bg: 'rgba(30, 144, 255, 0.1)' },
+                      { to: '/wishlist', icon: 'fas fa-heart', text: 'WISHLIST', color: '#DC143C', bg: 'rgba(220, 20, 60, 0.1)' },
+                    ].map((item, idx) => {
+                      const active = location.pathname === item.to;
+                      return (
+                        <React.Fragment key={`user-${idx}`}>
+                          <li style={{ padding: '0 10px', margin: '2px 0' }}>
+                            <Link to={item.to} onClick={handleToggleMobileMenu} style={{ 
+                              display: 'flex', alignItems: 'center', padding: '8px 12px', textDecoration: 'none', 
+                              color: '#1A1A1A', fontWeight: '600', fontSize: '13px', 
+                              border: active ? '1px solid #2E8B57' : '1px solid transparent', 
+                              borderRadius: '8px', 
+                              background: active ? '#F2F8F5' : 'transparent',
+                              transition: 'all 0.2s ease'
+                            }}>
+                              <div style={{ width: '28px', height: '28px', borderRadius: '6px', background: item.bg, display: 'flex', alignItems: 'center', justifyContent: 'center', marginRight: '15px' }}>
+                                <i className={item.icon} style={{ color: item.color, fontSize: '13px' }}></i>
+                              </div>
+                              <span style={{ letterSpacing: '0.3px' }}>{item.text}</span>
+                            </Link>
+                          </li>
+                          {!active && <div style={{ height: '1px', background: '#F5F5F5', margin: '0 20px' }}></div>}
+                        </React.Fragment>
+                      );
+                    })}
+
+                    {/* Auth Actions */}
+                    {user ? (
+                      <li style={{ marginTop: '10px', padding: '0 10px' }}>
+                        <button onClick={() => { logout(); handleToggleMobileMenu(); }} style={{ 
+                          width: '100%', background: '#FFF0F0', border: 'none', borderRadius: '8px', padding: '8px 12px', display: 'flex', alignItems: 'center', color: '#DC143C', fontWeight: '600', fontSize: '13px', cursor: 'pointer'
+                        }}>
+                          <div style={{ width: '28px', height: '28px', borderRadius: '6px', background: 'transparent', display: 'flex', alignItems: 'center', justifyContent: 'center', marginRight: '15px' }}>
+                            <i className="fas fa-power-off" style={{ fontSize: '14px' }}></i>
+                          </div>
+                          <span style={{ letterSpacing: '0.3px' }}>LOG OUT</span>
+                        </button>
+                      </li>
+                    ) : (
+                      <li style={{ marginTop: '10px', padding: '0 10px' }}>
+                        <button onClick={() => { navigate('/login'); handleToggleMobileMenu(); }} style={{ 
+                          width: '100%', background: '#F2F8F5', border: 'none', borderRadius: '8px', padding: '8px 12px', display: 'flex', alignItems: 'center', color: '#2E8B57', fontWeight: '600', fontSize: '13px', cursor: 'pointer'
+                        }}>
+                          <div style={{ width: '28px', height: '28px', borderRadius: '6px', background: 'transparent', display: 'flex', alignItems: 'center', justifyContent: 'center', marginRight: '15px' }}>
+                            <i className="fas fa-sign-in-alt" style={{ fontSize: '14px' }}></i>
+                          </div>
+                          <span style={{ letterSpacing: '0.3px' }}>LOG IN</span>
+                        </button>
+                      </li>
+                    )}
+
+                  </ul>
+                </div>
+
+                {/* Footer Section */}
+                <div style={{ 
+                  background: '#F2F8F5', borderRadius: '12px', padding: '20px', marginTop: '20px', marginBottom: '20px', display: 'flex', alignItems: 'center', gap: '15px' 
+                }}>
+                  <div style={{ color: '#004A2F', fontSize: '32px' }}><i className="fal fa-salad"></i></div>
+                  <div style={{ fontSize: '13px', color: '#004A2F', fontWeight: '500', lineHeight: 1.4 }}>
+                    Thank you for supporting homemade food! <i className="fas fa-heart"></i>
+                  </div>
+                </div>
+
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
+
+      {/* Sliding Minicart Side Drawer - Desktop Only */}
+      <div className={`sidemenu-wrapper sidemenu-cart ${cartOpen ? 'show' : ''} d-none d-lg-block`} style={{ zIndex: 10000 }}>
         <div className="sidemenu-content">
           <button className="closeButton sideMenuCls" onClick={handleToggleCart}><i className="far fa-times"></i></button>
           <div className="widget woocommerce widget_shopping_cart">

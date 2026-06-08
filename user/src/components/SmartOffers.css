@@ -1,0 +1,73 @@
+.smart-offers-container {
+  overflow: hidden;
+}
+
+.smart-offer-card {
+  border-radius: 16px;
+  padding: 20px;
+  min-width: 280px;
+  max-width: 300px;
+  color: white;
+  margin-right: 15px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  position: relative;
+  overflow: hidden;
+}
+
+.smart-offer-card::before {
+  content: '';
+  position: absolute;
+  top: -20px;
+  right: -20px;
+  width: 100px;
+  height: 100px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 50%;
+}
+
+.bg-flash {
+  background: linear-gradient(135deg, #FF6B6B 0%, #E84C3D 100%);
+}
+
+.bg-weekend {
+  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+}
+
+.bg-combo {
+  background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+}
+
+.offer-content h3 {
+  font-family: 'Playfair Display', serif;
+  font-size: 22px;
+  margin: 0 0 10px 0;
+  color: white;
+}
+
+.offer-content p {
+  font-size: 14px;
+  opacity: 0.9;
+  margin-bottom: 20px;
+}
+
+.offer-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px dashed rgba(255,255,255,0.3);
+  padding-top: 15px;
+}
+
+.offer-code {
+  background: rgba(255,255,255,0.2);
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-weight: bold;
+  font-family: monospace;
+  letter-spacing: 1px;
+}
+
+.offer-expiry {
+  font-size: 12px;
+  font-weight: 600;
+}

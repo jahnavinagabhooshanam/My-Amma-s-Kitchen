@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import apiClient from '../services/api';
+import GlobalSearchModal from './GlobalSearchModal';
 import { 
   Menu, 
   Search, 
@@ -37,6 +38,7 @@ const AdminNavbar = () => {
   const [isMailOpen, setIsMailOpen] = useState(false);
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
+  const [isSearchModalOpen, setIsSearchModalOpen] = useState(false);
 
   // Business metrics for profile card
   const [stats, setStats] = useState({
@@ -178,10 +180,7 @@ const AdminNavbar = () => {
   }, []);
 
   const handleToggleSidebar = () => {
-    const sidebar = document.getElementById("mainSidebar");
-    if (sidebar) {
-      sidebar.classList.toggle("open");
-    }
+    window.dispatchEvent(new CustomEvent('toggleSidebar'));
   };
 
   // Message functions
@@ -234,10 +233,15 @@ const AdminNavbar = () => {
           <button className="sidebar-toggle" id="sidebarToggleBtn" onClick={handleToggleSidebar} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <Menu size={20} strokeWidth={2.2} />
           </button>
+          
           <div className="navbar-search" style={{ display: 'flex', alignItems: 'center' }}>
             <Search size={16} strokeWidth={2.2} style={{ color: '#888', marginRight: '8px' }} />
             <input type="text" placeholder="Search orders, products, inventory..." />
           </div>
+
+          <button className="mobile-search-trigger" onClick={() => setIsSearchModalOpen(true)}>
+            <Search size={20} strokeWidth={2.2} />
+          </button>
         </div>
         <div className="navbar-right">
           <div className="navbar-date" id="navDateDisplay" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
@@ -262,54 +266,7 @@ const AdminNavbar = () => {
                 {unreadMessagesCount > 0 && <span className="badge">{unreadMessagesCount}</span>}
               </button>
 
-              {isMailOpen && (
-                <div className="dropdown-panel">
-                  <div className="dropdown-panel-header">
-                    <h4>Recent Messages</h4>
-                    <span className="badge-status active" style={{ padding: '2px 8px', fontSize: '10px' }}>
-                      {unreadMessagesCount} Unread
-                    </span>
-                  </div>
-                  <div className="dropdown-panel-body">
-                    {messages.length > 0 ? (
-                      messages.map(msg => (
-                        <div 
-                          key={msg.id} 
-                          className={`message-item ${!msg.read ? 'unread' : ''}`}
-                          onClick={() => handleOpenMessage(msg)}
-                        >
-                          <div className="message-header">
-                            <span className="message-sender">{msg.sender}</span>
-                            <span className="message-date">{msg.date}</span>
-                          </div>
-                          <div className="message-subject">{msg.subject}</div>
-                          <div className="message-actions" style={{ display: 'flex', gap: '6px', marginTop: '10px' }}>
-                            <button className="msg-action-btn open" onClick={() => handleOpenMessage(msg)} style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
-                              <Eye size={12} /> Open
-                            </button>
-                            {!msg.read && (
-                              <button className="msg-action-btn read" onClick={(e) => handleMarkMessageRead(msg.id, e)} style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
-                                <Check size={12} /> Read
-                              </button>
-                            )}
-                            <button className="msg-action-btn delete" onClick={(e) => handleDeleteMessage(msg.id, e)} style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
-                              <Trash2 size={12} /> Delete
-                            </button>
-                          </div>
-                        </div>
-                      ))
-                    ) : (
-                      <div className="text-center text-muted" style={{ padding: '30px 10px', fontSize: '12px' }}>
-                        No messages found.
-                      </div>
-                    )}
-                  </div>
-                  <div className="dropdown-panel-footer">
-                    <span>Inbox Operations</span>
-                    <button className="dropdown-footer-btn" onClick={() => setMessages([])}>Clear Inbox</button>
-                  </div>
-                </div>
-              )}
+
             </div>
 
             {/* Notification Icon Dropdown wrapper */}
@@ -328,76 +285,7 @@ const AdminNavbar = () => {
                 {unreadNotificationsCount > 0 && <span className="badge pulse" id="navNotificationCount">{unreadNotificationsCount}</span>}
               </button>
 
-              {isNotificationsOpen && (
-                <div className="dropdown-panel">
-                  <div className="dropdown-panel-header">
-                    <h4>Notifications</h4>
-                    <span className="badge-status pending" style={{ padding: '2px 8px', fontSize: '10px' }}>
-                      {unreadNotificationsCount} Alerts
-                    </span>
-                  </div>
-                  <div className="dropdown-panel-body">
-                    {notifications.length > 0 ? (
-                      notifications.map(notif => {
-                        let IconComponent = Bell;
-                        let bgClass = "rgba(47, 57, 74, 0.08)";
-                        let iconColor = "#666";
-                        
-                        if (notif.type === "New Orders") {
-                          IconComponent = ShoppingCart;
-                          bgClass = "rgba(63, 144, 101, 0.1)";
-                          iconColor = "#3F9065";
-                        } else if (notif.type === "New Registrations") {
-                          IconComponent = UserPlus;
-                          bgClass = "rgba(47, 57, 74, 0.1)";
-                          iconColor = "#2F394A";
-                        } else if (notif.type === "Low Stock Updates") {
-                          IconComponent = AlertTriangle;
-                          bgClass = "rgba(235, 20, 0, 0.1)";
-                          iconColor = "#eb1400";
-                        } else if (notif.type === "Review Approvals") {
-                          IconComponent = Star;
-                          bgClass = "rgba(241, 196, 15, 0.15)";
-                          iconColor = "#f1c40f";
-                        } else if (notif.type === "Bulk Order Requests") {
-                          IconComponent = PartyPopper;
-                          bgClass = "rgba(47, 57, 74, 0.1)";
-                          iconColor = "#2F394A";
-                        }
 
-                        return (
-                          <div 
-                            key={notif.id} 
-                            className={`notification-item ${!notif.read ? 'unread' : ''}`}
-                            onClick={() => handleMarkNotificationRead(notif.id)}
-                            style={{ display: 'flex', gap: '12px', padding: '12px' }}
-                          >
-                            <div className="notif-icon" style={{ backgroundColor: bgClass, display: 'flex', alignItems: 'center', justifyContent: 'center', width: '32px', height: '32px', borderRadius: '50%', flexShrink: 0 }}>
-                              <IconComponent size={14} style={{ color: iconColor }} />
-                            </div>
-                            <div className="notif-content" style={{ display: 'flex', flexDirection: 'column', flexGrow: 1 }}>
-                              <span className="notif-msg" style={{ fontSize: '12px', fontWeight: '600', color: 'var(--title-color)', lineHeight: '1.4' }}>{notif.message}</span>
-                              <span className="notif-date" style={{ fontSize: '10px', color: '#888', marginTop: '4px' }}>{notif.date}</span>
-                            </div>
-                            {!notif.read && <span className="notif-unread-dot" style={{ width: '6px', height: '6px', backgroundColor: 'var(--theme-color)', borderRadius: '50%', alignSelf: 'center', flexShrink: 0 }}></span>}
-                          </div>
-                        );
-                      })
-                    ) : (
-                      <div className="text-center text-muted" style={{ padding: '30px 10px', fontSize: '12px' }}>
-                        No notifications found.
-                      </div>
-                    )}
-                  </div>
-                  <div className="dropdown-panel-footer" style={{ display: 'flex', justifyContent: 'space-between' }}>
-                    <button className="dropdown-footer-btn" onClick={handleMarkAllNotificationsRead}>Mark as Read</button>
-                    <button className="dropdown-footer-btn" onClick={handleClearNotifications}>Clear Notifications</button>
-                    <Link to="/admin/notifications" className="dropdown-footer-btn" onClick={() => setIsNotificationsOpen(false)}>
-                      View All Alerts
-                    </Link>
-                  </div>
-                </div>
-              )}
             </div>
           </div>
 
@@ -431,116 +319,247 @@ const AdminNavbar = () => {
             </div>
             <ChevronDown size={14} style={{ color: '#555' }} />
 
-            {isProfileOpen && (
-              <div className="profile-dropdown-card" onClick={(e) => e.stopPropagation()} style={{ width: '310px', padding: '20px' }}>
-                {/* PROFILE SECTION */}
-                <div>
-                  <h5 className="section-title">Profile Section</h5>
-                  <div className="profile-header-area" style={{ display: 'flex', alignItems: 'center', marginBottom: '15px' }}>
-                    <div style={{
-                      width: '45px',
-                      height: '45px',
-                      borderRadius: '50%',
-                      backgroundColor: 'var(--theme-color)',
-                      color: 'white',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      fontWeight: 'bold',
-                      fontSize: '18px',
-                      border: '2px solid var(--theme-color2)',
-                      marginRight: '10px'
-                    }}>
-                      {(user?.name || 'A').charAt(0).toUpperCase()}
-                    </div>
-                    <div className="profile-header-details" style={{ display: 'flex', flexDirection: 'column' }}>
-                      <span className="profile-header-name" style={{ fontWeight: '600' }}>{user?.name || "Amma's User"}</span>
-                      <span className="profile-header-role" style={{ fontSize: '11px', color: '#666' }}>
-                        {user?.role === 'admin' ? 'Super Admin' : user?.role === 'manager' ? 'Manager' : user?.role === 'kitchen_staff' ? 'Kitchen Staff' : 'Delivery Agent'}
-                      </span>
-                    </div>
-                  </div>
-                  <div className="profile-info-list" style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                    <div className="profile-info-item" style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '12px' }}>
-                      <Mail size={14} className="text-secondary" />
-                      <span>{user?.email || "chef@ammaskitchen.com"}</span>
-                    </div>
-                    <div className="profile-info-item" style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '12px' }}>
-                      <Phone size={14} className="text-secondary" />
-                      <span>{user?.phone || "+91 98765 43210"}</span>
-                    </div>
-                    <div className="profile-info-item" style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '12px' }}>
-                      <Clock size={14} className="text-secondary" />
-                      <span>Last Login: Today, 10:30 AM</span>
-                    </div>
-                  </div>
-                </div>
 
-                {/* ACCOUNT SECTION */}
-                <div style={{ marginTop: '15px' }}>
-                  <h5 className="section-title">Account Section</h5>
-                  <div className="profile-links-list" style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                    <Link to="/admin/settings" className="profile-link-item" onClick={() => setIsProfileOpen(false)} style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px' }}>
-                      <User size={14} />
-                      <span>View Profile</span>
-                    </Link>
-                    <Link to="/admin/settings" className="profile-link-item" onClick={() => setIsProfileOpen(false)} style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px' }}>
-                      <Settings size={14} />
-                      <span>Edit Profile</span>
-                    </Link>
-                    <Link to="/admin/settings" className="profile-link-item" onClick={() => setIsProfileOpen(false)} style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px' }}>
-                      <Key size={14} />
-                      <span>Change Password</span>
-                    </Link>
-                  </div>
-                </div>
-
-                {/* BUSINESS SECTION */}
-                <div style={{ marginTop: '15px' }}>
-                  <h5 className="section-title">Business Section</h5>
-                  <div className="business-stats-summary" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '8px', marginTop: '6px' }}>
-                    <div className="business-stat-card" style={{ padding: '6px', textAlign: 'center', border: '1px solid #EAE6DB', borderRadius: '8px' }}>
-                      <span className="business-stat-val" style={{ display: 'block', fontWeight: '700', fontSize: '12px' }}>{stats.total_orders}</span>
-                      <span className="business-stat-lbl" style={{ fontSize: '9px', color: '#666' }}>Orders</span>
-                    </div>
-                    <div className="business-stat-card" style={{ padding: '6px', textAlign: 'center', border: '1px solid #EAE6DB', borderRadius: '8px' }}>
-                      <span className="business-stat-val" style={{ display: 'block', fontWeight: '700', fontSize: '11px', whiteSpace: 'nowrap' }}>₹{Math.round(stats.total_revenue / 1000)}k</span>
-                      <span className="business-stat-lbl" style={{ fontSize: '9px', color: '#666' }}>Sales</span>
-                    </div>
-                    <div className="business-stat-card" style={{ padding: '6px', textAlign: 'center', border: '1px solid #EAE6DB', borderRadius: '8px' }}>
-                      <span className="business-stat-val" style={{ display: 'block', fontWeight: '700', fontSize: '12px' }}>{stats.total_products}</span>
-                      <span className="business-stat-lbl" style={{ fontSize: '9px', color: '#666' }}>Products</span>
-                    </div>
-                  </div>
-                </div>
-
-                {/* SYSTEM SECTION */}
-                <div style={{ marginTop: '15px' }}>
-                  <h5 className="section-title">System Section</h5>
-                  <div className="profile-links-list" style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                    <Link to="/admin/settings" className="profile-link-item" onClick={() => setIsProfileOpen(false)} style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px' }}>
-                      <Settings size={14} />
-                      <span>Settings</span>
-                    </Link>
-                    <Link to="/admin/settings" className="profile-link-item" onClick={() => setIsProfileOpen(false)} style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px' }}>
-                      <Activity size={14} />
-                      <span>Activity Logs</span>
-                    </Link>
-                  </div>
-                </div>
-
-                {/* LOGOUT SECTION */}
-                <div className="border-top pt-2" style={{ borderTop: '1px solid var(--border-color)', marginTop: '15px', paddingTop: '10px' }}>
-                  <button className="profile-logout-btn" onClick={() => setShowLogoutConfirm(true)} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', width: '100%', padding: '8px', borderRadius: '8px', backgroundColor: '#78281F', color: '#fff', border: 'none', cursor: 'pointer', fontWeight: '600' }}>
-                    <LogOut size={14} />
-                    <span>Logout</span>
-                  </button>
-                </div>
-              </div>
-            )}
           </div>
         </div>
       </div>
+
+      {/* Mail Modal Overlay */}
+      {isMailOpen && (
+        <div className="admin-modal-overlay" onClick={() => setIsMailOpen(false)} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: 'rgba(0,0,0,0.4)', backdropFilter: 'blur(4px)', position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, zIndex: 1050 }}>
+          <div className="dropdown-panel" onClick={(e) => e.stopPropagation()} style={{ position: 'relative', top: 'auto', right: 'auto', width: '350px', maxWidth: '90vw', maxHeight: '80vh', display: 'flex', flexDirection: 'column' }}>
+            <div className="dropdown-panel-header">
+              <h4>Recent Messages</h4>
+              <span className="badge-status active" style={{ padding: '2px 8px', fontSize: '10px' }}>
+                {unreadMessagesCount} Unread
+              </span>
+            </div>
+            <div className="dropdown-panel-body" style={{ overflowY: 'auto' }}>
+              {messages.length > 0 ? (
+                messages.map(msg => (
+                  <div 
+                    key={msg.id} 
+                    className={`message-item ${!msg.read ? 'unread' : ''}`}
+                    onClick={() => handleOpenMessage(msg)}
+                  >
+                    <div className="message-header">
+                      <span className="message-sender">{msg.sender}</span>
+                      <span className="message-date">{msg.date}</span>
+                    </div>
+                    <div className="message-subject">{msg.subject}</div>
+                    <div className="message-actions" style={{ display: 'flex', gap: '6px', marginTop: '10px' }}>
+                      <button className="msg-action-btn open" onClick={() => handleOpenMessage(msg)} style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                        <Eye size={12} /> Open
+                      </button>
+                      {!msg.read && (
+                        <button className="msg-action-btn read" onClick={(e) => handleMarkMessageRead(msg.id, e)} style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                          <Check size={12} /> Read
+                        </button>
+                      )}
+                      <button className="msg-action-btn delete" onClick={(e) => handleDeleteMessage(msg.id, e)} style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                        <Trash2 size={12} /> Delete
+                      </button>
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <div className="text-center text-muted" style={{ padding: '30px 10px', fontSize: '12px' }}>
+                  No messages found.
+                </div>
+              )}
+            </div>
+            <div className="dropdown-panel-footer">
+              <span>Inbox Operations</span>
+              <button className="dropdown-footer-btn" onClick={() => setMessages([])}>Clear Inbox</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Notifications Modal Overlay */}
+      {isNotificationsOpen && (
+        <div className="admin-modal-overlay" onClick={() => setIsNotificationsOpen(false)} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: 'rgba(0,0,0,0.4)', backdropFilter: 'blur(4px)', position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, zIndex: 1050 }}>
+          <div className="dropdown-panel" onClick={(e) => e.stopPropagation()} style={{ position: 'relative', top: 'auto', right: 'auto', width: '350px', maxWidth: '90vw', maxHeight: '80vh', display: 'flex', flexDirection: 'column' }}>
+            <div className="dropdown-panel-header">
+              <h4>Notifications</h4>
+              <span className="badge-status pending" style={{ padding: '2px 8px', fontSize: '10px' }}>
+                {unreadNotificationsCount} Alerts
+              </span>
+            </div>
+            <div className="dropdown-panel-body" style={{ overflowY: 'auto' }}>
+              {notifications.length > 0 ? (
+                notifications.map(notif => {
+                  let IconComponent = Bell;
+                  let bgClass = "rgba(47, 57, 74, 0.08)";
+                  let iconColor = "#666";
+                  
+                  if (notif.type === "New Orders") {
+                    IconComponent = ShoppingCart;
+                    bgClass = "rgba(63, 144, 101, 0.1)";
+                    iconColor = "#3F9065";
+                  } else if (notif.type === "New Registrations") {
+                    IconComponent = UserPlus;
+                    bgClass = "rgba(47, 57, 74, 0.1)";
+                    iconColor = "#2F394A";
+                  } else if (notif.type === "Low Stock Updates") {
+                    IconComponent = AlertTriangle;
+                    bgClass = "rgba(235, 20, 0, 0.1)";
+                    iconColor = "#eb1400";
+                  } else if (notif.type === "Review Approvals") {
+                    IconComponent = Star;
+                    bgClass = "rgba(241, 196, 15, 0.15)";
+                    iconColor = "#f1c40f";
+                  } else if (notif.type === "Bulk Order Requests") {
+                    IconComponent = PartyPopper;
+                    bgClass = "rgba(47, 57, 74, 0.1)";
+                    iconColor = "#2F394A";
+                  }
+
+                  return (
+                    <div 
+                      key={notif.id} 
+                      className={`notification-item ${!notif.read ? 'unread' : ''}`}
+                      onClick={() => handleMarkNotificationRead(notif.id)}
+                      style={{ display: 'flex', gap: '12px', padding: '12px' }}
+                    >
+                      <div className="notif-icon" style={{ backgroundColor: bgClass, display: 'flex', alignItems: 'center', justifyContent: 'center', width: '32px', height: '32px', borderRadius: '50%', flexShrink: 0 }}>
+                        <IconComponent size={14} style={{ color: iconColor }} />
+                      </div>
+                      <div className="notif-content" style={{ display: 'flex', flexDirection: 'column', flexGrow: 1 }}>
+                        <span className="notif-msg" style={{ fontSize: '12px', fontWeight: '600', color: 'var(--title-color)', lineHeight: '1.4' }}>{notif.message}</span>
+                        <span className="notif-date" style={{ fontSize: '10px', color: '#888', marginTop: '4px' }}>{notif.date}</span>
+                      </div>
+                      {!notif.read && <span className="notif-unread-dot" style={{ width: '6px', height: '6px', backgroundColor: 'var(--theme-color)', borderRadius: '50%', alignSelf: 'center', flexShrink: 0 }}></span>}
+                    </div>
+                  );
+                })
+              ) : (
+                <div className="text-center text-muted" style={{ padding: '30px 10px', fontSize: '12px' }}>
+                  No notifications found.
+                </div>
+              )}
+            </div>
+            <div className="dropdown-panel-footer" style={{ display: 'flex', justifyContent: 'space-between' }}>
+              <button className="dropdown-footer-btn" onClick={handleMarkAllNotificationsRead}>Mark as Read</button>
+              <button className="dropdown-footer-btn" onClick={handleClearNotifications}>Clear</button>
+              <Link to="/admin/notifications" className="dropdown-footer-btn" onClick={() => setIsNotificationsOpen(false)}>
+                View All
+              </Link>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Profile Modal Overlay */}
+      {isProfileOpen && (
+        <div className="admin-modal-overlay" onClick={() => setIsProfileOpen(false)} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: 'rgba(0,0,0,0.4)', backdropFilter: 'blur(4px)', position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, zIndex: 1050 }}>
+          <div className="profile-dropdown-card" onClick={(e) => e.stopPropagation()} style={{ position: 'relative', top: 'auto', right: 'auto', width: '330px', maxWidth: '90vw', padding: '20px', maxHeight: '90vh', overflowY: 'auto', boxShadow: '0 10px 30px rgba(0,0,0,0.2)' }}>
+            {/* PROFILE SECTION */}
+            <div>
+              <h5 className="section-title">Profile Section</h5>
+              <div className="profile-header-area" style={{ display: 'flex', alignItems: 'center', marginBottom: '15px' }}>
+                <div style={{
+                  width: '45px',
+                  height: '45px',
+                  borderRadius: '50%',
+                  backgroundColor: 'var(--theme-color)',
+                  color: 'white',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontWeight: 'bold',
+                  fontSize: '18px',
+                  border: '2px solid var(--theme-color2)',
+                  marginRight: '10px'
+                }}>
+                  {(user?.name || 'A').charAt(0).toUpperCase()}
+                </div>
+                <div className="profile-header-details" style={{ display: 'flex', flexDirection: 'column' }}>
+                  <span className="profile-header-name" style={{ fontWeight: '600' }}>{user?.name || "Amma's User"}</span>
+                  <span className="profile-header-role" style={{ fontSize: '11px', color: '#666' }}>
+                    {user?.role === 'admin' ? 'Super Admin' : user?.role === 'manager' ? 'Manager' : user?.role === 'kitchen_staff' ? 'Kitchen Staff' : 'Delivery Agent'}
+                  </span>
+                </div>
+              </div>
+              <div className="profile-info-list" style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                <div className="profile-info-item" style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '12px' }}>
+                  <Mail size={14} className="text-secondary" />
+                  <span>{user?.email || "chef@ammaskitchen.com"}</span>
+                </div>
+                <div className="profile-info-item" style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '12px' }}>
+                  <Phone size={14} className="text-secondary" />
+                  <span>{user?.phone || "+91 98765 43210"}</span>
+                </div>
+                <div className="profile-info-item" style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '12px' }}>
+                  <Clock size={14} className="text-secondary" />
+                  <span>Last Login: Today, 10:30 AM</span>
+                </div>
+              </div>
+            </div>
+
+            {/* ACCOUNT SECTION */}
+            <div style={{ marginTop: '15px' }}>
+              <h5 className="section-title">Account Section</h5>
+              <div className="profile-links-list" style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                <Link to="/admin/settings" className="profile-link-item" onClick={() => setIsProfileOpen(false)} style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px' }}>
+                  <User size={14} />
+                  <span>View Profile</span>
+                </Link>
+                <Link to="/admin/settings" className="profile-link-item" onClick={() => setIsProfileOpen(false)} style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px' }}>
+                  <Settings size={14} />
+                  <span>Edit Profile</span>
+                </Link>
+                <Link to="/admin/settings" className="profile-link-item" onClick={() => setIsProfileOpen(false)} style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px' }}>
+                  <Key size={14} />
+                  <span>Change Password</span>
+                </Link>
+              </div>
+            </div>
+
+            {/* BUSINESS SECTION */}
+            <div style={{ marginTop: '15px' }}>
+              <h5 className="section-title">Business Section</h5>
+              <div className="business-stats-summary" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '8px', marginTop: '6px' }}>
+                <div className="business-stat-card" style={{ padding: '6px', textAlign: 'center', border: '1px solid #EAE6DB', borderRadius: '8px' }}>
+                  <span className="business-stat-val" style={{ display: 'block', fontWeight: '700', fontSize: '12px' }}>{stats.total_orders}</span>
+                  <span className="business-stat-lbl" style={{ fontSize: '9px', color: '#666' }}>Orders</span>
+                </div>
+                <div className="business-stat-card" style={{ padding: '6px', textAlign: 'center', border: '1px solid #EAE6DB', borderRadius: '8px' }}>
+                  <span className="business-stat-val" style={{ display: 'block', fontWeight: '700', fontSize: '11px', whiteSpace: 'nowrap' }}>₹{Math.round(stats.total_revenue / 1000)}k</span>
+                  <span className="business-stat-lbl" style={{ fontSize: '9px', color: '#666' }}>Sales</span>
+                </div>
+                <div className="business-stat-card" style={{ padding: '6px', textAlign: 'center', border: '1px solid #EAE6DB', borderRadius: '8px' }}>
+                  <span className="business-stat-val" style={{ display: 'block', fontWeight: '700', fontSize: '12px' }}>{stats.total_products}</span>
+                  <span className="business-stat-lbl" style={{ fontSize: '9px', color: '#666' }}>Products</span>
+                </div>
+              </div>
+            </div>
+
+            {/* SYSTEM SECTION */}
+            <div style={{ marginTop: '15px' }}>
+              <h5 className="section-title">System Section</h5>
+              <div className="profile-links-list" style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                <Link to="/admin/settings" className="profile-link-item" onClick={() => setIsProfileOpen(false)} style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px' }}>
+                  <Settings size={14} />
+                  <span>Settings</span>
+                </Link>
+                <Link to="/admin/settings" className="profile-link-item" onClick={() => setIsProfileOpen(false)} style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px' }}>
+                  <Activity size={14} />
+                  <span>Activity Logs</span>
+                </Link>
+              </div>
+            </div>
+
+            {/* LOGOUT SECTION */}
+            <div className="border-top pt-2" style={{ borderTop: '1px solid var(--border-color)', marginTop: '15px', paddingTop: '10px' }}>
+              <button className="profile-logout-btn" onClick={() => setShowLogoutConfirm(true)} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', width: '100%', padding: '8px', borderRadius: '8px', backgroundColor: '#78281F', color: '#fff', border: 'none', cursor: 'pointer', fontWeight: '600' }}>
+                <LogOut size={14} />
+                <span>Logout</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Message Reader Modal */}
       {selectedMessage && (
@@ -600,6 +619,14 @@ const AdminNavbar = () => {
           </div>
         </div>
       )}
+
+      {/* Global Mobile FAB (Floating Action Button) */}
+      <Link to="/admin/orders" className="mobile-fab mobile-only" title="Quick POS Entry">
+        <ShoppingCart size={24} />
+      </Link>
+
+      {/* Global Search Modal for Mobile */}
+      <GlobalSearchModal isOpen={isSearchModalOpen} onClose={() => setIsSearchModalOpen(false)} />
     </>
   );
 };

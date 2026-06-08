@@ -223,8 +223,8 @@ const KitchenManagement = () => {
 
                         return (
                           <tr key={p.id}>
-                            <td><strong>KCH-{p.id}</strong></td>
-                            <td>
+                            <td data-label="Staff ID"><strong>KCH-{p.id}</strong></td>
+                            <td data-label="Chef Name">
                               <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                                 <div style={{ width: '30px', height: '30px', borderRadius: '50%', backgroundColor: '#E2EBD9', display: 'flex', justifyContent: 'center', alignItems: 'center', color: '#1B3D2B', fontWeight: '700', fontSize: '12px' }}>
                                   {p.name.charAt(0).toUpperCase()}
@@ -232,18 +232,18 @@ const KitchenManagement = () => {
                                 <strong>{p.name}</strong>
                               </div>
                             </td>
-                            <td>
+                            <td data-label="Specialty Duty">
                               <span style={{ fontWeight: '600', color: 'var(--theme-color)', fontSize: '13px' }}>
                                 {p.specialty}
                               </span>
                             </td>
-                            <td>
+                            <td data-label="Mobile Phone">
                               <a href={`tel:${p.phone}`} style={{ color: 'var(--body-color)', fontWeight: '600', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
                                 <Phone size={12} style={{ color: 'var(--theme-color)', opacity: 0.8 }} />
                                 {p.phone}
                               </a>
                             </td>
-                            <td>
+                            <td data-label="Duty Status">
                               <span style={{
                                 padding: '4px 10px',
                                 borderRadius: '15px',
@@ -256,12 +256,12 @@ const KitchenManagement = () => {
                                 {p.status}
                               </span>
                             </td>
-                            <td>
+                            <td data-label="Assigned Tasks">
                               <div style={{ maxWidth: '200px', wordBreak: 'break-all', fontWeight: '600', color: p.assigned_tasks === 'None' ? '#888' : '#222' }}>
                                 {p.assigned_tasks}
                               </div>
                             </td>
-                            <td>
+                            <td data-label="Quick Status Update">
                               <select 
                                 value={p.status} 
                                 onChange={(e) => handleStatusChange(p.id, e.target.value)}
@@ -273,7 +273,7 @@ const KitchenManagement = () => {
                                 <option value="Off Duty">Off Duty</option>
                               </select>
                             </td>
-                            <td>
+                            <td data-label="Actions">
                               <div style={{ position: 'relative', display: 'inline-block' }} onMouseLeave={() => setActiveDropdown(null)}>
                                 <button 
                                   onClick={() => setActiveDropdown(activeDropdown === p.id ? null : p.id)}

@@ -213,18 +213,18 @@ const BatterProduction = () => {
                     {logs && logs.length > 0 ? (
                       logs.map((log) => (
                         <tr key={log.id}>
-                          <td><strong>BCH-{log.id}</strong></td>
-                          <td><strong>{log.batter_type}</strong></td>
-                          <td>{log.produced_quantity}</td>
-                          <td>{log.sold_quantity}</td>
-                          <td style={{ fontWeight: '700', color: 'var(--theme-color)' }}>
+                          <td data-label="Batch ID"><strong>BCH-{log.id}</strong></td>
+                          <td data-label="Batter Type"><strong>{log.batter_type}</strong></td>
+                          <td data-label="Produced Qty">{log.produced_quantity}</td>
+                          <td data-label="Sold Qty">{log.sold_quantity}</td>
+                          <td data-label="Remaining Qty" style={{ fontWeight: '700', color: 'var(--theme-color)' }}>
                             {log.remaining_quantity}
                           </td>
-                          <td>{log.unit}</td>
-                          <td className="text-muted" style={{ fontSize: '13px' }}>
+                          <td data-label="Unit">{log.unit}</td>
+                          <td data-label="Logged Date" className="text-muted" style={{ fontSize: '13px' }}>
                             {log.date ? new Date(log.date).toLocaleString() : 'N/A'}
                           </td>
-                           <td>
+                           <td data-label="Actions">
                              <button 
                                onClick={() => openUpdateModal(log)}
                                className="btn-secondary"

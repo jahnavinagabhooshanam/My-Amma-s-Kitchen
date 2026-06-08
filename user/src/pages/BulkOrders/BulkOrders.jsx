@@ -52,7 +52,7 @@ const BulkOrders = () => {
       <SEO title="Premium Catering & Feast Packages" description="Get a premium traditional catering quote from Hotel Amma's Kitchen." />
       
       {/* Hero Background wraps both form and text */}
-      <div className="bulk-hero" style={{ paddingBottom: '100px' }}>
+      <div className="bulk-hero">
         
         {/* Inquiry Form at the very top */}
         <div className="container" style={{ position: 'relative', zIndex: 10 }}>
@@ -64,7 +64,7 @@ const BulkOrders = () => {
                 <p style={{ marginTop: '12px', fontSize: '1.1rem', color: '#666', lineHeight: '1.6' }}>
                   Thank you for choosing Hotel Amma's Kitchen. Our event coordinator is reviewing your requirements and will contact you within 3 hours.
                 </p>
-                <button onClick={() => setSubmitted(false)} className="th-btn mt-4" style={{ border: 'none', cursor: 'pointer', background: '#8B1A10', color: 'white', padding: '12px 30px', borderRadius: '8px' }}>
+                <button onClick={() => setSubmitted(false)} className="th-btn mt-4" style={{ border: 'none', cursor: 'pointer', background: '#1A5D1A', color: 'white', padding: '12px 30px', borderRadius: '8px' }}>
                   Submit Another Inquiry
                 </button>
               </div>
@@ -138,7 +138,7 @@ const BulkOrders = () => {
                 </div>
 
                 <div className="form-btn" style={{ marginTop: '20px' }}>
-                  <button type="submit" className="th-btn" style={{ background: '#8B1A10', color: 'white', border: 'none', cursor: 'pointer', width: '100%', padding: '16px', borderRadius: '8px', fontSize: '1.1rem', fontWeight: '600', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <button type="submit" className="th-btn" style={{ background: '#1A5D1A', color: 'white', border: 'none', cursor: 'pointer', width: '100%', padding: '16px', borderRadius: '8px', fontSize: '1.1rem', fontWeight: '600', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                     <Send size={18} style={{ marginRight: '8px' }} /> Submit Catering Inquiry
                   </button>
                 </div>
@@ -147,34 +147,10 @@ const BulkOrders = () => {
           </div>
         </div>
 
-        {/* Hero Text & Trust Indicators now sit below the form */}
-        <div className="bulk-hero-content" style={{ marginTop: '40px' }}>
-          <h1 className="bulk-hero-title">Premium Traditional Catering</h1>
-          <p className="bulk-hero-subtitle">
-            Experience the authentic taste of Amma's kitchen at your special events. <br/>
-            From traditional banana leaf feasts to premium live counters, we deliver unmatched hospitality.
-          </p>
-          
-          <div className="bulk-trust-bar">
-            <div className="bulk-trust-item">
-              <div className="bulk-trust-num">500+</div>
-              <div className="bulk-trust-label">Events Catered</div>
-            </div>
-            <div className="bulk-trust-item">
-              <div className="bulk-trust-num">50,000+</div>
-              <div className="bulk-trust-label">Guests Served</div>
-            </div>
-            <div className="bulk-trust-item">
-              <div className="bulk-trust-num">4.9/5</div>
-              <div className="bulk-trust-label">Customer Rating</div>
-            </div>
-          </div>
-        </div>
-
       </div>
 
       {/* Event Types Section */}
-      <div className="bulk-section" style={{ paddingTop: '40px' }}>
+      <div className="bulk-section" style={{ paddingTop: '20px' }}>
         <h2 className="bulk-section-title">Events We Cater</h2>
         <p className="bulk-section-subtitle">Tailored culinary experiences for every occasion</p>
         
@@ -204,7 +180,7 @@ const BulkOrders = () => {
 
 
       {/* Testimonials */}
-      <div className="bulk-section" style={{ paddingBottom: '80px' }}>
+      <div className="bulk-section" style={{ paddingBottom: '40px', paddingTop: '40px' }}>
         <h2 className="bulk-section-title">What Our Guests Say</h2>
         <p className="bulk-section-subtitle">Real experiences from our catered events</p>
         
@@ -215,15 +191,6 @@ const BulkOrders = () => {
               <div className="bulk-test-avatar">K</div>
               <div>
                 <strong>Karthik & Priya</strong><br/><span style={{fontSize: '0.85rem', color: '#666'}}>Wedding Ceremony</span>
-              </div>
-            </div>
-          </div>
-          <div className="bulk-test-card">
-            <div className="bulk-test-quote">"We hired Amma's Kitchen for a corporate event of 300 people. The live dosa counters were a massive hit with our entire team!"</div>
-            <div className="bulk-test-author">
-              <div className="bulk-test-avatar">S</div>
-              <div>
-                <strong>Sanjay M.</strong><br/><span style={{fontSize: '0.85rem', color: '#666'}}>Tech Corp Chennai</span>
               </div>
             </div>
           </div>

@@ -451,7 +451,7 @@ const Dashboard = () => {
 
           {/* Tab Selection */}
           {!isStaff && (
-            <div style={{ display: 'flex', gap: '15px', borderBottom: '2px solid #EAE6DB', marginBottom: '25px', paddingBottom: '0' }}>
+            <div className="module-tabs">
               <button 
                 onClick={() => setActiveTab('overview')}
                 style={{
@@ -506,7 +506,7 @@ const Dashboard = () => {
           ) : activeTab === 'overview' ? (
             <>
               {/* Premium 5 KPI Cards Grid (Phase 5) */}
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 200px), 1fr))', gap: '15px', marginBottom: '25px' }}>
+              <div className="dashboard-kpi-grid">
                 
                 {!isStaff && (
                   <div className="stats-card">
@@ -789,29 +789,29 @@ const Dashboard = () => {
                       {stats.recent_orders && stats.recent_orders.length > 0 ? (
                         stats.recent_orders.map((o) => (
                           <tr key={o.id}>
-                            <td><strong>{o.id}</strong></td>
-                            <td>
+                            <td data-label="Order ID"><strong>{o.id}</strong></td>
+                            <td data-label="Customer Name">
                               <strong>{o.customer}</strong>
                               <div className="text-muted" style={{ fontSize: '11px' }}>{o.phone}</div>
                             </td>
-                            <td>
+                            <td data-label="Product Name">
                               <div style={{ maxWidth: '200px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={o.products}>
                                 {o.products}
                               </div>
                             </td>
-                            <td>
+                            <td data-label="Category">
                               <span style={{ fontSize: '12px', fontWeight: '500' }}>
                                 {o.categories}
                               </span>
                             </td>
-                            <td>{o.quantities}</td>
-                            <td style={{ fontWeight: '700', color: 'var(--primary-color)' }}>₹{o.amount.toFixed(2)}</td>
-                            <td>
+                            <td data-label="Quantity">{o.quantities}</td>
+                            <td data-label="Amount" style={{ fontWeight: '700', color: 'var(--primary-color)' }}>₹{o.amount.toFixed(2)}</td>
+                            <td data-label="Payment Status">
                               <span className={`badge-status ${o.payment_status?.toLowerCase() === 'paid' ? 'completed' : 'pending'}`}>
                                 {o.payment_status}
                               </span>
                             </td>
-                            <td>
+                            <td data-label="Order Status">
                               {isStaff ? (
                                 <span style={{
                                   padding: '4px 10px',
@@ -838,10 +838,10 @@ const Dashboard = () => {
                                 </select>
                               )}
                             </td>
-                            <td className="text-muted" style={{ fontSize: '12px' }}>
+                            <td data-label="Date" className="text-muted" style={{ fontSize: '12px' }}>
                               {o.date ? new Date(o.date).toLocaleDateString() : 'N/A'}
                             </td>
-                            <td>
+                            <td data-label="Actions">
                               <button 
                                 onClick={() => setSelectedOrder(o)} 
                                 className="btn-secondary" 

@@ -12,7 +12,7 @@
 }
 
 .contact-hero .sub-title {
-  color: #D4AF37;
+  color: #1A5D1A;
   font-weight: 600;
   letter-spacing: 2px;
   text-transform: uppercase;
@@ -58,7 +58,7 @@
 .contact-action-card:hover {
   transform: translateY(-3px);
   box-shadow: 0 12px 25px rgba(0,0,0,0.06);
-  border-color: #D4AF37;
+  border-color: #1A5D1A;
 }
 
 .contact-card-left {
@@ -108,9 +108,9 @@
 }
 
 .contact-action-card:hover .contact-action-btn {
-  background: #8B1A10;
+  background: #1A5D1A;
   color: white;
-  border-color: #8B1A10;
+  border-color: #1A5D1A;
 }
 
 /* Premium Form Styling */
@@ -144,9 +144,9 @@
 }
 
 .quick-pill:hover {
-  background: #8B1A10;
+  background: #1A5D1A;
   color: white;
-  border-color: #8B1A10;
+  border-color: #1A5D1A;
 }
 
 /* Floating Labels */
@@ -168,9 +168,9 @@
 }
 
 .floating-input:focus {
-  border-color: #D4AF37;
+  border-color: #1A5D1A;
   background: white;
-  box-shadow: 0 0 0 4px rgba(212, 175, 55, 0.1);
+  box-shadow: 0 0 0 4px rgba(26, 93, 26, 0.1);
 }
 
 .floating-label {
@@ -191,7 +191,7 @@
   font-size: 0.75rem;
   background: white;
   padding: 0 6px;
-  color: #D4AF37;
+  color: #1A5D1A;
   font-weight: 600;
 }
 
@@ -203,7 +203,7 @@ textarea.floating-input {
 .submit-btn {
   width: 100%;
   padding: 16px;
-  background: #8B1A10;
+  background: #1A5D1A;
   color: white;
   border: none;
   border-radius: 12px;
@@ -218,9 +218,9 @@ textarea.floating-input {
 }
 
 .submit-btn:hover {
-  background: #6A140C;
+  background: #0F400F;
   transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(139, 26, 16, 0.2);
+  box-shadow: 0 8px 20px rgba(26, 93, 26, 0.2);
 }
 
 /* Success Animation */
@@ -268,7 +268,7 @@ textarea.floating-input {
 
 .business-hours-icon {
   background: #FDF8F5;
-  color: #D4AF37;
+  color: #1A5D1A;
   padding: 10px;
   border-radius: 10px;
 }

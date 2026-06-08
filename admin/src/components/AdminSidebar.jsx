@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { motion, AnimatePresence } from 'framer-motion';
 import logoImg from '../assets/img/cropped-logo.webp';
 import {
   Home,
@@ -18,7 +19,9 @@ import {
   Settings,
   LogOut,
   Package,
-  Gift
+  Gift,
+  ChevronLeft,
+  ChevronRight
 } from 'lucide-react';
 
 const menuItems = [
@@ -42,6 +45,29 @@ const AdminSidebar = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
+  const [isOpen, setIsOpen] = useState(false);
+  const [isCollapsed, setIsCollapsed] = useState(false);
+
+  useEffect(() => {
+    const handleToggle = () => setIsOpen(prev => !prev);
+    window.addEventListener('toggleSidebar', handleToggle);
+    return () => window.removeEventListener('toggleSidebar', handleToggle);
+  }, []);
+
+  // Close sidebar on route change (mobile)
+  useEffect(() => {
+    setIsOpen(false);
+  }, [location.pathname]);
+
+  // Sync collapsed state to body or wrapper so main content can expand
+  useEffect(() => {
+    if (isCollapsed) {
+      document.documentElement.style.setProperty('--sidebar-width', '80px');
+    } else {
+      document.documentElement.style.setProperty('--sidebar-width', '260px');
+    }
+  }, [isCollapsed]);
+
   const userRole = user?.role || 'admin';
   const visibleItems = menuItems.filter(item => item.roles.includes(userRole));
 
@@ -52,17 +78,34 @@ const AdminSidebar = () => {
   };
 
   return (
-    <div className="admin-sidebar" id="mainSidebar">
+    <>
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div 
+            className="sidebar-overlay mobile-only"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setIsOpen(false)}
+          />
+        )}
+      </AnimatePresence>
+
+      <div className={`admin-sidebar ${isOpen ? 'open' : ''} ${isCollapsed ? 'collapsed' : ''}`} id="mainSidebar">
 
       {/* ── Header ── */}
       <div className="sidebar-header">
         <div className="sidebar-logo">
           <NavLink to="/admin/dashboard">
-            <img src={logoImg} alt="Hotel Amma's Kitchen" />
+            <img src={logoImg} alt="Hotel Amma's Kitchen" style={{ width: isCollapsed ? '40px' : '80px', transition: 'width 0.3s' }} />
           </NavLink>
         </div>
-        <h2 className="sidebar-title">My Amma's Kitchen</h2>
-        <p className="sidebar-subtitle">Food ERP Management</p>
+        {!isCollapsed && (
+          <>
+            <h2 className="sidebar-title">My Amma's Kitchen</h2>
+            <p className="sidebar-subtitle">Food ERP Management</p>
+          </>
+        )}
         <div className="sidebar-divider">
           <span className="divider-line" />
           <span className="divider-icon">✦</span>
@@ -80,9 +123,9 @@ const AdminSidebar = () => {
 
           return (
             <li className={`sidebar-item ${isActive ? 'active' : ''}`} key={idx}>
-              <NavLink to={item.to} className="sidebar-link">
-                <Icon size={17} strokeWidth={1.8} />
-                <span>{item.label}</span>
+              <NavLink to={item.to} className="sidebar-link" title={isCollapsed ? item.label : ''}>
+                <Icon size={isCollapsed ? 22 : 17} strokeWidth={1.8} />
+                {!isCollapsed && <span>{item.label}</span>}
               </NavLink>
             </li>
           );
@@ -91,17 +134,34 @@ const AdminSidebar = () => {
 
       {/* ── Footer ── */}
       <div className="sidebar-footer">
-        <a href="#logout" className="sidebar-logout-btn" onClick={handleLogout}>
+        <button 
+          className="desktop-only" 
+          onClick={() => setIsCollapsed(!isCollapsed)}
+          style={{ 
+            background: 'none', border: '1px solid #EAE6DB', width: '100%', 
+            padding: '10px', borderRadius: '8px', cursor: 'pointer',
+            display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
+            marginBottom: '15px', color: '#666'
+          }}
+        >
+          {isCollapsed ? <ChevronRight size={18} /> : <><ChevronLeft size={18} /> Collapse Sidebar</>}
+        </button>
+
+        <a href="#logout" className="sidebar-logout-btn" onClick={handleLogout} style={{ justifyContent: isCollapsed ? 'center' : 'flex-start' }} title={isCollapsed ? 'Logout' : ''}>
           <LogOut size={16} strokeWidth={2} />
-          <span>Logout</span>
+          {!isCollapsed && <span>Logout</span>}
         </a>
-        <div className="sidebar-version">
-          <span className="sidebar-version-num">⚙ Version 1.0 ⚙</span>
-          <span className="sidebar-brand-name">Amma's Kitchen ERP</span>
-        </div>
+        
+        {!isCollapsed && (
+          <div className="sidebar-version">
+            <span className="sidebar-version-num">⚙ Version 1.0 ⚙</span>
+            <span className="sidebar-brand-name">Amma's Kitchen ERP</span>
+          </div>
+        )}
       </div>
 
     </div>
+    </>
   );
 };
 
