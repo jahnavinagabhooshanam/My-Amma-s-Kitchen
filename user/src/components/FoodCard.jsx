@@ -14,18 +14,22 @@ const resolveImagePath = (path) => {
     ? import.meta.env.VITE_API_BASE_URL.replace('/api', '') 
     : 'http://127.0.0.1:5000';
 
-  // Route backend-provided admin assets to the backend server
-  if (clean.startsWith('/assets/') || clean.startsWith('assets/Food images/') || clean.startsWith('assets/images/') || clean.startsWith('uploads/') || clean.startsWith('/uploads/')) {
+  // For user-uploaded images, route to backend server
+  if (clean.startsWith('uploads/') || clean.startsWith('/uploads/')) {
     if (clean.startsWith('/')) clean = clean.substring(1);
     return `${backendUrl}/${clean}`;
   }
 
-  if (clean.startsWith('../user/assets/')) {
-    clean = clean.replace('../user/assets/', '/src/assets/');
-  } else if (clean.startsWith('assets/')) {
-    clean = clean.replace('assets/', '/src/assets/');
+  // For static assets (like Food images or img), serve directly from the frontend's public folder
+  if (clean.startsWith('/assets/') || clean.startsWith('assets/')) {
+    return clean.startsWith('/') ? clean : `/${clean}`;
   }
-  return clean;
+
+  if (clean.startsWith('../user/assets/')) {
+    return clean.replace('../user/assets/', '/assets/');
+  }
+
+  return clean.startsWith('/') ? clean : `/${clean}`;
 };
 
 const FoodCard = ({ product }) => {

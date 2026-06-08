@@ -77,15 +77,17 @@ const CustomerHome = () => {
       ? import.meta.env.VITE_API_BASE_URL.replace('/api', '') 
       : 'http://127.0.0.1:5000';
 
-    if (clean.startsWith('/assets/') || clean.startsWith('assets/') || clean.startsWith('/api/assets/')) {
-      clean = clean.replace(/^\/?(api\/)?assets\//, '');
-      return `${backendUrl}/assets/${clean}`;
-    }
     if (clean.startsWith('/uploads/') || clean.startsWith('uploads/')) {
       if (clean.startsWith('/')) clean = clean.substring(1);
       return `${backendUrl}/${clean}`;
     }
-    return `${backendUrl}/${clean.startsWith('/') ? clean.substring(1) : clean}`;
+
+    if (clean.startsWith('/assets/') || clean.startsWith('assets/') || clean.startsWith('/api/assets/')) {
+      clean = clean.replace(/^\/?(api\/)?assets\//, '');
+      return `/assets/${clean}`;
+    }
+    
+    return clean.startsWith('/') ? clean : `/${clean}`;
   };
 
   useEffect(() => {
