@@ -4,6 +4,7 @@ import { useCart } from '../../context/CartContext';
 import { motion } from 'framer-motion';
 import { Trash2, Plus, Minus, Info, ChevronRight, Tag, MessageSquare, Bookmark } from 'lucide-react';
 import api from '../../services/api';
+import { resolveImagePath } from '../../components/FoodCard';
 
 const Cart = () => {
   const { cartItems, updateQuantity, removeFromCart, cartTotal, clearCart } = useCart();
@@ -83,12 +84,7 @@ const Cart = () => {
     );
   }
 
-  // Resolve image helper
-  const resolveImagePath = (imgUrl) => {
-    if (!imgUrl) return 'https://via.placeholder.com/150';
-    if (imgUrl.startsWith('http')) return imgUrl;
-    return `http://127.0.0.1:5000${imgUrl}`;
-  };
+
 
   return (
     <div style={{ backgroundColor: '#F5F5F0', minHeight: '100vh', paddingBottom: 120 }}>

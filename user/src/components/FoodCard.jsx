@@ -9,10 +9,15 @@ const resolveImagePath = (path) => {
 
   if (clean.startsWith('http')) return clean;
 
+  // Get backend URL dynamically from environment variables
+  const backendUrl = import.meta.env.VITE_API_BASE_URL 
+    ? import.meta.env.VITE_API_BASE_URL.replace('/api', '') 
+    : 'http://127.0.0.1:5000';
+
   // Route backend-provided admin assets to the backend server
-  if (clean.startsWith('/assets/') || clean.startsWith('assets/Food images/') || clean.startsWith('assets/images/')) {
+  if (clean.startsWith('/assets/') || clean.startsWith('assets/Food images/') || clean.startsWith('assets/images/') || clean.startsWith('uploads/') || clean.startsWith('/uploads/')) {
     if (clean.startsWith('/')) clean = clean.substring(1);
-    return `http://127.0.0.1:5000/${clean}`;
+    return `${backendUrl}/${clean}`;
   }
 
   if (clean.startsWith('../user/assets/')) {
