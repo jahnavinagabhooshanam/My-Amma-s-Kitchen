@@ -208,6 +208,18 @@ def place_order():
     db.session.add(new_order)
     db.session.commit()  # commit to generate new_order.id
     
+    # Notify admins about the new order
+    from database.models import Notification
+    admins = User.query.filter_by(role='admin').all()
+    for adm in admins:
+        admin_notif = Notification(
+            user_id=adm.id,
+            message=f"New order #{new_order.id} received from {c_name} (Amount: Rs.{total})",
+            type="New Orders"
+        )
+        db.session.add(admin_notif)
+    db.session.commit()
+
     # Save the items
     for item in items:
         new_item = OrderItem(

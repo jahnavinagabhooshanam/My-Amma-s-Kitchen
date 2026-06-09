@@ -48,81 +48,12 @@ const AdminNavbar = () => {
   });
 
   // Mock Messages (Mail popup)
-  const [messages, setMessages] = useState(() => {
-    const saved = localStorage.getItem('amma_admin_messages');
-    if (saved) return JSON.parse(saved);
-    return [
-      {
-        id: 1,
-        sender: "Ramesh Kumar",
-        subject: "Inquiry about Bulk Catering for Wedding",
-        body: "Hi, I wanted to know if you can supply Masala Dosa and Idly batter for 500 guests on July 15th. Please send a quote.",
-        date: "Today, 09:15 AM",
-        read: false
-      },
-      {
-        id: 2,
-        sender: "Priya Sharma",
-        subject: "Feedback on Millet Batter",
-        body: "Your Millet batter is absolutely amazing! The texture is perfect and my family loves it. Will order again.",
-        date: "Yesterday, 04:30 PM",
-        read: false
-      },
-      {
-        id: 3,
-        sender: "Anand Joshi",
-        subject: "Delivery delay query",
-        body: "Order #ORD-104 status says preparing for 2 hours. Can you check?",
-        date: "Yesterday, 11:20 AM",
-        read: false
-      }
-    ];
-  });
+  const [messages, setMessages] = useState([]);
 
   const [selectedMessage, setSelectedMessage] = useState(null);
 
   // Mock Notifications
-  const [notifications, setNotifications] = useState(() => {
-    const saved = localStorage.getItem('amma_admin_notifications');
-    if (saved) return JSON.parse(saved);
-    return [
-      {
-        id: 1,
-        type: "New Orders",
-        message: "New order #ORD-12 received from Customer John Doe (Amount: 450.00)",
-        date: "5 mins ago",
-        read: false
-      },
-      {
-        id: 2,
-        type: "New Registrations",
-        message: "New user Suresh Raina registered as customer.",
-        date: "20 mins ago",
-        read: false
-      },
-      {
-        id: 3,
-        type: "Low Stock Updates",
-        message: "Stock Alert: Masala Dosa Batter is below threshold (5 left)",
-        date: "1 hour ago",
-        read: false
-      },
-      {
-        id: 4,
-        type: "Review Approvals",
-        message: "New 5-star review on Idly Batter pending approval.",
-        date: "3 hours ago",
-        read: true
-      },
-      {
-        id: 5,
-        type: "Bulk Order Requests",
-        message: "New catering request for 150 guests received.",
-        date: "5 hours ago",
-        read: false
-      }
-    ];
-  });
+  const [notifications, setNotifications] = useState([]);
 
   // Refs for click outside detection
   const profileRef = useRef(null);
@@ -151,14 +82,66 @@ const AdminNavbar = () => {
     fetchStats();
   }, []);
 
-  // Sync state to local storage
+  // Polling API for notifications and messages
   useEffect(() => {
-    localStorage.setItem('amma_admin_messages', JSON.stringify(messages));
-  }, [messages]);
+    let prevUnreadNotifs = 0;
+    let prevUnreadMsgs = 0;
 
-  useEffect(() => {
-    localStorage.setItem('amma_admin_notifications', JSON.stringify(notifications));
-  }, [notifications]);
+    const playNotificationSound = () => {
+      try {
+        // Base64 encoded short beep sound
+        const beepSound = new Audio('data:audio/mp3;base64,//NExAAAAANIAAAAAExBTUUzLjEwMKqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq//NExAAAAANIAAAAAExBTUUzLjEwMKqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq');
+        beepSound.play().catch(e => console.log('Audio play failed (browser auto-play policy):', e));
+      } catch(e) {}
+    };
+
+    const fetchInbox = async () => {
+      try {
+        const notifRes = await apiClient.get('/notifications');
+        if (notifRes.data) {
+          const fetchedNotifs = notifRes.data.map(n => ({
+            id: n.id,
+            type: n.type || "Notification",
+            message: n.message,
+            date: new Date(n.created_at).toLocaleString(),
+            read: n.is_read
+          }));
+          setNotifications(fetchedNotifs);
+          
+          const currentUnread = fetchedNotifs.filter(n => !n.read).length;
+          if (currentUnread > prevUnreadNotifs) {
+            playNotificationSound();
+          }
+          prevUnreadNotifs = currentUnread;
+        }
+
+        const msgRes = await apiClient.get('/contact');
+        if (msgRes.data) {
+          const fetchedMsgs = msgRes.data.map(m => ({
+            id: m.id,
+            sender: m.name,
+            subject: m.subject || "Customer Inquiry",
+            body: m.message,
+            date: new Date(m.created_at).toLocaleString(),
+            read: m.status === 'Resolved'
+          }));
+          setMessages(fetchedMsgs);
+
+          const currentUnreadMsg = fetchedMsgs.filter(m => !m.read).length;
+          if (currentUnreadMsg > prevUnreadMsgs) {
+            playNotificationSound();
+          }
+          prevUnreadMsgs = currentUnreadMsg;
+        }
+      } catch (err) {
+        console.error("Failed to fetch inbox:", err);
+      }
+    };
+
+    fetchInbox();
+    const interval = setInterval(fetchInbox, 5000);
+    return () => clearInterval(interval);
+  }, []);
 
   // Click outside detection hook
   useEffect(() => {
@@ -204,17 +187,23 @@ const AdminNavbar = () => {
   };
 
   // Notification functions
-  const handleMarkNotificationRead = (id, e) => {
+  const handleMarkNotificationRead = async (id, e) => {
     if (e) e.stopPropagation();
-    setNotifications(prev => prev.map(n => n.id === id ? { ...n, read: true } : n));
+    try {
+      await apiClient.put(`/notifications/${id}/read`);
+      setNotifications(prev => prev.map(n => n.id === id ? { ...n, read: true } : n));
+    } catch(err) { console.error(err); }
   };
 
   const handleMarkAllNotificationsRead = () => {
     setNotifications(prev => prev.map(n => ({ ...n, read: true })));
   };
 
-  const handleClearNotifications = () => {
-    setNotifications([]);
+  const handleClearNotifications = async () => {
+    try {
+      await apiClient.delete('/notifications/clear');
+      setNotifications([]);
+    } catch(err) { console.error(err); }
   };
 
   const handleConfirmLogout = () => {
@@ -370,7 +359,12 @@ const AdminNavbar = () => {
             </div>
             <div className="dropdown-panel-footer">
               <span>Inbox Operations</span>
-              <button className="dropdown-footer-btn" onClick={() => setMessages([])}>Clear Inbox</button>
+              <button className="dropdown-footer-btn" onClick={async () => {
+                try {
+                  await apiClient.delete('/contact/clear');
+                  setMessages([]);
+                } catch(err) { console.error(err); }
+              }}>Clear Inbox</button>
             </div>
           </div>
         </div>

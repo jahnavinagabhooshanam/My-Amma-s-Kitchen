@@ -68,3 +68,13 @@ def delete_contact(inquiry_id):
     db.session.delete(inquiry)
     db.session.commit()
     return jsonify({"message": "Inquiry deleted"}), 200
+
+@contact_bp.route('/clear', methods=['DELETE'])
+def clear_all_contacts():
+    auth_header = request.headers.get('Authorization')
+    if not check_admin_auth(auth_header):
+        return jsonify({"error": "Admin access required"}), 403
+        
+    ContactInquiry.query.delete()
+    db.session.commit()
+    return jsonify({"message": "All inquiries cleared"}), 200

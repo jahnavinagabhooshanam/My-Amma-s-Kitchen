@@ -33,3 +33,13 @@ def mark_as_read(notif_id):
     notification.is_read = True
     db.session.commit()
     return jsonify({"message": "Marked as read"}), 200
+
+@notifications_bp.route('/clear', methods=['DELETE'])
+def clear_notifications():
+    user_id = get_current_user_id()
+    if not user_id:
+        return jsonify({"error": "Unauthorized"}), 401
+    
+    Notification.query.filter_by(user_id=user_id).delete()
+    db.session.commit()
+    return jsonify({"message": "Cleared all notifications"}), 200
