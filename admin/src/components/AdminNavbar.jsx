@@ -209,7 +209,7 @@ const AdminNavbar = () => {
   const handleConfirmLogout = () => {
     setShowLogoutConfirm(false);
     logout();
-    navigate('/');
+    navigate('/login');
   };
 
   const unreadMessagesCount = messages.filter(m => !m.read).length;
