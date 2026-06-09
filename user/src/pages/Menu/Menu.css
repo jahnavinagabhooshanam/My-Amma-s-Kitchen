@@ -1,6 +1,6 @@
-/* ═══════════════════════════════════════════════════════════
-   Menu.css — Amma's Kitchen | Premium Digital Menu Book
-   ═══════════════════════════════════════════════════════════ */
+﻿/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   Menu.css â€” Ammulu's Kitchen | Premium Digital Menu Book
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Lato:wght@300;400;700&display=swap');
 
 :root {
@@ -20,9 +20,9 @@
   --cream:        #FAF5E8;
 }
 
-/* ══════════════════════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    COVER PAGE
-   ══════════════════════════════════════════════════════════ */
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .menu-cover-page {
   position: fixed;
   inset: 0;
@@ -63,7 +63,7 @@
   pointer-events: none;
 }
 
-/* ── Floating particles ── */
+/* â”€â”€ Floating particles â”€â”€ */
 .cover-particles { position: absolute; inset: 0; pointer-events: none; z-index: 1; }
 .cover-particle {
   position: absolute;
@@ -78,7 +78,7 @@
   100% { transform: translateY(-60px) rotate(180deg); opacity: 0; }
 }
 
-/* ── Corner ornaments (CSS-drawn) ── */
+/* â”€â”€ Corner ornaments (CSS-drawn) â”€â”€ */
 .cover-corner {
   position: absolute;
   width: 90px;
@@ -106,7 +106,7 @@
 .cover-corner-br { bottom: 20px; right: 20px; border-bottom: 2px solid var(--gold); border-right: 2px solid var(--gold); }
 .cover-corner-br::after  { bottom: 8px; right: 8px; left: -8px; top: -8px; border-bottom: 1px solid rgba(184,134,11,0.4); border-right: 1px solid rgba(184,134,11,0.4); position: absolute; }
 
-/* ── The cover "book" panel ── */
+/* â”€â”€ The cover "book" panel â”€â”€ */
 .cover-book {
   position: relative;
   z-index: 10;
@@ -298,7 +298,7 @@
   50%       { opacity: 1; }
 }
 
-/* ── Mobile cover ── */
+/* â”€â”€ Mobile cover â”€â”€ */
 @media (max-width: 600px) {
   .cover-book { padding: 32px 24px 32px; }
   .cover-brand-name { font-size: 1.3rem; letter-spacing: 2px; }
@@ -306,9 +306,9 @@
   .cover-open-btn { padding: 12px 24px; font-size: 0.95rem; }
 }
 
-/* ────────────────────────────────
+/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
    PAGE SHELL
-   ──────────────────────────────── */
+   â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .menu-page {
   display: flex;
   flex-direction: column;
@@ -318,9 +318,9 @@
   font-family: 'Lato', sans-serif;
 }
 
-/* ────────────────────────────────
+/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
    TOP CONTROLS BAR
-   ──────────────────────────────── */
+   â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .book-controls {
   display: flex;
   align-items: center;
@@ -394,9 +394,9 @@
   pointer-events: none;
 }
 
-/* ────────────────────────────────
+/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
    CATEGORY BOOKMARKS (vertical tabs on left edge)
-   ──────────────────────────────── */
+   â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .category-bookmark-rail {
   position: absolute;
   left: 0;
@@ -434,9 +434,9 @@
 .category-bookmark:hover      { background: var(--gold-pale); color: var(--burgundy); }
 .category-bookmark.bk-active  { background: var(--burgundy); color: #fff; border-right-color: var(--burgundy-lt); }
 
-/* ────────────────────────────────
+/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
    LOADING
-   ──────────────────────────────── */
+   â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .menu-loading {
   flex: 1;
   display: flex;
@@ -463,9 +463,9 @@
 .menu-loading-dot:nth-child(3) { animation-delay: 0.4s; }
 @keyframes dotPulse { 0%,80%,100% { opacity:0.2; transform:scale(0.8); } 40% { opacity:1; transform:scale(1); } }
 
-/* ══════════════════════════════════════════════
-   BOOK STAGE — 3D perspective container
-   ══════════════════════════════════════════════ */
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   BOOK STAGE â€” 3D perspective container
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .book-stage {
   flex: 1;
   position: relative;
@@ -473,7 +473,7 @@
   /* perspective set inline */
 }
 
-/* Flat background — left (editorial) + right (menu) */
+/* Flat background â€” left (editorial) + right (menu) */
 .book-inner {
   position: absolute;
   inset: 0;
@@ -485,7 +485,7 @@
   position: relative;
 }
 
-/* Both halves — same warm ivory paper */
+/* Both halves â€” same warm ivory paper */
 .book-bg-half.left {
   background: var(--paper);
   box-shadow: inset -8px 0 20px rgba(0,0,0,0.06);
@@ -536,9 +536,9 @@
   opacity: 0.3;
 }
 
-/* ══════════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    LEAVES
-   ══════════════════════════════════════════════ */
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .book-leaf {
   position: absolute;
   left: 50%;
@@ -582,7 +582,7 @@
   pointer-events: none;
 }
 
-/* Back face — same paper as front */
+/* Back face â€” same paper as front */
 .leaf-face.leaf-back {
   transform: rotateY(180deg);
   background: var(--paper);
@@ -597,9 +597,9 @@
   pointer-events: none;
 }
 
-/* ══════════════════════════════════════════════
-   RIGHT PAGE — Menu Items (light ivory)
-   ══════════════════════════════════════════════ */
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   RIGHT PAGE â€” Menu Items (light ivory)
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .page-right {
   padding: 28px 40px 16px 44px;
   height: 100%;
@@ -645,7 +645,7 @@
   flex-shrink: 0;
 }
 
-/* ── Item List ── */
+/* â”€â”€ Item List â”€â”€ */
 .menu-items-list {
   flex: 0 1 auto;
   display: flex;
@@ -784,9 +784,9 @@
   font-size: 0.6rem;
 }
 
-/* ══════════════════════════════════════════════
-   LEFT PAGE — Editorial / Story Page (dark luxury)
-   ══════════════════════════════════════════════ */
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   LEFT PAGE â€” Editorial / Story Page (dark luxury)
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .page-left {
   padding: 28px 36px;
   height: 100%;
@@ -808,7 +808,7 @@
   border-radius: 1px;
 }
 
-/* ── Left top: category title + amma intro ── */
+/* â”€â”€ Left top: category title + amma intro â”€â”€ */
 .left-header { margin-bottom: 14px; flex-shrink: 0; }
 .left-category-eyebrow {
   font-size: 0.65rem;
@@ -847,7 +847,7 @@
   margin: 0;
 }
 
-/* ── Featured dish hero image ── */
+/* â”€â”€ Featured dish hero image â”€â”€ */
 .left-hero-image-wrap {
   position: relative;
   border-radius: 6px;
@@ -898,7 +898,7 @@
   border-radius: 2px;
 }
 
-/* ── Amma Recommends list ── */
+/* â”€â”€ Amma Recommends list â”€â”€ */
 .left-recommends { flex: 1; overflow: hidden; }
 .left-recommends-title {
   font-family: 'Playfair Display', serif;
@@ -973,7 +973,7 @@
   font-family: 'Playfair Display', serif;
 }
 
-/* ── Daily Special Banner ── */
+/* â”€â”€ Daily Special Banner â”€â”€ */
 .left-daily-special {
   background: linear-gradient(135deg, var(--burgundy) 0%, #4A0F1A 100%);
   border-radius: 6px;
@@ -985,7 +985,7 @@
   overflow: hidden;
 }
 .left-daily-special::before {
-  content: '✦';
+  content: 'âœ¦';
   position: absolute;
   right: 12px; top: 8px;
   font-size: 1.8rem;
@@ -1012,7 +1012,7 @@
   line-height: 1.4;
 }
 
-/* ── Blank/closing left page ── */
+/* â”€â”€ Blank/closing left page â”€â”€ */
 .page-left-blank {
   padding: 28px 36px;
   height: 100%;
@@ -1040,9 +1040,9 @@
 .left-blank-deco-line { width: 60px; height: 1px; background: var(--gold); margin: 12px auto; }
 .left-blank-deco-sub  { font-size: 0.72rem; letter-spacing: 4px; text-transform: uppercase; }
 
-/* ═════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    STATIC LEFT-PAGE CONTENT (background)
-   ═════════════════════════════════════ */
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .book-left-static {
   position: absolute;
   left: 0; top: 0;
@@ -1052,7 +1052,7 @@
   overflow: hidden;
 }
 
-/* ── Search overlay on right background ── */
+/* â”€â”€ Search overlay on right background â”€â”€ */
 .book-right-static {
   position: absolute;
   right: 0; top: 0;
@@ -1061,9 +1061,9 @@
   z-index: 1;
 }
 
-/* ══════════════════════════════════════════════
-   MOBILE — single page
-   ══════════════════════════════════════════════ */
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   MOBILE â€” single page
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 @media (max-width: 700px) {
   .book-bg-half.left { display: none; }
   .book-spine { display: none; }

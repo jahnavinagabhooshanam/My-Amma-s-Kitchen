@@ -3,7 +3,7 @@ import { Link, NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
-import logoImg from '../assets/img/my-ammas-logo-new.jpg';
+import logoImg from '../assets/img/ammulus-kitchen-logo.jpg';
 import apiClient from '../services/api';
 
 const Navbar = () => {
@@ -15,13 +15,13 @@ const Navbar = () => {
   const location = useLocation();
 
   const [config, setConfig] = useState({
-    banner: "✨ Amma's Special Deal: 15% Off Your First Artisan Batter Order! Code: AMMA20 ✨",
+    banner: "âœ¨ Amma's Special Deal: 15% Off Your First Artisan Batter Order! Code: AMMA20 âœ¨",
     opening_hours: "6am to 10pm",
     contact_phone: "+91 72009 42596",
-    contact_email: "order@ammaskitchen.com",
-    social_facebook: "#",
-    social_instagram: "#",
-    social_twitter: "#",
+    contact_email: "ammuluskitchen57@gmail.com",
+    social_facebook: "https://www.facebook.com/profile.php?id=61590451811686",
+    social_instagram: "https://www.instagram.com/ammuluskitchen_?igsh=MzE1dHRqNGQ2MGZx",
+    social_twitter: "https://x.com/ammuluskitchen",
     whatsapp_number: "+919876543210"
   });
 
@@ -145,7 +145,7 @@ const Navbar = () => {
             <button onClick={handleToggleMobileMenu} style={{ background: 'none', border: 'none', padding: 0, fontSize: '20px', color: 'var(--text-dark)' }}>
               <i className="fas fa-bars"></i>
             </button>
-            <img src={logoImg} alt="Amma's Kitchen" className="app-logo" style={{ height: '60px', objectFit: 'contain' }} />
+            <img src={logoImg} alt="Ammulu's Kitchen" className="app-logo" style={{ height: '60px', objectFit: 'contain' }} />
             <Link to="/cart" className={`cart-btn-app ${isCartAnimating ? 'cart-bump' : ''}`} style={{ position: 'relative', fontSize: '22px', color: 'var(--text-dark)', textDecoration: 'none' }}>
               <i className="fa-regular fa-cart-shopping"></i>
               {cartCount > 0 && <span className="badge" style={{ position: 'absolute', top: '-6px', right: '-8px', background: 'var(--danger)', color: 'white', fontSize: '10px', minWidth: '18px', height: '18px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 0 }}>{cartCount}</span>}
@@ -172,7 +172,7 @@ const Navbar = () => {
         </div>
       );
     } else {
-      let title = "Amma's Kitchen";
+      let title = "Ammulu's Kitchen";
       if (path === '/cart') title = "My Cart";
       else if (path === '/account') title = "My Profile";
       else if (path === '/orders') title = "My Orders";
@@ -268,7 +268,7 @@ const Navbar = () => {
                 <div className="col-auto flex-shrink-0 mx-auto mx-lg-0">
                   <div className="header-logo premium-navbar-logo">
                     <Link to="/">
-                      <img src={logoImg} alt="Amma's Kitchen Logo" />
+                      <img src={logoImg} alt="Ammulu's Kitchen Logo" />
                     </Link>
                   </div>
                 </div>
@@ -598,12 +598,12 @@ const Navbar = () => {
                             fontSize: '1.2rem',
                             marginRight: '15px',
                             float: 'left'
-                          }}>🍶</div>
+                          }}>ðŸ¶</div>
                           {item.name}
                         </a>
                         <span className="quantity">
-                          {item.quantity} × <span className="woocommerce-Price-amount amount">
-                            <span className="woocommerce-Price-currencySymbol">₹</span>{item.price.toFixed(2)}
+                          {item.quantity} Ã— <span className="woocommerce-Price-amount amount">
+                            <span className="woocommerce-Price-currencySymbol">â‚¹</span>{item.price.toFixed(2)}
                           </span>
                         </span>
                       </li>
@@ -612,7 +612,7 @@ const Navbar = () => {
                   <p className="woocommerce-mini-cart__total total">
                     <strong>Basket Subtotal:</strong>
                     <span className="woocommerce-Price-amount amount">
-                      <span className="woocommerce-Price-currencySymbol">₹</span>{cartTotal.toFixed(2)}
+                      <span className="woocommerce-Price-currencySymbol">â‚¹</span>{cartTotal.toFixed(2)}
                     </span>
                   </p>
                   <p className="woocommerce-mini-cart__buttons buttons">

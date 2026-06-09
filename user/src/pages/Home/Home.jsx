@@ -37,9 +37,9 @@ const HERO_SLIDES = [
 
 // Testimonials Patrons
 const TESTIMONIALS = [
-  { name: "Mrs. Meenakshi Sundaram,", desig: "Mylapore, Chennai", rating: 5, text: "“Amma's Classic Batter is a lifesaver. The idlis come out incredibly soft and fluffy, exactly like my mother used to grind in the stone mortar. My kids enjoy the crispy ghee roast dosa every weekend.”" },
-  { name: "Dr. Karthik Raja,", desig: "Adyar, Chennai", rating: 5, text: "“The Ragi Batter is perfect for my healthy diabetic breakfast diet. It is completely natural, sour-fermented just right, and absolutely free of baking soda. The delivery is extremely prompt.”" },
-  { name: "Rajesh & Kavitha,", desig: "IT Corridor, OMR", rating: 5, text: "“We ordered the family bulk catering for our housewarming function. The live dosa counter was a stellar success. Pristine hygiene, premium ingredients, and authentic South Indian tastes.”" }
+  { name: "Mrs. Meenakshi Sundaram,", desig: "Mylapore, Chennai", rating: 5, text: "â€œAmma's Classic Batter is a lifesaver. The idlis come out incredibly soft and fluffy, exactly like my mother used to grind in the stone mortar. My kids enjoy the crispy ghee roast dosa every weekend.â€" },
+  { name: "Dr. Karthik Raja,", desig: "Adyar, Chennai", rating: 5, text: "â€œThe Ragi Batter is perfect for my healthy diabetic breakfast diet. It is completely natural, sour-fermented just right, and absolutely free of baking soda. The delivery is extremely prompt.â€" },
+  { name: "Rajesh & Kavitha,", desig: "IT Corridor, OMR", rating: 5, text: "â€œWe ordered the family bulk catering for our housewarming function. The live dosa counter was a stellar success. Pristine hygiene, premium ingredients, and authentic South Indian tastes.â€" }
 ];
 
 const Home = () => {
@@ -64,8 +64,8 @@ const Home = () => {
     headline: "Slow Stone-Ground Heritage Batters",
     opening_hours: "6am to 10pm",
     contact_phone: "+91 98765 43210",
-    contact_email: "orders@ammaskitchen.com",
-    about_us: "Hotel Amma's Kitchen serves traditional stone-ground batters, ready-to-cook delicacies, and hot ready-to-eat vegetarian meals prepared with absolute cleanliness and natural flavor."
+    contact_email: "ammuluskitchen57@gmail.com",
+    about_us: "Hotel Ammulu's Kitchen serves traditional stone-ground batters, ready-to-cook delicacies, and hot ready-to-eat vegetarian meals prepared with absolute cleanliness and natural flavor."
   });
   
   // Track selected batter sizes dynamically
@@ -202,7 +202,7 @@ const Home = () => {
             <div className="layout-45-55">
               <div className="layout-45" style={{ paddingRight: '40px' }}>
                 <h1 className="premium-hero-title">
-                  Good {new Date().getHours() < 12 ? 'Morning' : new Date().getHours() < 18 ? 'Afternoon' : 'Evening'}, <span className="highlight">{user ? user.name.split(' ')[0] : 'Guest'}</span> 👋
+                  Good {new Date().getHours() < 12 ? 'Morning' : new Date().getHours() < 18 ? 'Afternoon' : 'Evening'}, <span className="highlight">{user ? user.name.split(' ')[0] : 'Guest'}</span> ðŸ‘‹
                 </h1>
                 <p className="premium-hero-desc" style={{ marginTop: '20px', marginBottom: '20px' }}>
                   {activeSlide === 0 ? (config.headline || HERO_SLIDES[0].text) : HERO_SLIDES[activeSlide].text}
@@ -221,9 +221,9 @@ const Home = () => {
                     <div>
                       <h3 style={{ color: 'white', fontFamily: "'Playfair Display', serif", fontSize: '28px', margin: '0 0 10px 0' }}>Signature Mini Tiffin Combo</h3>
                       <div style={{ color: 'rgba(255,255,255,0.8)', fontSize: '14px', display: 'flex', gap: '15px' }}>
-                        <span>⭐ 4.9 Rating</span>
-                        <span>🚚 Fast Delivery</span>
-                        <span>🏡 Home Style</span>
+                        <span>â­ 4.9 Rating</span>
+                        <span>ðŸšš Fast Delivery</span>
+                        <span>ðŸ¡ Home Style</span>
                       </div>
                     </div>
                     <Link to="/ready-to-eat" className="premium-order-now-btn" style={{ whiteSpace: 'nowrap' }}>Order Now</Link>
@@ -234,14 +234,14 @@ const Home = () => {
                 <div style={{ position: 'relative' }}>
                   {/* Floating Badges */}
                   <div className="d-none d-lg-flex hover-lift" style={{ position: 'absolute', top: '10%', left: '-5%', background: 'white', padding: '10px 20px', borderRadius: '50px', alignItems: 'center', gap: '10px', boxShadow: '0 10px 25px rgba(0,0,0,0.2)', zIndex: 10 }}>
-                    <span style={{ fontSize: '24px' }}>🚚</span>
+                    <span style={{ fontSize: '24px' }}>ðŸšš</span>
                     <div style={{ display: 'flex', flexDirection: 'column' }}>
                       <span style={{ fontSize: '12px', color: '#777', fontWeight: '600' }}>Super Fast</span>
                       <span style={{ fontSize: '14px', color: '#1E1E1E', fontWeight: '800' }}>Delivery</span>
                     </div>
                   </div>
                   <div className="d-none d-lg-flex hover-lift" style={{ position: 'absolute', bottom: '15%', right: '-5%', background: 'white', padding: '10px 20px', borderRadius: '50px', alignItems: 'center', gap: '10px', boxShadow: '0 10px 25px rgba(0,0,0,0.2)', zIndex: 10 }}>
-                    <span style={{ fontSize: '24px', color: '#FFC107' }}>⭐</span>
+                    <span style={{ fontSize: '24px', color: '#FFC107' }}>â­</span>
                     <div style={{ display: 'flex', flexDirection: 'column' }}>
                       <span style={{ fontSize: '14px', color: '#1E1E1E', fontWeight: '800' }}>4.9/5</span>
                       <span style={{ fontSize: '12px', color: '#777', fontWeight: '600' }}>1k+ Reviews</span>
@@ -266,19 +266,19 @@ const Home = () => {
       <div className="container d-lg-none" style={{ marginTop: '20px', marginBottom: '20px' }}>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px' }}>
           <Link to="/orders" style={{ background: '#F5F5F0', padding: '15px', borderRadius: '12px', textDecoration: 'none', color: '#1E1E1E', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', boxShadow: '0 2px 5px rgba(0,0,0,0.05)' }}>
-            <span style={{ fontSize: '24px', marginBottom: '5px' }}>🔄</span>
+            <span style={{ fontSize: '24px', marginBottom: '5px' }}>ðŸ”„</span>
             <span style={{ fontSize: '12px', fontWeight: '600' }}>Reorder</span>
           </Link>
           <Link to="/orders" style={{ background: '#F5F5F0', padding: '15px', borderRadius: '12px', textDecoration: 'none', color: '#1E1E1E', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', boxShadow: '0 2px 5px rgba(0,0,0,0.05)' }}>
-            <span style={{ fontSize: '24px', marginBottom: '5px' }}>📍</span>
+            <span style={{ fontSize: '24px', marginBottom: '5px' }}>ðŸ“</span>
             <span style={{ fontSize: '12px', fontWeight: '600' }}>Track Order</span>
           </Link>
           <Link to="/bulk-orders" style={{ background: '#F5F5F0', padding: '15px', borderRadius: '12px', textDecoration: 'none', color: '#1E1E1E', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', boxShadow: '0 2px 5px rgba(0,0,0,0.05)' }}>
-            <span style={{ fontSize: '24px', marginBottom: '5px' }}>🎉</span>
+            <span style={{ fontSize: '24px', marginBottom: '5px' }}>ðŸŽ‰</span>
             <span style={{ fontSize: '12px', fontWeight: '600' }}>Book Catering</span>
           </Link>
           <Link to="/menu" style={{ background: '#F5F5F0', padding: '15px', borderRadius: '12px', textDecoration: 'none', color: '#1E1E1E', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', boxShadow: '0 2px 5px rgba(0,0,0,0.05)' }}>
-            <span style={{ fontSize: '24px', marginBottom: '5px' }}>🔥</span>
+            <span style={{ fontSize: '24px', marginBottom: '5px' }}>ðŸ”¥</span>
             <span style={{ fontSize: '12px', fontWeight: '600' }}>Offers</span>
           </Link>
         </div>
@@ -288,28 +288,28 @@ const Home = () => {
       <div className="container desktop-container d-none d-lg-block" style={{ marginTop: '40px', marginBottom: '40px' }}>
         <div className="grid-desktop-4">
           <Link to="/orders" className="hover-lift" style={{ background: 'white', border: '1px solid #EAEAEA', padding: '25px', borderRadius: '20px', textDecoration: 'none', color: '#1E1E1E', display: 'flex', alignItems: 'center', gap: '20px', boxShadow: '0 8px 25px rgba(0,0,0,0.04)' }}>
-            <div style={{ width: '60px', height: '60px', borderRadius: '15px', background: 'rgba(46, 139, 87, 0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '28px' }}>🔄</div>
+            <div style={{ width: '60px', height: '60px', borderRadius: '15px', background: 'rgba(46, 139, 87, 0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '28px' }}>ðŸ”„</div>
             <div>
               <h4 style={{ margin: '0 0 5px 0', fontSize: '18px', fontWeight: '700' }}>Express Reorder</h4>
               <p style={{ margin: 0, fontSize: '13px', color: '#777' }}>Order your favorites again</p>
             </div>
           </Link>
           <Link to="/orders" className="hover-lift" style={{ background: 'white', border: '1px solid #EAEAEA', padding: '25px', borderRadius: '20px', textDecoration: 'none', color: '#1E1E1E', display: 'flex', alignItems: 'center', gap: '20px', boxShadow: '0 8px 25px rgba(0,0,0,0.04)' }}>
-            <div style={{ width: '60px', height: '60px', borderRadius: '15px', background: 'rgba(255, 140, 0, 0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '28px' }}>📍</div>
+            <div style={{ width: '60px', height: '60px', borderRadius: '15px', background: 'rgba(255, 140, 0, 0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '28px' }}>ðŸ“</div>
             <div>
               <h4 style={{ margin: '0 0 5px 0', fontSize: '18px', fontWeight: '700' }}>Track Order</h4>
               <p style={{ margin: 0, fontSize: '13px', color: '#777' }}>Live status of your food</p>
             </div>
           </Link>
           <Link to="/bulk-orders" className="hover-lift" style={{ background: 'white', border: '1px solid #EAEAEA', padding: '25px', borderRadius: '20px', textDecoration: 'none', color: '#1E1E1E', display: 'flex', alignItems: 'center', gap: '20px', boxShadow: '0 8px 25px rgba(0,0,0,0.04)' }}>
-            <div style={{ width: '60px', height: '60px', borderRadius: '15px', background: 'rgba(138, 43, 226, 0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '28px' }}>🎉</div>
+            <div style={{ width: '60px', height: '60px', borderRadius: '15px', background: 'rgba(138, 43, 226, 0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '28px' }}>ðŸŽ‰</div>
             <div>
               <h4 style={{ margin: '0 0 5px 0', fontSize: '18px', fontWeight: '700' }}>Bulk Catering</h4>
               <p style={{ margin: 0, fontSize: '13px', color: '#777' }}>For events & functions</p>
             </div>
           </Link>
           <Link to="/menu" className="hover-lift" style={{ background: 'white', border: '1px solid #EAEAEA', padding: '25px', borderRadius: '20px', textDecoration: 'none', color: '#1E1E1E', display: 'flex', alignItems: 'center', gap: '20px', boxShadow: '0 8px 25px rgba(0,0,0,0.04)' }}>
-            <div style={{ width: '60px', height: '60px', borderRadius: '15px', background: 'rgba(218, 165, 32, 0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '28px' }}>🔥</div>
+            <div style={{ width: '60px', height: '60px', borderRadius: '15px', background: 'rgba(218, 165, 32, 0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '28px' }}>ðŸ”¥</div>
             <div>
               <h4 style={{ margin: '0 0 5px 0', fontSize: '18px', fontWeight: '700' }}>Today's Offers</h4>
               <p style={{ margin: 0, fontSize: '13px', color: '#777' }}>Save on delicious food</p>
@@ -325,7 +325,7 @@ const Home = () => {
               <h2 className="sec-title" style={{ fontFamily: "'Playfair Display', serif", fontSize: '42px', color: '#1E1E1E', marginBottom: '5px' }}>Explore Our Categories</h2>
               <p style={{ color: '#666', fontSize: '18px', margin: 0 }}>Fresh, homestyle and ready-to-cook delights for every craving.</p>
             </div>
-            <Link to="/menu" style={{ border: '1px solid #2E8B57', color: '#2E8B57', borderRadius: '50px', padding: '12px 24px', fontWeight: '600', transition: '0.3s ease', textDecoration: 'none' }} onMouseOver={e => { e.target.style.background = '#2E8B57'; e.target.style.color = 'white'; }} onMouseOut={e => { e.target.style.background = 'transparent'; e.target.style.color = '#2E8B57'; }}>View All Categories ↗</Link>
+            <Link to="/menu" style={{ border: '1px solid #2E8B57', color: '#2E8B57', borderRadius: '50px', padding: '12px 24px', fontWeight: '600', transition: '0.3s ease', textDecoration: 'none' }} onMouseOver={e => { e.target.style.background = '#2E8B57'; e.target.style.color = 'white'; }} onMouseOut={e => { e.target.style.background = 'transparent'; e.target.style.color = '#2E8B57'; }}>View All Categories â†—</Link>
           </div>
           
           {/* Mobile Categories (Horizontal Scroll) */}
@@ -443,11 +443,11 @@ const Home = () => {
                 </div>
                 <h3 style={{ fontSize: '18px', fontWeight: '700', marginBottom: '5px', color: '#1E1E1E' }}>{item.name}</h3>
                 <div style={{ display: 'flex', gap: '15px', color: '#777', fontSize: '13px', marginBottom: '15px' }}>
-                  <span style={{ fontWeight: '600', color: '#2E8B57' }}>⭐ {item.rating}</span>
-                  <span>• {item.deliveryTime}</span>
+                  <span style={{ fontWeight: '600', color: '#2E8B57' }}>â­ {item.rating}</span>
+                  <span>â€¢ {item.deliveryTime}</span>
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%', marginTop: 'auto' }}>
-                  <div style={{ fontSize: '20px', fontWeight: '700', color: '#1E1E1E' }}>₹{item.price}</div>
+                  <div style={{ fontSize: '20px', fontWeight: '700', color: '#1E1E1E' }}>â‚¹{item.price}</div>
                   <button onClick={(e) => { e.preventDefault(); addToCart(item, 1); }} style={{ background: 'transparent', color: '#2E8B57', border: '1px solid #2E8B57', padding: '6px 20px', borderRadius: '8px', fontWeight: '700', textTransform: 'uppercase', fontSize: '12px', transition: '0.3s ease' }} onMouseOver={e => { e.target.style.background = '#2E8B57'; e.target.style.color = 'white'; }} onMouseOut={e => { e.target.style.background = 'transparent'; e.target.style.color = '#2E8B57'; }}>Add</button>
                 </div>
               </div>
@@ -474,7 +474,7 @@ const Home = () => {
                     {index === 0 ? 'Best Seller' : index === 1 ? 'Healthy Choice' : 'Popular'}
                   </span>
                   <h3 style={{ fontSize: '18px', fontWeight: '700', margin: '0 0 5px 0' }}>{item.name}</h3>
-                  <div style={{ fontSize: '18px', fontWeight: '700', color: '#1E1E1E', margin: '10px 0' }}>₹{item.price}</div>
+                  <div style={{ fontSize: '18px', fontWeight: '700', color: '#1E1E1E', margin: '10px 0' }}>â‚¹{item.price}</div>
                   <button onClick={(e) => { e.preventDefault(); addToCart(item, 1); }} style={{ color: '#2E8B57', background: 'transparent', border: 'none', padding: 0, fontWeight: '700', alignSelf: 'flex-start', cursor: 'pointer' }}>+ Add to Cart</button>
                 </div>
               </div>
@@ -501,7 +501,7 @@ const Home = () => {
               <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', background: 'linear-gradient(to right, rgba(138, 43, 226, 0.8), rgba(0,0,0,0.2))' }}></div>
               <div className="promo-banner-content">
                 <div className="promo-banner-title">Weekend Special</div>
-                <div className="promo-banner-subtitle">Free delivery on orders above ₹500</div>
+                <div className="promo-banner-subtitle">Free delivery on orders above â‚¹500</div>
                 <Link to="/ready-to-eat" className="promo-banner-btn">Explore Menu</Link>
               </div>
             </div>
@@ -534,10 +534,10 @@ const Home = () => {
                 </div>
                 <h3 style={{ fontSize: '18px', fontWeight: '700', marginBottom: '5px', color: '#1E1E1E' }}>{item.name}</h3>
                 <div style={{ display: 'flex', gap: '15px', color: '#777', fontSize: '13px', marginBottom: '15px' }}>
-                  <span style={{ fontWeight: '600', color: '#2E8B57' }}>⭐ {item.rating}</span>
+                  <span style={{ fontWeight: '600', color: '#2E8B57' }}>â­ {item.rating}</span>
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%', marginTop: 'auto' }}>
-                  <div style={{ fontSize: '20px', fontWeight: '700', color: '#1E1E1E' }}>₹{item.price}</div>
+                  <div style={{ fontSize: '20px', fontWeight: '700', color: '#1E1E1E' }}>â‚¹{item.price}</div>
                   <button onClick={(e) => { e.preventDefault(); addToCart(item, 1); }} style={{ background: 'transparent', color: '#2E8B57', border: '1px solid #2E8B57', padding: '6px 20px', borderRadius: '8px', fontWeight: '700', textTransform: 'uppercase', fontSize: '12px', transition: '0.3s ease' }} onMouseOver={e => { e.target.style.background = '#2E8B57'; e.target.style.color = 'white'; }} onMouseOut={e => { e.target.style.background = 'transparent'; e.target.style.color = '#2E8B57'; }}>Add</button>
                 </div>
               </div>
@@ -627,7 +627,7 @@ const Home = () => {
                       borderRadius: '9999px',
                       fontFamily: 'var(--font-sans)'
                     }}>
-                      🍃 Freshly Ground
+                      ðŸƒ Freshly Ground
                     </span>
                     <span style={{ 
                       backgroundColor: '#73C69D', 
@@ -638,7 +638,7 @@ const Home = () => {
                       borderRadius: '9999px',
                       fontFamily: 'var(--font-sans)'
                     }}>
-                      🛡️ No Preservatives
+                      ðŸ›¡ï¸ No Preservatives
                     </span>
                   </div>
 
@@ -714,7 +714,7 @@ const Home = () => {
                         fontWeight: '700', 
                         color: '#1E1E1E' 
                       }}>
-                        ₹{finalPrice}
+                        â‚¹{finalPrice}
                       </div>
                       <button 
                         onClick={handleAddBatter} 
@@ -764,8 +764,8 @@ const Home = () => {
                 }}>
                   {/* Badges */}
                   <div style={{ display: 'flex', gap: '8px', marginBottom: '12px' }}>
-                    <span style={{ backgroundColor: '#73C69D', color: 'white', fontSize: '0.75rem', fontWeight: '600', padding: '4px 10px', borderRadius: '9999px', fontFamily: 'var(--font-sans)' }}>🍃 Freshly Ground</span>
-                    <span style={{ backgroundColor: '#73C69D', color: 'white', fontSize: '0.75rem', fontWeight: '600', padding: '4px 10px', borderRadius: '9999px', fontFamily: 'var(--font-sans)' }}>🛡️ No Preservatives</span>
+                    <span style={{ backgroundColor: '#73C69D', color: 'white', fontSize: '0.75rem', fontWeight: '600', padding: '4px 10px', borderRadius: '9999px', fontFamily: 'var(--font-sans)' }}>ðŸƒ Freshly Ground</span>
+                    <span style={{ backgroundColor: '#73C69D', color: 'white', fontSize: '0.75rem', fontWeight: '600', padding: '4px 10px', borderRadius: '9999px', fontFamily: 'var(--font-sans)' }}>ðŸ›¡ï¸ No Preservatives</span>
                   </div>
 
                   {/* Image */}
@@ -788,7 +788,7 @@ const Home = () => {
                       </div>
                     </div>
                     <div style={{ textAlign: 'right' }}>
-                      <div style={{ fontFamily: "'Outfit', sans-serif", fontSize: '1.6rem', fontWeight: '700', color: '#1E1E1E' }}>₹{finalPrice}</div>
+                      <div style={{ fontFamily: "'Outfit', sans-serif", fontSize: '1.6rem', fontWeight: '700', color: '#1E1E1E' }}>â‚¹{finalPrice}</div>
                       <button onClick={handleAddBatter} className="premium-add-cart-btn" style={{ padding: '10px 20px', fontSize: '14px', marginTop: '8px' }}>Add to cart</button>
                     </div>
                   </div>
@@ -826,20 +826,20 @@ const Home = () => {
                   <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', lineHeight: '1.4', marginBottom: '12px', minHeight: '40px' }}>{item.description}</p>
                   <div className="grid-auto-fit" style={{ gap: '24px', marginTop: '20px', backgroundColor: '#FCFBF7', borderRadius: '8px', padding: '10px', marginBottom: '16px', fontSize: '0.75rem', border: '1px solid #EAE6DB' }}>
                     <div style={{ textAlign: 'center' }}>
-                      <div style={{ color: 'var(--text-muted)' }}>⏱️ Prep Time</div>
+                      <div style={{ color: 'var(--text-muted)' }}>â±ï¸ Prep Time</div>
                       <div style={{ fontWeight: '700', color: 'var(--text-dark)' }}>{item.cookingTime}</div>
                     </div>
                     <div style={{ textAlign: 'center', borderLeft: '1px solid #EAE6DB', borderRight: '1px solid #EAE6DB' }}>
-                      <div style={{ color: 'var(--text-muted)' }}>🍽️ Serves</div>
+                      <div style={{ color: 'var(--text-muted)' }}>ðŸ½ï¸ Serves</div>
                       <div style={{ fontWeight: '700', color: 'var(--text-dark)' }}>{item.servingSize}</div>
                     </div>
                     <div style={{ textAlign: 'center' }}>
-                      <div style={{ color: 'var(--text-muted)' }}>❄️ Shelf Life</div>
+                      <div style={{ color: 'var(--text-muted)' }}>â„ï¸ Shelf Life</div>
                       <div style={{ fontWeight: '700', color: 'var(--text-dark)' }}>{item.shelfLife}</div>
                     </div>
                   </div>
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 'auto', borderTop: '1px solid #EAE6DB', paddingTop: '16px' }}>
-                    <div style={{ fontFamily: 'var(--font-sans)', fontSize: '1.4rem', fontWeight: '700', color: 'var(--text-dark)' }}>₹{item.price.toFixed(2)}</div>
+                    <div style={{ fontFamily: 'var(--font-sans)', fontSize: '1.4rem', fontWeight: '700', color: 'var(--text-dark)' }}>â‚¹{item.price.toFixed(2)}</div>
                     <button onClick={handleAddRTC} className="th-btn" style={{ padding: '10px 20px', fontSize: '0.85rem', border: 'none', cursor: 'pointer' }}>Add to Cart</button>
                   </div>
                 </div>
@@ -863,20 +863,20 @@ const Home = () => {
                   <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', lineHeight: '1.4', marginBottom: '12px', minHeight: '40px' }}>{item.description}</p>
                   <div className="grid-auto-fit" style={{ gap: '15px', marginTop: '10px', backgroundColor: '#FCFBF7', borderRadius: '8px', padding: '10px', marginBottom: '16px', fontSize: '0.75rem', border: '1px solid #EAE6DB' }}>
                     <div style={{ textAlign: 'center' }}>
-                      <div style={{ color: 'var(--text-muted)' }}>⏱️ Time</div>
+                      <div style={{ color: 'var(--text-muted)' }}>â±ï¸ Time</div>
                       <div style={{ fontWeight: '700', color: 'var(--text-dark)' }}>{item.cookingTime}</div>
                     </div>
                     <div style={{ textAlign: 'center', borderLeft: '1px solid #EAE6DB', borderRight: '1px solid #EAE6DB' }}>
-                      <div style={{ color: 'var(--text-muted)' }}>🍽️ Serves</div>
+                      <div style={{ color: 'var(--text-muted)' }}>ðŸ½ï¸ Serves</div>
                       <div style={{ fontWeight: '700', color: 'var(--text-dark)' }}>{item.servingSize}</div>
                     </div>
                     <div style={{ textAlign: 'center' }}>
-                      <div style={{ color: 'var(--text-muted)' }}>❄️ Shelf</div>
+                      <div style={{ color: 'var(--text-muted)' }}>â„ï¸ Shelf</div>
                       <div style={{ fontWeight: '700', color: 'var(--text-dark)' }}>{item.shelfLife}</div>
                     </div>
                   </div>
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 'auto', borderTop: '1px solid #EAE6DB', paddingTop: '16px' }}>
-                    <div style={{ fontFamily: 'var(--font-sans)', fontSize: '1.4rem', fontWeight: '700', color: 'var(--text-dark)' }}>₹{item.price.toFixed(2)}</div>
+                    <div style={{ fontFamily: 'var(--font-sans)', fontSize: '1.4rem', fontWeight: '700', color: 'var(--text-dark)' }}>â‚¹{item.price.toFixed(2)}</div>
                     <button onClick={handleAddRTC} className="th-btn hover-lift" style={{ padding: '8px 15px', fontSize: '0.85rem', border: 'none', cursor: 'pointer', borderRadius: '20px' }}>Add</button>
                   </div>
                 </div>
@@ -988,12 +988,12 @@ const Home = () => {
                   Amma provides premium catering services across Chennai:
                 </p>
                 <div className="grid-auto-sm" style={{ marginTop: '12px', color: 'var(--text-dark)', fontWeight: '600', fontSize: '0.9rem' }}>
-                  <div>🌸 Wedding Catering</div>
-                  <div>💼 Corporate Events</div>
-                  <div>🎂 Birthday Functions</div>
-                  <div>🏫 School Events</div>
-                  <div>🎓 College Events</div>
-                  <div>🏡 Family Celebrations</div>
+                  <div>ðŸŒ¸ Wedding Catering</div>
+                  <div>ðŸ’¼ Corporate Events</div>
+                  <div>ðŸŽ‚ Birthday Functions</div>
+                  <div>ðŸ« School Events</div>
+                  <div>ðŸŽ“ College Events</div>
+                  <div>ðŸ¡ Family Celebrations</div>
                 </div>
               </div>
               

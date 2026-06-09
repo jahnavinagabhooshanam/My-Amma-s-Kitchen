@@ -73,7 +73,7 @@ def add_to_cart():
             return jsonify({"message": "Item removed from cart"}), 200
     else:
         if int(quantity) > 0:
-            existing = CartItem(user_id=user_id, product_id=product_id, quantity=int(quantity))
+            existing = CartItem(user_id=user_id, product_id=product_id, quantity=int(quantity))  # type: ignore
             db.session.add(existing)
             
     db.session.commit()

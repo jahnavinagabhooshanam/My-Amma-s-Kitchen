@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import AdminSidebar from '../../components/AdminSidebar';
 import AdminNavbar from '../../components/AdminNavbar';
@@ -74,10 +74,16 @@ const DeliveryManagement = () => {
       const partnersRes = await apiClient.get('/delivery-management/');
       setPartners(partnersRes.data);
       
-      const statsRes = await apiClient.get('/admin/dashboard-stats');
-      const assignable = statsRes.data.recent_orders?.filter(
+      const ordersRes = await apiClient.get('/orders/');
+      const assignable = ordersRes.data?.filter(
         o => o.status === 'Confirmed' || o.status === 'Preparing' || o.status === 'Pending' || o.status === 'Packed'
-      ) || [];
+      ).map(o => ({
+        id: `ORD-${o.id}`,
+        raw_id: o.id,
+        customer: o.customer_name,
+        amount: o.total,
+        status: o.status
+      })) || [];
       setPendingOrders(assignable);
     } catch (err) {
       console.error(err);
@@ -445,7 +451,7 @@ const DeliveryManagement = () => {
                             </div>
                           </td>
                           <td data-label="Total & COD">
-                            <div style={{ fontWeight: '700' }}>₹{o.total.toFixed(2)}</div>
+                            <div style={{ fontWeight: '700' }}>{o.total.toFixed(2)}</div>
                             <span style={{
                               padding: '2px 6px', borderRadius: '8px', fontSize: '9px', fontWeight: '700',
                               backgroundColor: o.payment_status === 'Paid' ? '#D4EFDF' : '#FCF3CF',
@@ -695,7 +701,7 @@ const DeliveryManagement = () => {
                       >
                         {pendingOrders.map(o => (
                           <option key={o.id} value={o.raw_id || o.id}>
-                            #{o.id} - {o.customer} (₹{o.amount.toFixed(2)} - {o.status})
+                            #{o.id} - {o.customer} ({o.amount.toFixed(2)} - {o.status})
                           </option>
                         ))}
                       </select>
@@ -724,7 +730,7 @@ const DeliveryManagement = () => {
         )}
 
         <div className="admin-footer">
-          <div>&copy; 2026 <strong>Amma's Kitchen Admin</strong>. All Rights Reserved.</div>
+          <div>&copy; 2026 <strong>Ammulu's Kitchen Admin</strong>. All Rights Reserved.</div>
         </div>
       </div>
     </div>

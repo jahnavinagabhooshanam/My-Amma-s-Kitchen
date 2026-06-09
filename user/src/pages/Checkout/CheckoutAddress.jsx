@@ -52,8 +52,8 @@ const CheckoutAddress = () => {
   };
 
   const proceedToReview = () => {
-    let finalAddress = '';
-    let finalPhone = '';
+    let finalAddress;
+    let finalPhone;
 
     if (showNewForm) {
       if (!formData.name || !formData.phone || !formData.house || !formData.street) {

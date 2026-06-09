@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import AdminSidebar from '../../components/AdminSidebar';
 import AdminNavbar from '../../components/AdminNavbar';
@@ -398,7 +398,7 @@ const Orders = () => {
                                 {o.items?.map(it => `${it.quantity}x ${it.product_name}`).join(", ") || 'No Items'}
                               </div>
                             </td>
-                            <td data-label="Total Amount" style={{ fontWeight: '700' }}>₹{o.total.toFixed(2)}</td>
+                            <td data-label="Total Amount" style={{ fontWeight: '700' }}>{o.total.toFixed(2)}</td>
                             <td data-label="Payment Status">
                               <span style={{
                                 padding: '3px 8px', borderRadius: '8px', fontSize: '10px', fontWeight: '700',
@@ -697,8 +697,8 @@ const Orders = () => {
                         <tr key={idx} style={{ borderBottom: '1px solid var(--border-color)' }}>
                           <td style={{ padding: '8px' }}>{it.product_name}</td>
                           <td style={{ padding: '8px', textAlign: 'center' }}>{it.quantity}</td>
-                          <td style={{ padding: '8px', textAlign: 'right' }}>₹{it.price.toFixed(2)}</td>
-                          <td style={{ padding: '8px', textAlign: 'right' }}>₹{(it.price * it.quantity).toFixed(2)}</td>
+                          <td style={{ padding: '8px', textAlign: 'right' }}>{it.price.toFixed(2)}</td>
+                          <td style={{ padding: '8px', textAlign: 'right' }}>{(it.price * it.quantity).toFixed(2)}</td>
                         </tr>
                       ))}
                     </tbody>
@@ -713,7 +713,7 @@ const Orders = () => {
                       </span>
                     </div>
                     <div style={{ fontSize: '16px', fontWeight: '800', color: 'var(--theme-color)' }}>
-                      Total: ₹{selectedOrder.total.toFixed(2)}
+                      Total: {selectedOrder.total.toFixed(2)}
                     </div>
                   </div>
                 </div>
@@ -744,7 +744,7 @@ const Orders = () => {
         )}
 
         <div className="admin-footer">
-          <div>&copy; 2026 <strong>Amma's Kitchen Admin</strong>. All Rights Reserved.</div>
+          <div>&copy; 2026 <strong>Ammulu's Kitchen Admin</strong>. All Rights Reserved.</div>
         </div>
       </div>
     </div>

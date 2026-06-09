@@ -292,12 +292,12 @@ DEFAULT_CONFIG = {
     "popup_message": "Use Coupon code PONGAL50 for 50% discount on all Millets batter products!",
     "opening_hours": "Opening Hour: 6am to 10pm",
     "contact_phone": "+91 98765 43210",
-    "contact_email": "orders@ammaskitchen.com",
+    "contact_email": "ammuluskitchen57@gmail.com",
     "social_facebook": "https://facebook.com/ammaskitchen",
     "social_instagram": "https://instagram.com/ammaskitchen",
     "social_twitter": "https://twitter.com/ammaskitchen",
     "featured_products": [1, 2, 4],
-    "footer_text": "© 2026 Hotel Amma's Kitchen. Traditional stone-ground heritage batter and healthy meals.",
+    "footer_text": "© 2026 Hotel Ammulu's Kitchen. Traditional stone-ground heritage batter and healthy meals.",
     "categories": "Ready To Eat, Ready To Cook, Batter Products",
     "hero_cta_label": "Order Now",
     "hero_cta_link": "/ready-to-eat",
@@ -305,7 +305,7 @@ DEFAULT_CONFIG = {
     "show_promo_popup": True,
     "show_featured_review": True,
     "show_recipe_suggest": True,
-    "about_us": "Hotel Amma's Kitchen serves traditional stone-ground batters, ready-to-cook delicacies, and hot ready-to-eat vegetarian meals prepared with absolute cleanliness and natural flavor.",
+    "about_us": "Hotel Ammulu's Kitchen serves traditional stone-ground batters, ready-to-cook delicacies, and hot ready-to-eat vegetarian meals prepared with absolute cleanliness and natural flavor.",
     "whatsapp_number": "+919876543210"
 }
 

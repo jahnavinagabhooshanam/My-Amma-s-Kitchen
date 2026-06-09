@@ -96,7 +96,7 @@ const BulkOrders = () => {
     printWindow.document.write(`
       <html>
         <head>
-          <title>Hotel Amma's Kitchen - GST Invoice #${selectedInquiry.id}</title>
+          <title>Hotel Ammulu's Kitchen - GST Invoice #${selectedInquiry.id}</title>
           <style>
             body { font-family: 'Inter', sans-serif; padding: 40px; color: #1b3d2b; line-height: 1.5; }
             .header { text-align: center; border-bottom: 3px double #3F9065; padding-bottom: 20px; }
@@ -118,7 +118,7 @@ const BulkOrders = () => {
               <span class="badge-gst">GSTIN: 33AAHFH5678Q1Z2</span>
               <div class="logo">HOTEL AMMA'S KITCHEN</div>
               <div>Slow Stone-Ground Heritage Batters & Premium Catering</div>
-              <div>Mylapore, Chennai | orders@ammaskitchen.com</div>
+              <div>Mylapore, Chennai | ammuluskitchen57@gmail.com</div>
             </div>
             
             <h2 class="invoice-title">GST Tax Invoice</h2>
@@ -143,32 +143,32 @@ const BulkOrders = () => {
                 <tr>
                   <td>Catering Buffet Menu (${selectedInquiry.items_requested || 'Traditional South Indian Meals'})</td>
                   <td>${count} Guests</td>
-                  <td>₹${platePrice.toFixed(2)}</td>
-                  <td>₹${(platePrice * count).toFixed(2)}</td>
+                  <td>${platePrice.toFixed(2)}</td>
+                  <td>${(platePrice * count).toFixed(2)}</td>
                 </tr>
                 <tr>
                   <td>Setup, Servers & Logistics Charges</td>
                   <td>1 Event</td>
-                  <td>₹${addCharges.toFixed(2)}</td>
-                  <td>₹${addCharges.toFixed(2)}</td>
+                  <td>${addCharges.toFixed(2)}</td>
+                  <td>${addCharges.toFixed(2)}</td>
                 </tr>
                 <tr class="total-row" style="background-color: #fcfcfc;">
                   <td colspan="3" style="text-align: right;">Taxable Subtotal:</td>
-                  <td>₹${taxableSubtotal.toFixed(2)}</td>
+                  <td>${taxableSubtotal.toFixed(2)}</td>
                 </tr>
                 <tr>
                   <td colspan="3" style="text-align: right; color: #666; font-size: 13px;">CGST @ 2.5%:</td>
-                  <td style="color: #666; font-size: 13px;">₹${cgst.toFixed(2)}</td>
+                  <td style="color: #666; font-size: 13px;">${cgst.toFixed(2)}</td>
                 </tr>
                 <tr>
                   <td colspan="3" style="text-align: right; color: #666; font-size: 13px;">SGST @ 2.5%:</td>
-                  <td style="color: #666; font-size: 13px;">₹${sgst.toFixed(2)}</td>
+                  <td style="color: #666; font-size: 13px;">${sgst.toFixed(2)}</td>
                 </tr>
               </tbody>
             </table>
             
             <div class="total-box">
-              Grand Total (Incl. GST): ₹${total.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
+              Grand Total (Incl. GST): ${total.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
             </div>
             
             <div style="margin-top: 30px; border-top: 1px dashed #ccc; padding-top: 15px; font-size: 13px;">
@@ -179,7 +179,7 @@ const BulkOrders = () => {
             </div>
             
             <div class="footer">
-              Thank you for partnering with Hotel Amma's Kitchen. We feed hearts daily.
+              Thank you for partnering with Hotel Ammulu's Kitchen. We feed hearts daily.
             </div>
           </div>
           <script>window.print();</script>
@@ -201,9 +201,9 @@ const BulkOrders = () => {
   const filteredBulks = bulks.filter(b => {
     const matchesSearch = b.customer_name.toLowerCase().includes(searchQuery.toLowerCase()) || 
                           b.phone.includes(searchQuery) ||
-                          (b.company && b.company.toLowerCase().includes(searchQuery.toLowerCase()));
+                          (b.event_type && b.event_type.toLowerCase().includes(searchQuery.toLowerCase()));
     const matchesStatus = statusFilter === 'All' || b.status === statusFilter;
-    const matchesCategory = categoryFilter === 'All' || b.company === categoryFilter;
+    const matchesCategory = categoryFilter === 'All' || b.event_type === categoryFilter;
     return matchesSearch && matchesStatus && matchesCategory;
   });
 
@@ -314,7 +314,8 @@ const BulkOrders = () => {
                           </div>
                         </td>
                         <td data-label="Event Specifications">
-                          <div><strong>Type:</strong> {b.company || 'Catering'}</div>
+                          <div><strong>Type:</strong> {b.event_type || 'Catering'}</div>
+                          {b.location && <div><strong>Location:</strong> {b.location}</div>}
                           <div style={{ fontSize: '12px' }}><strong>Guests:</strong> {b.expected_guests} Plates</div>
                           <div style={{ fontSize: '12px', color: 'var(--theme-color)', fontWeight: '700' }}>
                             <strong>Date:</strong> {b.event_date}
@@ -393,7 +394,7 @@ const BulkOrders = () => {
                 
                 <div className="form-grid">
                   <div className="form-field">
-                    <label>Price Per Plate (₹) *</label>
+                    <label>Price Per Plate () *</label>
                     <input 
                       type="number" 
                       value={quoteDetails.pricePerPlate} 
@@ -401,7 +402,7 @@ const BulkOrders = () => {
                     />
                   </div>
                   <div className="form-field">
-                    <label>Logistics & Setup Fee (₹)</label>
+                    <label>Logistics & Setup Fee ()</label>
                     <input 
                       type="number" 
                       value={quoteDetails.additionalCharges} 
@@ -430,7 +431,7 @@ const BulkOrders = () => {
         )}
 
         <div className="admin-footer">
-          <div>&copy; 2026 <strong>Amma's Kitchen Admin</strong>. All Rights Reserved.</div>
+          <div>&copy; 2026 <strong>Ammulu's Kitchen Admin</strong>. All Rights Reserved.</div>
         </div>
       </div>
     </div>

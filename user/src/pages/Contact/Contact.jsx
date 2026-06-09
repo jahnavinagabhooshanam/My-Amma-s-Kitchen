@@ -27,7 +27,7 @@ const Contact = () => {
 
   return (
     <div className="contact-page">
-      <SEO title="Contact Us" description="Reach out to Hotel Amma's Kitchen support, restaurant coordinates, kitchen address in Mylapore, Chennai, or call us directly." />
+      <SEO title="Contact Us" description="Reach out to Hotel Ammulu's Kitchen support, restaurant coordinates, kitchen address in Mylapore, Chennai, or call us directly." />
       <div className="container">
         
         {/* Minimized Hero */}
@@ -84,14 +84,14 @@ const Contact = () => {
                 <div className="contact-action-btn">Chat Now</div>
               </a>
 
-              <a href="mailto:order@ammaskitchen.com" className="contact-action-card">
+              <a href="mailto:ammuluskitchen57@gmail.com" className="contact-action-card">
                 <div className="contact-card-left">
                   <div className="contact-card-icon icon-email">
                     <Mail size={24} />
                   </div>
                   <div className="contact-card-info">
                     <h4>Email Support</h4>
-                    <p>order@ammaskitchen.com</p>
+                    <p>ammuluskitchen57@gmail.com</p>
                   </div>
                 </div>
                 <div className="contact-action-btn">Send Email</div>
@@ -125,7 +125,7 @@ const Contact = () => {
                     <div className="quick-contact-pills">
                       <a href="tel:+919876543210" className="quick-pill"><Phone size={14}/> Call Us</a>
                       <a href="https://wa.me/919876543210" target="_blank" rel="noreferrer" className="quick-pill"><MessageCircle size={14}/> WhatsApp Us</a>
-                      <a href="mailto:order@ammaskitchen.com" className="quick-pill"><Mail size={14}/> Email Us</a>
+                      <a href="mailto:ammuluskitchen57@gmail.com" className="quick-pill"><Mail size={14}/> Email Us</a>
                     </div>
                   </div>
 

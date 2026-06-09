@@ -192,18 +192,9 @@ const Dashboard = () => {
 
       const ctx = trendCanvasRef.current.getContext('2d');
       
-      // Fallback sample data if analyticsData is empty
-      const chartLabels = (analyticsData.labels && analyticsData.labels.length > 0)
-        ? analyticsData.labels
-        : ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-      
-      const chartRevenue = (analyticsData.revenue && analyticsData.revenue.length > 0)
-        ? analyticsData.revenue
-        : [15000, 18500, 14200, 21000, 19800, 25000, 27400];
-        
-      const chartOrders = (analyticsData.orders && analyticsData.orders.length > 0)
-        ? analyticsData.orders
-        : [45, 52, 40, 65, 58, 78, 85];
+      const chartLabels = analyticsData.labels || [];
+      const chartRevenue = analyticsData.revenue || [];
+      const chartOrders = analyticsData.orders || [];
 
       trendChartInstanceRef.current = new Chart(ctx, {
         type: 'line',
@@ -211,7 +202,7 @@ const Dashboard = () => {
           labels: chartLabels,
           datasets: [
             {
-              label: 'Revenue (₹)',
+              label: 'Revenue ()',
               data: chartRevenue,
               borderColor: '#3F9065',
               backgroundColor: 'rgba(63, 144, 101, 0.1)',
@@ -280,9 +271,8 @@ const Dashboard = () => {
       const ctx = categoryCanvasRef.current.getContext('2d');
       const colors = ['#3F9065', '#C9AB81', '#FF9924', '#7E7A6B'];
 
-      // Fallback sample data if analyticsData.pie_data is empty or has all zero revenues
-      let chartPieData = [15400, 9200, 18500, 4800];
-      let chartLabels = ['Ready to Eat', 'Ready to Cook', 'Batter Products', 'Others'];
+      let chartPieData = [];
+      let chartLabels = [];
 
       if (analyticsData.pie_data && analyticsData.pie_data.length > 0) {
         const mappedLabels = analyticsData.pie_data.map(item => item.category);
@@ -329,7 +319,7 @@ const Dashboard = () => {
                   const value = context.raw || 0;
                   const total = context.dataset.data.reduce((a, b) => a + b, 0);
                   const pct = ((value / total) * 100).toFixed(1);
-                  return ` ${label}: ₹${value.toLocaleString()} (${pct}%)`;
+                  return ` ${label}: ${value.toLocaleString()} (${pct}%)`;
                 }
               }
             }
@@ -403,7 +393,7 @@ const Dashboard = () => {
         <div className="admin-content">
           <div className="page-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <div className="page-title-area">
-              <h2>Amma's ERP Control Panel</h2>
+              <h2>Ammulu's ERP Control Panel</h2>
               <p>Operational summary, supply-chain monitoring, and predictive analytics.</p>
             </div>
           </div>
@@ -529,7 +519,7 @@ const Dashboard = () => {
                       </div>
                       <span className="stats-card-trend up">Today</span>
                     </div>
-                    <div className="stats-card-value">₹{(stats.today_revenue || 0).toLocaleString()}</div>
+                    <div className="stats-card-value">{(stats.today_revenue || 0).toLocaleString()}</div>
                     <div className="stats-card-label">Today's Revenue</div>
                   </div>
                 )}
@@ -805,7 +795,7 @@ const Dashboard = () => {
                               </span>
                             </td>
                             <td data-label="Quantity">{o.quantities}</td>
-                            <td data-label="Amount" style={{ fontWeight: '700', color: 'var(--primary-color)' }}>₹{o.amount.toFixed(2)}</td>
+                            <td data-label="Amount" style={{ fontWeight: '700', color: 'var(--primary-color)' }}>{o.amount.toFixed(2)}</td>
                             <td data-label="Payment Status">
                               <span className={`badge-status ${o.payment_status?.toLowerCase() === 'paid' ? 'completed' : 'pending'}`}>
                                 {o.payment_status}
@@ -874,7 +864,7 @@ const Dashboard = () => {
                     <div className="stats-card-icon teal" style={{ backgroundColor: 'rgba(63, 144, 101, 0.1)', color: '#3F9065' }}>
                       <i className="fa-solid fa-users-line"></i>
                     </div>
-                    <span className="stats-card-trend warning" style={{ backgroundColor: '#FDEDEC', color: '#E74C3C', animation: 'pulse 1.5s infinite' }}>● LIVE</span>
+                    <span className="stats-card-trend warning" style={{ backgroundColor: '#FDEDEC', color: '#E74C3C', animation: 'pulse 1.5s infinite' }}>â— LIVE</span>
                   </div>
                   <div className="stats-card-value">{liveMonitor.unique_visitors}</div>
                   <div className="stats-card-label">Active Visitors Online (Last 5m)</div>
@@ -1105,8 +1095,8 @@ const Dashboard = () => {
                           <td style={{ padding: '8px' }}>{it.product_name}</td>
                           <td style={{ padding: '8px' }}>{it.category}</td>
                           <td style={{ padding: '8px', textAlign: 'center' }}>{it.quantity}</td>
-                          <td style={{ padding: '8px', textAlign: 'right' }}>₹{it.price.toFixed(2)}</td>
-                          <td style={{ padding: '8px', textAlign: 'right' }}>₹{(it.price * it.quantity).toFixed(2)}</td>
+                          <td style={{ padding: '8px', textAlign: 'right' }}>{it.price.toFixed(2)}</td>
+                          <td style={{ padding: '8px', textAlign: 'right' }}>{(it.price * it.quantity).toFixed(2)}</td>
                         </tr>
                       ))}
                     </tbody>
@@ -1117,7 +1107,7 @@ const Dashboard = () => {
                       Payment Status: <span className={`badge-status ${selectedOrder.payment_status?.toLowerCase() === 'paid' ? 'completed' : 'pending'}`}>{selectedOrder.payment_status}</span>
                     </div>
                     <div style={{ fontSize: '16px', fontWeight: '800', color: 'var(--theme-color)' }}>
-                      Total Amount: ₹{selectedOrder.amount.toFixed(2)}
+                      Total Amount: {selectedOrder.amount.toFixed(2)}
                     </div>
                   </div>
                 </div>
@@ -1150,7 +1140,7 @@ const Dashboard = () => {
         )}
 
         <div className="admin-footer">
-          <div>&copy; 2026 <strong>Amma's Kitchen Admin</strong>. All Rights Reserved.</div>
+          <div>&copy; 2026 <strong>Ammulu's Kitchen Admin</strong>. All Rights Reserved.</div>
         </div>
 
       </div>

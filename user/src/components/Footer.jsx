@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import footerLogo from '../assets/img/my-ammas-logo-new.jpg';
+import footerLogo from '../assets/img/ammulus-kitchen-footer-logo.jpg';
 import apiClient from '../services/api';
 import './Footer.css';
 
@@ -13,10 +13,10 @@ const isBusinessOpen = () => {
 
 const Footer = () => {
   const [config, setConfig] = useState({
-    social_facebook: '#',
-    social_instagram: '#',
-    social_twitter: '#',
-    contact_email: 'orders@ammaskitchen.com',
+    social_facebook: 'https://www.facebook.com/profile.php?id=61590451811686',
+    social_instagram: 'https://www.instagram.com/ammuluskitchen_?igsh=MzE1dHRqNGQ2MGZx',
+    social_twitter: 'https://x.com/ammuluskitchen',
+    contact_email: 'ammuluskitchen57@gmail.com',
     whatsapp_number: '+919876543210'
   });
   const [isOpen, setIsOpen] = useState(isBusinessOpen());
@@ -55,7 +55,7 @@ const Footer = () => {
       <div className="footer-logo-overlap">
         <Link to="/">
           <div className="footer-logo-circle">
-            <img src={footerLogo} alt="Amma's Kitchen" />
+            <img src={footerLogo} alt="Ammulu's Kitchen" />
           </div>
         </Link>
       </div>
@@ -64,7 +64,7 @@ const Footer = () => {
         {/* Top Decorative Line */}
         <div className="footer-top-decoration">
           <div className="decor-line"></div>
-          <div className="decor-icon">✨</div>
+          <div className="decor-icon">âœ¨</div>
           <div className="decor-line"></div>
         </div>
 
@@ -73,7 +73,7 @@ const Footer = () => {
             
             {/* Column 1: About */}
             <div className={`pf-col ${openAccordion === 'about' ? 'active' : ''}`}>
-              <h3 className="pf-title accordion-title" onClick={() => toggleAccordion('about')}><i className="fas fa-leaf"></i> About Amma's Kitchen</h3>
+              <h3 className="pf-title accordion-title" onClick={() => toggleAccordion('about')}><i className="fas fa-leaf"></i> About Ammulu's Kitchen</h3>
               <div className="accordion-content">
                 <p className="pf-about-text">
                   Serving authentic South Indian flavors made with love and traditional recipes just like amma made it.
@@ -126,7 +126,7 @@ const Footer = () => {
 
                 <div className="pf-contact-block">
                   <div className="pf-contact-label"><i className="fas fa-envelope"></i> EMAIL</div>
-                  <div className="pf-contact-text">orders@ammaskitchen.com</div>
+                  <div className="pf-contact-text">ammuluskitchen57@gmail.com</div>
                 </div>
               </div>
             </div>
@@ -198,22 +198,14 @@ const Footer = () => {
 
           </div>
         </div>
-      </div>
-
-      <div className="pf-bottom">
-        <div className="pf-container pf-bottom-inner">
-          <div className="pf-copyright">
-            &copy; 2026 <span className="pf-highlight">Amma's Kitchen</span>. All Rights Reserved.
-          </div>
-          <div className="pf-love-text">
-            <i className="fas fa-heart" style={{ color: '#F5B941' }}></i> Made with love, just like amma made it
-          </div>
-          <div className="pf-legal">
-            <Link to="/privacy" className="pf-legal-link">Privacy Policy</Link>
-            <span className="pf-legal-dot">&bull;</span>
-            <Link to="/terms" className="pf-legal-link">Terms &amp; Conditions</Link>
-            <span className="pf-legal-dot">&bull;</span>
-            <Link to="/refund" className="pf-legal-link">Refund Policy</Link>
+        <div className="pf-bottom">
+          <div className="pf-container pf-bottom-inner">
+            <div className="pf-copyright">
+              &copy; 2026 <span className="pf-highlight">Ammulu's Kitchen</span>. All Rights Reserved.
+            </div>
+            <div className="pf-love-text">
+              Made by Friendzion Technologies
+            </div>
           </div>
         </div>
       </div>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import AdminSidebar from '../../components/AdminSidebar';
 import AdminNavbar from '../../components/AdminNavbar';
 import apiClient from '../../services/api';
@@ -382,8 +382,8 @@ const ReadyToCook = () => {
 
                       <div className="food-card-footer" style={{ marginTop: 'auto' }}>
                         <div className="price">
-                          ₹{p.price.toFixed(2)}
-                          {p.offer_price && <del>₹{p.offer_price.toFixed(2)}</del>}
+                          {p.price.toFixed(2)}
+                          {p.offer_price && <del>{p.offer_price.toFixed(2)}</del>}
                         </div>
                         <div className="stock-badge">
                           {p.unit || 'Pack'}
@@ -429,7 +429,7 @@ const ReadyToCook = () => {
 
                   <div className="form-grid">
                     <div className="form-field">
-                      <label>Regular Price (₹) *</label>
+                      <label>Regular Price () *</label>
                       <input
                         type="number"
                         step="0.01"
@@ -440,7 +440,7 @@ const ReadyToCook = () => {
                       />
                     </div>
                     <div className="form-field">
-                      <label>Offer Price (₹)</label>
+                      <label>Offer Price ()</label>
                       <input
                         type="number"
                         step="0.01"
@@ -545,7 +545,7 @@ const ReadyToCook = () => {
         )}
 
         <div className="admin-footer">
-          <div>&copy; 2026 <strong>Amma's Kitchen Admin</strong>. All Rights Reserved.</div>
+          <div>&copy; 2026 <strong>Ammulu's Kitchen Admin</strong>. All Rights Reserved.</div>
         </div>
       </div>
     </div>

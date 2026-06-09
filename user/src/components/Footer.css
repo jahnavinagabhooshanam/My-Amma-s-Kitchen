@@ -1,4 +1,4 @@
-/* Footer.css - Amma's Kitchen Exact Match Redesign */
+﻿/* Footer.css - Ammulu's Kitchen Exact Match Redesign */
 
 .premium-footer {
   background: #F9F6F0;
@@ -46,9 +46,8 @@
 /* Green Area */
 .pf-green-area {
   background: #0A3622;
-  border-top-left-radius: 30px;
-  border-top-right-radius: 30px;
-  padding: 80px 0 50px;
+  border-radius: 30px;
+  padding: 80px 0 30px;
   position: relative;
   overflow: hidden;
 }
@@ -351,32 +350,31 @@
 
 /* Bottom Bar */
 .pf-bottom {
-  background: #F9F6F0;
-  padding: 20px 0;
+  padding: 20px 0 0;
+  margin-top: 40px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
   position: relative;
   z-index: 10;
-  border-bottom-left-radius: 30px;
-  border-bottom-right-radius: 30px;
 }
 
 .pf-bottom-inner {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  color: #4A4A4A;
+  color: rgba(255, 255, 255, 0.7);
   font-size: 0.9rem;
   flex-wrap: wrap;
   gap: 15px;
 }
 
 .pf-highlight {
-  color: #0A3622;
+  color: #FFFFFF;
   font-weight: 700;
 }
 
 .pf-love-text {
   font-weight: 500;
-  color: #666;
+  color: rgba(255, 255, 255, 0.7);
 }
 
 .pf-legal {
@@ -386,18 +384,18 @@
 }
 
 .pf-legal-link {
-  color: #4A4A4A;
+  color: rgba(255, 255, 255, 0.7);
   text-decoration: none;
   transition: color 0.3s ease;
   font-weight: 500;
 }
 
 .pf-legal-link:hover {
-  color: #0A3622;
+  color: #F5B941;
 }
 
 .pf-legal-dot {
-  color: #A0A0A0;
+  color: rgba(255, 255, 255, 0.3);
   font-size: 0.5rem;
 }
 

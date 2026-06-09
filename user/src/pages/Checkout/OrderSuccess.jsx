@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+﻿import React, { useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { CheckCircle, ArrowRight } from 'lucide-react';
@@ -35,7 +35,7 @@ const OrderSuccess = () => {
         
         <h2 style={{ fontSize: 24, fontWeight: 800, color: 'var(--text-dark)', marginBottom: 10 }}>Order Confirmed!</h2>
         <p style={{ fontSize: 14, color: 'var(--text-muted)', marginBottom: 20, lineHeight: 1.5 }}>
-          Amma's Kitchen has started preparing your order with love.
+          Ammulu's Kitchen has started preparing your order with love.
         </p>
         
         <div style={{ background: '#F5F5F0', padding: '16px', borderRadius: 16, marginBottom: 30, border: '1px dashed #CCC' }}>

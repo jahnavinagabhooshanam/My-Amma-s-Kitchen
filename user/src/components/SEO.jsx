@@ -2,16 +2,16 @@ import React, { useEffect } from 'react';
 
 const SEO = ({ 
   title, 
-  description = "Hotel Amma's Kitchen serves traditional stone-ground batters, zero-prep ready-to-cook meal kits, and fresh authentic ready-to-eat South Indian vegetarian delicacies.", 
-  keywords = "Amma's Kitchen, South Indian food, fresh idli batter, dosa batter, ready to cook, ready to eat, Mylapore catering", 
-  image = "/src/assets/img/my-ammas-logo-new.jpg", 
+  description = "Hotel Ammulu's Kitchen serves traditional stone-ground batters, zero-prep ready-to-cook meal kits, and fresh authentic ready-to-eat South Indian vegetarian delicacies.", 
+  keywords = "Ammulu's Kitchen, South Indian food, fresh idli batter, dosa batter, ready to cook, ready to eat, Mylapore catering", 
+  image = "/src/assets/img/ammulus-kitchen-logo.jpg", 
   canonical = "http://localhost:5173",
   schemaType = null,
   schemaData = null
 }) => {
   useEffect(() => {
     // 1. Title
-    const formattedTitle = title ? `${title} | Hotel Amma's Kitchen` : "Hotel Amma's Kitchen - Authentic South Indian Food & Batters";
+    const formattedTitle = title ? `${title} | Hotel Ammulu's Kitchen` : "Hotel Ammulu's Kitchen - Authentic South Indian Food & Batters";
     document.title = formattedTitle;
 
     // Helper function to create or update meta tags
@@ -65,8 +65,8 @@ const SEO = ({
       "@context": "https://schema.org",
       "@type": "Restaurant",
       "@id": "http://localhost:5173/#restaurant",
-      "name": "Hotel Amma's Kitchen",
-      "image": "http://localhost:5173/src/assets/img/my-ammas-logo-new.jpg",
+      "name": "Hotel Ammulu's Kitchen",
+      "image": "http://localhost:5173/src/assets/img/ammulus-kitchen-logo.jpg",
       "url": "http://localhost:5173",
       "telephone": "+91 98765 43210",
       "priceRange": "$$",

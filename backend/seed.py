@@ -27,16 +27,17 @@ def seed_database():
         KitchenStaff.query.delete()
         
         print("Seeding users...")
-        # Seed test admin account
-        admin = User(
-            name="Amma Admin",
-            email="admin@ammaskitchen.com",
-            phone="+91 99999 99999",
-            password_hash=generate_password_hash("Admin@123"),
-            role="admin",
-            status="Active",
-            profile_completed=True
-        )
+        if not User.query.filter_by(email="ammuluskitchen57@gmail.com").first():
+            admin = User(
+                name="Admin User",
+                email="ammuluskitchen57@gmail.com",
+                phone="9876543210",
+                password_hash=generate_password_hash("Ammulus@7255"),
+                role="admin",
+                status="Active",
+                profile_completed=True
+            )
+            db.session.add(admin)
         # Seed test manager account
         manager = User(
             name="Suresh Kumar",

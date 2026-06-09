@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { motion, AnimatePresence } from 'framer-motion';
-import logoImg from '../assets/img/cropped-logo.webp';
+import logoImg from '../assets/img/ammulus-kitchen-logo-green.png';
 import {
   Home,
   UtensilsCrossed,
@@ -97,12 +97,12 @@ const AdminSidebar = () => {
       <div className="sidebar-header">
         <div className="sidebar-logo">
           <NavLink to="/admin/dashboard">
-            <img src={logoImg} alt="Hotel Amma's Kitchen" style={{ width: isCollapsed ? '40px' : '80px', transition: 'width 0.3s' }} />
+            <img src={logoImg} alt="Hotel Ammulu's Kitchen" style={{ width: isCollapsed ? '40px' : '80px', transition: 'width 0.3s' }} />
           </NavLink>
         </div>
         {!isCollapsed && (
           <>
-            <h2 className="sidebar-title">My Amma's Kitchen</h2>
+            <h2 className="sidebar-title">Ammulu's Kitchen</h2>
             <p className="sidebar-subtitle">Food ERP Management</p>
           </>
         )}
@@ -113,7 +113,7 @@ const AdminSidebar = () => {
         </div>
       </div>
 
-      {/* ── Menu ── */}
+      {/* â”€â”€ Menu â”€â”€ */}
       <ul className="sidebar-menu">
         {visibleItems.map((item, idx) => {
           const Icon = item.icon;
@@ -132,7 +132,7 @@ const AdminSidebar = () => {
         })}
       </ul>
 
-      {/* ── Footer ── */}
+      {/* â”€â”€ Footer â”€â”€ */}
       <div className="sidebar-footer">
         <button 
           className="desktop-only" 
@@ -155,7 +155,7 @@ const AdminSidebar = () => {
         {!isCollapsed && (
           <div className="sidebar-version">
             <span className="sidebar-version-num">⚙ Version 1.0 ⚙</span>
-            <span className="sidebar-brand-name">Amma's Kitchen ERP</span>
+            <span className="sidebar-brand-name">Ammulu's Kitchen ERP</span>
           </div>
         )}
       </div>

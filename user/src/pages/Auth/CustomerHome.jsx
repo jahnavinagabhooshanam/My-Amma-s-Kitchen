@@ -21,12 +21,10 @@ const DEFAULT_HOMEPAGE_CONFIG = {
 };
 
 const CATEGORIES = [
-  { id: 1, name: 'Idli', img: '/assets/Food images/Veg/Podi Edli.webp', path: '/menu' },
-  { id: 2, name: 'Dosa', img: '/assets/Food images/Veg/Ghee Roast Dosa.webp', path: '/menu' },
-  { id: 3, name: 'Vada', img: '/assets/Food images/Veg/Medu Vada.webp', path: '/menu' },
-  { id: 4, name: 'Meals', img: '/assets/Food images/Veg/Veg Meals.webp', path: '/menu' },
-  { id: 5, name: 'Biryani', img: '/assets/Food images/Non-veg/Hyderabad Dum Biriyani.webp', path: '/menu' },
-  { id: 6, name: 'Batters', img: '/assets/Food images/Batters/Idli Batter.webp', path: '/batter-products' },
+  { id: 1, name: 'Breakfast', img: '/assets/Food images/Veg/Podi Edli.webp', path: '/ready-to-eat' },
+  { id: 2, name: 'Lunch', img: '/assets/Food images/Veg/Veg Meals.webp', path: '/ready-to-eat' },
+  { id: 3, name: 'Dinner', img: '/assets/Food images/Veg/Ghee Roast Dosa.webp', path: '/ready-to-eat' },
+  { id: 4, name: 'Batters', img: '/assets/Food images/Batters/Idli Batter.webp', path: '/ready-to-cook' },
 ];
 
 const CustomerHome = () => {
@@ -220,7 +218,7 @@ const CustomerHome = () => {
               marginBottom: '8px',
               textShadow: '0 2px 4px rgba(0,0,0,0.3)'
             }}>
-              Just Like<br />Amma Made It
+              Welcome to<br />Ammulu's Kitchen
             </h2>
             <div style={{
               fontSize: '13px',
@@ -230,7 +228,7 @@ const CustomerHome = () => {
               lineHeight: 1.4,
               textShadow: '0 1px 2px rgba(0,0,0,0.3)'
             }}>
-              Fresh Homemade Food<br />Delivered with Love
+              Where Every Recipe<br />Tells a Story.
             </div>
             <button
               onClick={() => navigate('/menu')}

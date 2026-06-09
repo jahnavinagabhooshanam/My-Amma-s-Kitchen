@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import AdminSidebar from '../../components/AdminSidebar';
 import AdminNavbar from '../../components/AdminNavbar';
@@ -263,7 +263,7 @@ const Customers = () => {
       custActivity.push({
         event: "Placed Purchase",
         time: o.created_at ? new Date(o.created_at).toLocaleString() : 'N/A',
-        desc: `Order #ORD-${o.id} for ₹${o.total.toFixed(2)} (${o.status})`
+        desc: `Order #ORD-${o.id} for ${o.total.toFixed(2)} (${o.status})`
       });
     });
     custReviews.forEach(r => {
@@ -401,7 +401,7 @@ const Customers = () => {
                           </td>
                           <td data-label="Total Orders" style={{ fontWeight: '600' }}>{cust.orders_count} orders</td>
                           <td data-label="Total Spend" style={{ fontWeight: '800', color: 'var(--theme-color)', fontSize: '15px' }}>
-                            ₹{cust.total_spent.toFixed(2)}
+                            {cust.total_spent.toFixed(2)}
                           </td>
                           <td data-label="Access Status">
                             <span className={`badge-status ${cust.is_blocked ? 'inactive' : 'approved'}`}>
@@ -573,7 +573,7 @@ const Customers = () => {
                     <div style={{ backgroundColor: '#FAF8F2', border: '1px solid #EAE6DB', borderRadius: '12px', padding: '15px', textAlign: 'center' }}>
                       <span style={{ fontSize: '12px', fontWeight: '600', color: '#666', display: 'block', marginBottom: '5px' }}>Average Lifespan Value</span>
                       <div style={{ fontSize: '20px', fontWeight: '800', color: 'var(--theme-color)' }}>
-                        ₹{customers.length > 0 ? (customers.reduce((acc, c) => acc + (c.total_spent || 0), 0) / customers.length).toFixed(2) : '0.00'}
+                        {customers.length > 0 ? (customers.reduce((acc, c) => acc + (c.total_spent || 0), 0) / customers.length).toFixed(2) : '0.00'}
                       </div>
                     </div>
                   </div>
@@ -599,8 +599,8 @@ const Customers = () => {
                               <td data-label="Customer"><strong>{cust.name}</strong></td>
                               <td data-label="Contact">{cust.email}</td>
                               <td data-label="Total Orders">{cust.orders_count} orders</td>
-                              <td data-label="Total Spends" style={{ fontWeight: '700', color: 'var(--primary-color)' }}>₹{cust.total_spent.toFixed(2)}</td>
-                              <td data-label="AOV">₹{cust.orders_count > 0 ? (cust.total_spent / cust.orders_count).toFixed(2) : '0.00'}</td>
+                              <td data-label="Total Spends" style={{ fontWeight: '700', color: 'var(--primary-color)' }}>{cust.total_spent.toFixed(2)}</td>
+                              <td data-label="AOV">{cust.orders_count > 0 ? (cust.total_spent / cust.orders_count).toFixed(2) : '0.00'}</td>
                             </tr>
                           ))}
                       </tbody>
@@ -621,7 +621,7 @@ const Customers = () => {
                             type: 'register',
                             time: new Date(c.created_at),
                             title: 'New User Registration',
-                            desc: `${c.name} (${c.email}) joined the Hotel Amma's Kitchen platform.`
+                            desc: `${c.name} (${c.email}) joined the Hotel Ammulu's Kitchen platform.`
                           });
                         }
                       });
@@ -631,7 +631,7 @@ const Customers = () => {
                             type: 'order',
                             time: new Date(o.created_at),
                             title: 'Customer Order Checkout',
-                            desc: `${o.customer_name} placed order #ORD-${o.id} for ₹${o.total.toFixed(2)}.`
+                            desc: `${o.customer_name} placed order #ORD-${o.id} for ${o.total.toFixed(2)}.`
                           });
                         }
                       });
@@ -805,7 +805,7 @@ const Customers = () => {
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 150px), 1fr))', gap: '10px' }}>
                       <div style={{ backgroundColor: '#EDF3F0', padding: '10px', borderRadius: '8px', textAlign: 'center' }}>
                         <div style={{ fontSize: '10px', color: '#666', fontWeight: '700' }}>TOTAL SPENT</div>
-                        <div style={{ fontSize: '14px', fontWeight: '800', color: 'var(--theme-color)', marginTop: '4px' }}>₹{selectedCustDetail.profile.total_spent.toFixed(2)}</div>
+                        <div style={{ fontSize: '14px', fontWeight: '800', color: 'var(--theme-color)', marginTop: '4px' }}>{selectedCustDetail.profile.total_spent.toFixed(2)}</div>
                       </div>
                       <div style={{ backgroundColor: '#EDF3F0', padding: '10px', borderRadius: '8px', textAlign: 'center' }}>
                         <div style={{ fontSize: '10px', color: '#666', fontWeight: '700' }}>ORDERS PLACED</div>
@@ -813,7 +813,7 @@ const Customers = () => {
                       </div>
                       <div style={{ backgroundColor: '#EDF3F0', padding: '10px', borderRadius: '8px', textAlign: 'center' }}>
                         <div style={{ fontSize: '10px', color: '#666', fontWeight: '700' }}>AVG ORDER VALUE</div>
-                        <div style={{ fontSize: '14px', fontWeight: '800', color: 'var(--theme-color)', marginTop: '4px' }}>₹{selectedCustDetail.aov.toFixed(2)}</div>
+                        <div style={{ fontSize: '14px', fontWeight: '800', color: 'var(--theme-color)', marginTop: '4px' }}>{selectedCustDetail.aov.toFixed(2)}</div>
                       </div>
                     </div>
                   </div>
@@ -840,7 +840,7 @@ const Customers = () => {
                             {selectedCustDetail.orders.map(o => (
                               <tr key={o.id} style={{ borderBottom: '1px solid #f0f0f0' }}>
                                 <td style={{ padding: '6px 10px' }}>#ORD-{o.id}</td>
-                                <td style={{ padding: '6px 10px', textAlign: 'right', fontWeight: '700' }}>₹{o.total.toFixed(2)}</td>
+                                <td style={{ padding: '6px 10px', textAlign: 'right', fontWeight: '700' }}>{o.total.toFixed(2)}</td>
                                 <td style={{ padding: '6px 10px', textAlign: 'center' }}>
                                   <span style={{ fontSize: '9px', fontWeight: '700', textTransform: 'uppercase', color: o.status === 'Delivered' ? '#27AE60' : '#E67E22' }}>{o.status}</span>
                                 </td>
@@ -917,7 +917,7 @@ const Customers = () => {
         )}
 
         <div className="admin-footer">
-          <div>&copy; 2026 <strong>Amma's Kitchen Admin</strong>. All Rights Reserved.</div>
+          <div>&copy; 2026 <strong>Ammulu's Kitchen Admin</strong>. All Rights Reserved.</div>
         </div>
       </div>
     </div>

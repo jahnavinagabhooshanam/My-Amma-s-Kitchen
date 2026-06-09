@@ -80,7 +80,7 @@ app.register_blueprint(offers_bp, url_prefix='/api/offers')
 def health_check():
     return jsonify({
         "status": "healthy",
-        "message": "Hotel Amma's Kitchen API is fully operational",
+        "message": "Hotel Ammulu's Kitchen API is fully operational",
         "database": "MySQL (Connected)"
     }), 200
 

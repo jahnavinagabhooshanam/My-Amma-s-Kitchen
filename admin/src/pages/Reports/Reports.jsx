@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import AdminSidebar from '../../components/AdminSidebar';
 import AdminNavbar from '../../components/AdminNavbar';
@@ -124,7 +124,7 @@ const Reports = () => {
     if (!reportData.data || reportData.data.length === 0) return;
     
     let csvContent = "data:text/csv;charset=utf-8,";
-    csvContent += `Hotel Amma's Kitchen - ${reportType.toUpperCase()} REPORT\n`;
+    csvContent += `Hotel Ammulu's Kitchen - ${reportType.toUpperCase()} REPORT\n`;
     csvContent += `Generated Date: ${new Date().toLocaleDateString()}\n\n`;
     
     csvContent += `SUMMARY METRICS\n`;
@@ -165,7 +165,7 @@ const Reports = () => {
     let summaryHtml = '<div class="metric-grid">';
     Object.entries(reportData.summary).forEach(([key, val]) => {
       const displayKey = key.replace(/_/g, ' ').toUpperCase();
-      const displayVal = typeof val === 'number' ? `₹${val.toLocaleString()}` : val;
+      const displayVal = typeof val === 'number' ? `${val.toLocaleString()}` : val;
       summaryHtml += `
         <div class="metric-card">
           <div>${displayKey}</div>
@@ -182,7 +182,7 @@ const Reports = () => {
       const tds = headers.map(header => {
         let val = row[header];
         if (typeof val === 'number' && (header.includes('amount') || header.includes('spent') || header.includes('revenue') || header.includes('tax') || header.includes('price') || header.includes('total_revenue') || header.includes('total_spent'))) {
-          return `<td>₹${val.toLocaleString()}</td>`;
+          return `<td>${val.toLocaleString()}</td>`;
         }
         return `<td>${val}</td>`;
       }).join('');
@@ -192,7 +192,7 @@ const Reports = () => {
     printWindow.document.write(`
       <html>
         <head>
-          <title>Amma's Kitchen - Reports Statement</title>
+          <title>Ammulu's Kitchen - Reports Statement</title>
           <style>
             body { font-family: 'Inter', sans-serif; padding: 40px; color: #1b3d2b; line-height: 1.5; }
             .header { text-align: center; border-bottom: 3px double #3F9065; padding-bottom: 20px; margin-bottom: 30px; }
@@ -227,7 +227,7 @@ const Reports = () => {
           </table>
           
           <div class="footer">
-            Thank you for choosing Hotel Amma's Kitchen. Dynamic Statement Generation verified.
+            Thank you for choosing Hotel Ammulu's Kitchen. Dynamic Statement Generation verified.
           </div>
           <script>window.print();</script>
         </body>
@@ -381,7 +381,7 @@ const Reports = () => {
                     {reportData.summary && Object.entries(reportData.summary).map(([key, val]) => (
                       <div className="stats-card" key={key}>
                         <div className="stats-card-value">
-                          {typeof val === 'number' ? (key.includes('spent') || key.includes('revenue') || key.includes('tax') || key.includes('price') || key.includes('sales') ? `₹${val.toLocaleString()}` : val) : val}
+                          {typeof val === 'number' ? (key.includes('spent') || key.includes('revenue') || key.includes('tax') || key.includes('price') || key.includes('sales') ? `${val.toLocaleString()}` : val) : val}
                         </div>
                         <div className="stats-card-label" style={{ textTransform: 'uppercase', fontSize: '11px', fontWeight: '700' }}>
                           {key.replace(/_/g, ' ')}
@@ -416,7 +416,7 @@ const Reports = () => {
                                 let cellHtml = cellVal;
                                 
                                 if (typeof cellVal === 'number' && (cellKey.includes('amount') || cellKey.includes('spent') || cellKey.includes('revenue') || cellKey.includes('tax') || cellKey.includes('price') || cellKey.includes('total_revenue') || cellKey.includes('total_spent'))) {
-                                  cellHtml = <strong style={{ color: 'var(--theme-color)' }}>₹{cellVal.toLocaleString()}</strong>;
+                                  cellHtml = <strong style={{ color: 'var(--theme-color)' }}>{cellVal.toLocaleString()}</strong>;
                                 }
                                 
                                 if (cellKey === 'status' || cellKey === 'payment_status') {
@@ -502,7 +502,7 @@ const Reports = () => {
                           <IndianRupee size={18} />
                         </div>
                       </div>
-                      <h3>₹{totalRevenue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</h3>
+                      <h3>{totalRevenue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</h3>
                       <span style={{ fontSize: '11px', color: '#27AE60', fontWeight: '700', display: 'flex', alignItems: 'center', gap: '4px' }}>
                         <TrendingUp size={12} /> Operations revenue
                       </span>
@@ -515,7 +515,7 @@ const Reports = () => {
                           <TrendingDown size={18} />
                         </div>
                       </div>
-                      <h3>₹{totalExpenses.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</h3>
+                      <h3>{totalExpenses.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</h3>
                       <span style={{ fontSize: '11px', color: '#7E7A6B' }}>Overheads + Staff Salaries</span>
                     </div>
 
@@ -526,7 +526,7 @@ const Reports = () => {
                           <TrendingUp size={18} />
                         </div>
                       </div>
-                      <h3>₹{netMargin.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</h3>
+                      <h3>{netMargin.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</h3>
                       <span style={{ fontSize: '11px', color: '#117A65', fontWeight: '700' }}>{marginPercentage}% Net Margin</span>
                     </div>
 
@@ -537,7 +537,7 @@ const Reports = () => {
                           <CreditCard size={18} />
                         </div>
                       </div>
-                      <h3>₹{totalSalaries.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</h3>
+                      <h3>{totalSalaries.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</h3>
                       <span style={{ fontSize: '11px', color: '#2980B9', fontWeight: '700' }}>Active employee rosters</span>
                     </div>
                   </div>
@@ -572,7 +572,7 @@ const Reports = () => {
                                     color: o.status === 'Paid' ? '#196F3D' : '#7D6608'
                                   }}>{o.status}</span>
                                 </td>
-                                <td data-label="Amount" style={{ fontWeight: '700' }}>₹{o.amount.toFixed(2)}</td>
+                                <td data-label="Amount" style={{ fontWeight: '700' }}>{o.amount.toFixed(2)}</td>
                               </tr>
                             ))}
                           </tbody>
@@ -594,7 +594,7 @@ const Reports = () => {
                               <span className="text-muted" style={{ fontSize: '11px' }}>{s.role} • Disbursed on {s.date}</span>
                             </div>
                             <div style={{ textAlign: 'right' }}>
-                              <span style={{ display: 'block', fontWeight: '700', fontSize: '13px' }}>₹{s.baseSalary.toFixed(2)}</span>
+                              <span style={{ display: 'block', fontWeight: '700', fontSize: '13px' }}>{s.baseSalary.toFixed(2)}</span>
                               <span style={{ fontSize: '10px', color: '#27AE60', fontWeight: '700', display: 'flex', alignItems: 'center', gap: '3px', justifyContent: 'flex-end' }}>
                                 <CheckCircle size={10} /> {s.status}
                               </span>
@@ -633,7 +633,7 @@ const Reports = () => {
                   />
                 </div>
                 <div style={{ marginBottom: '15px' }}>
-                  <label style={{ display: 'block', fontSize: '12px', fontWeight: '700', marginBottom: '6px' }}>Amount (₹) *</label>
+                  <label style={{ display: 'block', fontSize: '12px', fontWeight: '700', marginBottom: '6px' }}>Amount () *</label>
                   <input 
                     type="number" 
                     required 

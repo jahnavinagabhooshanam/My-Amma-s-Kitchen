@@ -20,6 +20,8 @@ def get_bulk_orders():
             "id": o.id,
             "customer_name": o.customer_name,
             "company": o.food_package or '',
+            "event_type": o.event_type or '',
+            "location": o.location or '',
             "email": o.email,
             "phone": o.mobile,
             "event_date": o.event_date,
@@ -37,24 +39,25 @@ def submit_bulk_order():
     data = request.get_json() or {}
     customer_name = data.get('customer_name') or data.get('name')
     email = data.get('email')
-    phone = data.get('phone') or data.get('mobile')
+    phone = data.get('mobile') or data.get('phone')
     event_date = data.get('event_date') or data.get('date')
-    items_requested = data.get('items_requested') or data.get('items')
-    company = data.get('company', '')
+    items_requested = data.get('special_request') or data.get('items_requested') or data.get('items') or data.get('notes', '')
+    company = data.get('event_type') or data.get('company', '')
+    food_package = data.get('food_package') or company
 
     if not customer_name or not email or not phone or not event_date:
         return jsonify({"error": "Missing required fields (name, email, phone, date)"}), 400
 
-    new_bulk = BulkOrder(
+    new_bulk = BulkOrder(  # type: ignore
         customer_name=customer_name,
         mobile=phone,
         email=email,
         event_type=company,  # store company here
         event_date=event_date,
-        guest_count=int(data.get('expected_guests') or data.get('guests') or 0),
+        guest_count=int(data.get('guest_count') or data.get('expected_guests') or data.get('guests') or 0),
         location=data.get('location', ''),
-        food_package=data.get('food_package', company),
-        special_request=items_requested or data.get('notes', ''),
+        food_package=food_package,
+        special_request=items_requested,
         status='Submitted'
     )
     db.session.add(new_bulk)

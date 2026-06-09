@@ -89,7 +89,7 @@ const AdminNavbar = () => {
       {
         id: 1,
         type: "New Orders",
-        message: "New order #ORD-12 received from Customer John Doe (Amount: ₹450.00)",
+        message: "New order #ORD-12 received from Customer John Doe (Amount: 450.00)",
         date: "5 mins ago",
         read: false
       },
@@ -484,7 +484,7 @@ const AdminNavbar = () => {
               <div className="profile-info-list" style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                 <div className="profile-info-item" style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '12px' }}>
                   <Mail size={14} className="text-secondary" />
-                  <span>{user?.email || "chef@ammaskitchen.com"}</span>
+                  <span>{user?.email || "ammuluskitchen57@gmail.com"}</span>
                 </div>
                 <div className="profile-info-item" style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '12px' }}>
                   <Phone size={14} className="text-secondary" />
@@ -525,7 +525,7 @@ const AdminNavbar = () => {
                   <span className="business-stat-lbl" style={{ fontSize: '9px', color: '#666' }}>Orders</span>
                 </div>
                 <div className="business-stat-card" style={{ padding: '6px', textAlign: 'center', border: '1px solid #EAE6DB', borderRadius: '8px' }}>
-                  <span className="business-stat-val" style={{ display: 'block', fontWeight: '700', fontSize: '11px', whiteSpace: 'nowrap' }}>₹{Math.round(stats.total_revenue / 1000)}k</span>
+                  <span className="business-stat-val" style={{ display: 'block', fontWeight: '700', fontSize: '11px', whiteSpace: 'nowrap' }}>{Math.round(stats.total_revenue / 1000)}k</span>
                   <span className="business-stat-lbl" style={{ fontSize: '9px', color: '#666' }}>Sales</span>
                 </div>
                 <div className="business-stat-card" style={{ padding: '6px', textAlign: 'center', border: '1px solid #EAE6DB', borderRadius: '8px' }}>
@@ -607,7 +607,7 @@ const AdminNavbar = () => {
           <div className="logout-confirm-box" style={{ padding: '30px', backgroundColor: '#fff', borderRadius: '12px', textAlign: 'center', maxWidth: '400px', boxShadow: '0 8px 30px rgba(0,0,0,0.15)' }}>
             <HelpCircle size={48} style={{ color: '#FF9924', marginBottom: '15px' }} />
             <h3>Are you sure?</h3>
-            <p style={{ fontSize: '13px', color: '#666', lineHeight: '1.5', margin: '15px 0' }}>Are you sure you want to logout? You will need to re-verify your credentials to gain access back to Amma's Kitchen Admin panel.</p>
+            <p style={{ fontSize: '13px', color: '#666', lineHeight: '1.5', margin: '15px 0' }}>Are you sure you want to logout? You will need to re-verify your credentials to gain access back to Ammulu's Kitchen Admin panel.</p>
             <div className="logout-confirm-actions" style={{ display: 'flex', gap: '12px', justifyContent: 'center' }}>
               <button className="btn-logout-yes" onClick={handleConfirmLogout} style={{ backgroundColor: '#78281F', color: '#fff', border: 'none', padding: '8px 16px', borderRadius: '20px', fontWeight: '600', cursor: 'pointer' }}>
                 Yes, Logout

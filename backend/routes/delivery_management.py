@@ -87,7 +87,7 @@ def assign_order_to_partner(partner_id):
     current_orders = partner.assigned_orders.split(',') if partner.assigned_orders else []
     
     # Strip whitespace and ORD- prefixes for comparison
-    clean_target = order_id.strip()
+    clean_target = str(order_id).strip()
     if clean_target not in [co.strip() for co in current_orders]:
         current_orders.append(clean_target)
         partner.assigned_orders = ','.join(current_orders)

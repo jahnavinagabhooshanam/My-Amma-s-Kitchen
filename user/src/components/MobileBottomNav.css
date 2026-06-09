@@ -1,4 +1,4 @@
-.mobile-bottom-nav {
+﻿.mobile-bottom-nav {
   display: none;
 }
 
@@ -32,7 +32,7 @@
   }
 
   .mobile-bottom-nav .nav-item.active {
-    color: var(--primary-color, #1A4D2E); /* Amma's Kitchen green */
+    color: var(--primary-color, #1A4D2E); /* Ammulu's Kitchen green */
   }
 
   .mobile-bottom-nav .icon-wrapper {

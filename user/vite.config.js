@@ -1,4 +1,4 @@
-import { defineConfig } from 'vite'
+﻿import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import { VitePWA } from 'vite-plugin-pwa'
 
@@ -10,7 +10,7 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'masked-icon.svg'],
       manifest: {
-        name: "Amma's Kitchen",
+        name: "Ammulu's Kitchen",
         short_name: 'Amma Kitchen',
         description: 'Authentic South Indian Food Ordering',
         theme_color: '#0A3622',
@@ -33,7 +33,15 @@ export default defineConfig({
     })
   ],
   server: {
-    open: true
+    open: true,
+    headers: {
+      "Cross-Origin-Opener-Policy": "same-origin-allow-popups"
+    }
+  },
+  preview: {
+    headers: {
+      "Cross-Origin-Opener-Policy": "same-origin-allow-popups"
+    }
   },
   build: {
     cssMinify: 'esbuild',

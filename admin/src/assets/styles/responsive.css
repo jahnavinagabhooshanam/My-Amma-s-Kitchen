@@ -377,6 +377,13 @@ canvas#trendChart, canvas#categoryChart {
     width: calc(100% - var(--sidebar-width)) !important;
   }
 
+  .admin-navbar {
+    position: sticky !important;
+    left: auto !important;
+    width: 100% !important;
+    padding: 0 30px !important;
+  }
+
   /* Desktop Navbar Search */
   .navbar-search input {
     display: block !important;

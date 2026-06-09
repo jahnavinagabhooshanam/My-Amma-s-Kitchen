@@ -13,7 +13,7 @@ import './CustomerHub.css';
 
 const UserProfile = () => {
   const { user, logout, refreshUser } = useAuth();
-  const { cartItems } = useCart();
+  const { cartItems, addToCart } = useCart();
   const navigate = useNavigate();
 
   const [activeScreen, setActiveScreen] = useState('menu'); // menu, edit, journey, favorites, password

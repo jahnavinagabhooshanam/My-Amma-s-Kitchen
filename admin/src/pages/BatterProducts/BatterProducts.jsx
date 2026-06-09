@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import AdminSidebar from '../../components/AdminSidebar';
 import AdminNavbar from '../../components/AdminNavbar';
 import apiClient from '../../services/api';
@@ -453,7 +453,7 @@ const BatterProducts = () => {
                     <div className="food-card-footer" style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginTop: '10px', borderTop: '1px dashed #EAE6DB', paddingTop: '10px' }}>
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
                         <span className="price" style={{ fontWeight: '700', fontSize: '1.1rem', color: 'var(--primary-color)' }}>
-                          ₹{b.price.toFixed(2)}
+                          {b.price.toFixed(2)}
                         </span>
                         <span className="stock-badge" style={{ fontSize: '11px', color: '#666' }}>
                           Stock: {b.stock_count}
@@ -522,7 +522,7 @@ const BatterProducts = () => {
 
                   <div className="form-grid">
                     <div className="form-field">
-                      <label>Default Price (₹) *</label>
+                      <label>Default Price () *</label>
                       <input
                         type="number"
                         step="0.01"
@@ -532,7 +532,7 @@ const BatterProducts = () => {
                       />
                     </div>
                     <div className="form-field">
-                      <label>Offer Price (₹)</label>
+                      <label>Offer Price ()</label>
                       <input
                         type="number"
                         step="0.01"
@@ -656,9 +656,9 @@ const BatterProducts = () => {
                                 </div>
                               </td>
                               <td><span className="badge-status approved" style={{ padding: '3px 8px' }}>{v.weight || '1kg'}</span></td>
-                              <td style={{ fontWeight: '700' }}>₹{v.price.toFixed(2)}</td>
+                              <td style={{ fontWeight: '700' }}>{v.price.toFixed(2)}</td>
                               <td style={{ fontWeight: '700', color: 'var(--theme-color)' }}>
-                                {v.offer_price ? `₹${v.offer_price.toFixed(2)}` : '-'}
+                                {v.offer_price ? `${v.offer_price.toFixed(2)}` : '-'}
                               </td>
                               <td>
                                 <span style={{ fontWeight: '700', color: v.stock < 10 ? 'var(--danger-color)' : 'inherit' }}>
@@ -771,7 +771,7 @@ const BatterProducts = () => {
 
                   <div className="form-grid">
                     <div className="form-field">
-                      <label>Price (₹) *</label>
+                      <label>Price () *</label>
                       <input
                         type="number"
                         step="0.01"
@@ -781,7 +781,7 @@ const BatterProducts = () => {
                       />
                     </div>
                     <div className="form-field">
-                      <label>Offer Price (₹)</label>
+                      <label>Offer Price ()</label>
                       <input
                         type="number"
                         step="0.01"
@@ -840,7 +840,7 @@ const BatterProducts = () => {
         )}
 
         <div className="admin-footer">
-          <div>&copy; 2026 <strong>Amma's Kitchen Admin</strong>. All Rights Reserved.</div>
+          <div>&copy; 2026 <strong>Ammulu's Kitchen Admin</strong>. All Rights Reserved.</div>
         </div>
       </div>
     </div>

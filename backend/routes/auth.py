@@ -120,7 +120,7 @@ def register():
 
     hashed_pw = generate_password_hash(password)
     
-    role = 'admin' if email == 'admin@ammaskitchen.com' else 'customer'
+    role = 'admin' if email == 'ammuluskitchen57@gmail.com' else 'customer'
     
     new_user = User(
         name=name,

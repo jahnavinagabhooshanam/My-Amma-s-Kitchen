@@ -1,4 +1,4 @@
-/* Premium Restaurant UI Redesign for Amma's Kitchen */
+/* Premium Restaurant UI Redesign for Ammulu's Kitchen */
 
 /* Global Background decorative elements */
 body::after {
@@ -60,10 +60,9 @@ body::after {
   transition: all 0.3s ease;
 }
 .premium-navbar-logo img {
-  width: 120px !important;
-  height: auto !important;
-  max-height: none !important;
-  padding: 10px;
+  height: 85px !important;
+  width: auto !important;
+  padding: 2px;
   object-fit: contain;
 }
 
@@ -387,8 +386,9 @@ body::after {
     height: 45px !important;
   }
   .premium-navbar-logo img {
-    width: 95px !important;
-    padding: 5px;
+    height: 65px !important;
+    width: auto !important;
+    padding: 2px;
   }
   .premium-navbar {
     height: 75px !important;

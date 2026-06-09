@@ -152,6 +152,9 @@ class Order(db.Model):
     timeline = db.Column(db.JSON, nullable=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
 
+    def __init__(self, **kwargs):
+        super(Order, self).__init__(**kwargs)
+
     def to_dict(self):
         return {
             "id": self.id,
@@ -176,6 +179,9 @@ class OrderItem(db.Model):
     quantity = db.Column(db.Integer, nullable=False)
     price = db.Column(db.Float, nullable=False)
 
+    def __init__(self, **kwargs):
+        super(OrderItem, self).__init__(**kwargs)
+
     def to_dict(self):
         return {
             "id": self.id,
@@ -195,6 +201,9 @@ class CartItem(db.Model):
     user_id = db.Column(db.Integer, nullable=False, index=True)
     product_id = db.Column(db.Integer, nullable=False, index=True)
     quantity = db.Column(db.Integer, default=1, nullable=False)
+
+    def __init__(self, **kwargs):
+        super(CartItem, self).__init__(**kwargs)
 
     def to_dict(self):
         return {
@@ -220,6 +229,9 @@ class BulkOrder(db.Model):
     status = db.Column(db.String(100), default='Submitted', nullable=False)
     assigned_partner_id = db.Column(db.Integer, nullable=True)
     invoice_generated = db.Column(db.Boolean, default=False, nullable=False)
+
+    def __init__(self, **kwargs):
+        super(BulkOrder, self).__init__(**kwargs)
 
     def to_dict(self):
         return {
@@ -249,6 +261,9 @@ class Review(db.Model):
     status = db.Column(db.String(100), default='Pending', nullable=False)  # Pending, Approved, Rejected
     is_featured = db.Column(db.Boolean, default=False, nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
+
+    def __init__(self, **kwargs):
+        super(Review, self).__init__(**kwargs)
 
     def to_dict(self):
         return {

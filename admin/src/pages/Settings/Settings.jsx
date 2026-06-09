@@ -40,7 +40,7 @@ const Settings = () => {
 
   // Tab 1: Business Settings (Owner Profile) states
   const [profileLoading, setProfileLoading] = useState(true);
-  const [profile, setProfile] = useState({ name: 'Amma Admin', email: 'admin@ammaskitchen.com', phone: '+91 99999 99999' });
+  const [profile, setProfile] = useState({ name: 'Amma Admin', email: 'ammuluskitchen57@gmail.com', phone: '+91 99999 99999' });
 
   // Tab 2: Staff Management states
   const [users, setUsers] = useState([]);
@@ -656,7 +656,7 @@ const Settings = () => {
                         onChange={(e) => setSystemConfig({ ...systemConfig, currency: e.target.value })}
                         style={{ height: '38px', background: '#fff', width: '100%', padding: '8px', border: '1px solid #EAE6DB', borderRadius: '8px' }}
                       >
-                        <option value="INR">Indian Rupee (₹)</option>
+                        <option value="INR">Indian Rupee ()</option>
                         <option value="USD">US Dollar ($)</option>
                       </select>
                     </div>

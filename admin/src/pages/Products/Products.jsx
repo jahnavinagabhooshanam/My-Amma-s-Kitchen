@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import AdminSidebar from '../../components/AdminSidebar';
 import AdminNavbar from '../../components/AdminNavbar';
 import '../../assets/styles/admin-style.css';
@@ -173,7 +173,7 @@ const Products = () => {
                   <input type="text" className="form-control" required value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />
                 </div>
                 <div className="form-field">
-                  <label className="form-label">Price (₹) *</label>
+                  <label className="form-label">Price () *</label>
                   <input type="number" step="0.01" className="form-control" required value={form.price} onChange={(e) => setForm({ ...form, price: e.target.value })} />
                 </div>
                 <div className="form-field">
@@ -220,7 +220,7 @@ const Products = () => {
                           <strong>{p.name}</strong>
                           <div className="text-muted" style={{ fontSize: '11px' }}>{p.description || "Homestyle authentic item prepared daily."}</div>
                         </td>
-                        <td data-label="Price" style={{ fontWeight: '700' }}>₹{p.price.toFixed(2)}</td>
+                        <td data-label="Price" style={{ fontWeight: '700' }}>{p.price.toFixed(2)}</td>
                         <td data-label="Pack Unit" className="text-muted">{p.unit}</td>
                         <td data-label="Actions">
                           <button onClick={() => handleDelete(p.id)} className="btn-secondary text-danger" style={{ padding: '6px 12px', border: '1px solid #EAE6DB', borderRadius: '4px', cursor: 'pointer', fontSize: '12px' }}>
@@ -243,7 +243,7 @@ const Products = () => {
         </div>
  
         <div className="admin-footer">
-          <div>&copy; 2026 <strong>Amma's Kitchen Admin</strong>. All Rights Reserved.</div>
+          <div>&copy; 2026 <strong>Ammulu's Kitchen Admin</strong>. All Rights Reserved.</div>
         </div>
  
       </div>

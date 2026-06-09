@@ -285,7 +285,7 @@ const Offers = () => {
                 </div>
                 <div className="kpi-card">
                   <div className="kpi-title">Revenue Generated</div>
-                  <div className="kpi-val">₹{totalRevenue.toLocaleString()}</div>
+                  <div className="kpi-val">{totalRevenue.toLocaleString()}</div>
                 </div>
               </div>
 
@@ -399,7 +399,7 @@ const Offers = () => {
                         <tr key={c.id}>
                           <td data-label="Coupon Code" style={{ fontWeight: '700', color: 'var(--title-color)' }}><code>{c.coupon_code}</code></td>
                           <td data-label="Discount Value" style={{ color: 'var(--theme-color)', fontWeight: '700' }}>
-                            {c.discount_type === 'percentage' ? `${c.discount_value}%` : `₹${c.discount_value}`}
+                            {c.discount_type === 'percentage' ? `${c.discount_value}%` : `${c.discount_value}`}
                           </td>
                           <td data-label="Discount Type" style={{ textTransform: 'capitalize' }}>{c.discount_type}</td>
                           <td data-label="Expiry Date" className="text-muted">{c.expiry_date || 'No Expiry'}</td>
@@ -584,7 +584,7 @@ const Offers = () => {
                     <label>Discount Type</label>
                     <select name="discount_type" value={couponFormData.discount_type} onChange={handleCouponChange}>
                       <option value="percentage">Percentage (%)</option>
-                      <option value="flat">Flat Amount (₹)</option>
+                      <option value="flat">Flat Amount ()</option>
                     </select>
                   </div>
                   <div className="form-field">

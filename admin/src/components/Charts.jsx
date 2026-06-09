@@ -28,7 +28,7 @@ export const BarChart = ({ title, data }) => {
             const heightPct = maxValue ? (d.value / maxValue) * 80 : 0;
             return (
               <div key={i} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '10%', gap: '10px' }}>
-                <div style={{ fontSize: '10px', fontWeight: '700', color: 'var(--primary-color)' }}>₹{d.value}</div>
+                <div style={{ fontSize: '10px', fontWeight: '700', color: 'var(--primary-color)' }}>{d.value}</div>
                 <div style={{
                   width: '100%',
                   height: `${heightPct}%`,

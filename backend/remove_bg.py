@@ -1,4 +1,4 @@
-from PIL import Image
+﻿from PIL import Image
 import sys
 
 def remove_white_bg(input_path, output_path):
@@ -16,9 +16,9 @@ def remove_white_bg(input_path, output_path):
     img.putdata(new_data)
     img.save(output_path, "PNG")
 
-input_file = r"c:\Users\ADMIN\Downloads\My Amma's Kitchen\My Amma's Kitchen\admin\src\assets\img\logo.jpeg"
-output_user = r"c:\Users\ADMIN\Downloads\My Amma's Kitchen\My Amma's Kitchen\user\src\assets\img\logo.png"
-output_admin = r"c:\Users\ADMIN\Downloads\My Amma's Kitchen\My Amma's Kitchen\admin\src\assets\img\logo.png"
+input_file = r"c:\Users\ADMIN\Downloads\My Ammulu's Kitchen\My Ammulu's Kitchen\admin\src\assets\img\logo.jpeg"
+output_user = r"c:\Users\ADMIN\Downloads\My Ammulu's Kitchen\My Ammulu's Kitchen\user\src\assets\img\logo.png"
+output_admin = r"c:\Users\ADMIN\Downloads\My Ammulu's Kitchen\My Ammulu's Kitchen\admin\src\assets\img\logo.png"
 
 try:
     remove_white_bg(input_file, output_user)

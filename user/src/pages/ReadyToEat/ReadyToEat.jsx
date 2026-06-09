@@ -93,7 +93,7 @@ const PremiumRTECard = React.memo(({ product, onQuickView }) => {
         </div>
 
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 'auto' }}>
-          <span style={{ fontSize: '18px', fontWeight: 800, color: '#2C1A0E' }}>₹{product.price}</span>
+          <span style={{ fontSize: '18px', fontWeight: 800, color: '#2C1A0E' }}>â‚¹{product.price}</span>
           
           <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
             {isOutOfStock ? (
@@ -135,7 +135,7 @@ const QuickViewModal = ({ product, onClose }) => {
              <span style={{ padding: '6px 12px', background: '#F5F3ED', borderRadius: '20px', fontSize: '0.85rem' }}>Premium Ingredients</span>
           </div>
 
-          <div className="rte-modal-price" style={{fontSize: '22px', fontWeight: 800}}>₹{product.price}</div>
+          <div className="rte-modal-price" style={{fontSize: '22px', fontWeight: 800}}>â‚¹{product.price}</div>
           <button className="rte-modal-btn" onClick={() => { addToCart(product, 1); onClose(); }} style={{background: '#1A5D1A'}}>
             Add To Order
           </button>
@@ -160,7 +160,7 @@ const ReadyToEat = () => {
         const res = await apiClient.get('/products/', { params: { limit: 200 } });
         if (res.data && res.data.length > 0) {
           // Filter to only ready_to_eat from all products since backend returns everything if limit is set
-          let rteProducts = res.data.filter(p => p.category === 'ready_to_eat' || p.category === 'Ready To Eat');
+          let rteProducts = res.data.filter(p => p.category === 'ready_to_eat' || p.category === 'ready-to-eat' || p.category === 'Ready To Eat');
           if (rteProducts.length === 0) {
              // Fallback if backend doesn't filter perfectly
              rteProducts = res.data.filter(p => !p.category || p.category.toLowerCase().includes('eat') || p.name.toLowerCase().includes('dosa') || p.name.toLowerCase().includes('chicken') || p.name.toLowerCase().includes('kurma'));
@@ -214,7 +214,7 @@ const ReadyToEat = () => {
 
   return (
     <div className="rte-page" style={{ background: '#FAF9F5', minHeight: '100vh', paddingBottom: '60px' }}>
-      <SEO title="Ready To Eat | Amma's Kitchen" description="Delicious homemade meals, ready when you are." />
+      <SEO title="Ready To Eat | Ammulu's Kitchen" description="Delicious homemade meals, ready when you are." />
       
       <div className="container" style={{ maxWidth: '1400px', paddingTop: '40px', paddingLeft: '40px', paddingRight: '40px' }}>
         
@@ -241,7 +241,7 @@ const ReadyToEat = () => {
                 style={{ appearance: 'none', padding: '16px 40px 16px 48px', borderRadius: '30px', border: '1px solid #EAEAEA', background: 'white', fontWeight: 600, color: '#2C1A0E', boxShadow: '0 2px 10px rgba(0,0,0,0.02)', cursor: 'pointer', outline: 'none' }}
               >
                 <option value="All">All Diet</option>
-                <option value="Veg">Vegetarian 🥦</option>
+                <option value="Veg">Vegetarian 🥗</option>
                 <option value="Non-Veg">Non-Veg 🍗</option>
               </select>
               <div className="filter-arrow" style={{ position: 'absolute', right: 20, top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none', fontSize: '0.8rem', color: '#666' }}>▼</div>
