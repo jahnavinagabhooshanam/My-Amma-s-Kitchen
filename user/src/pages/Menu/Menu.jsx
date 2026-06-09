@@ -197,7 +197,7 @@ const Menu = () => {
                     {item.is_bestseller && <span style={{ fontSize: 10, color: '#E84C3D', fontWeight: 700, background: '#FDF2F0', padding: '2px 6px', borderRadius: 4 }}>BESTSELLER</span>}
                   </div>
                   <h4 style={{ fontSize: 16, fontWeight: 700, marginBottom: 4, color: 'var(--text-dark)' }}>{item.name}</h4>
-                  <div style={{ fontSize: 15, fontWeight: 600, color: 'var(--text-dark)', marginBottom: 8 }}>₹{item.price}</div>
+                  <div style={{ fontSize: 15, fontWeight: 600, color: 'var(--text-dark)', marginBottom: 8 }}>Rs. {item.price}</div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: 11, color: 'var(--text-muted)', marginBottom: 8 }}>
                     <span style={{ display: 'flex', alignItems: 'center', gap: 2, background: '#F5F5F0', padding: '2px 6px', borderRadius: 4 }}><Star size={10} fill="var(--warning)" color="var(--warning)"/> 4.5</span>
                     <span><Clock size={10}/> 20-30 mins</span>

@@ -59,7 +59,7 @@ const FoodCard = ({ product }) => {
           {product.description || product.unit}
         </p>
         <div className="premium-product-price mobile-compact-price">
-          ₹{Number(product.price).toFixed(2)}
+          Rs. {Number(product.price).toFixed(2)}
         </div>
         <div className="mobile-compact-btn-wrapper" style={{ display: 'flex', gap: '8px', width: '100%', justifyContent: 'center' }}>
           {(product.stock === 0 || product.stock_quantity === 0) ? (

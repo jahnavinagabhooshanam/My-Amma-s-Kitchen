@@ -5,6 +5,7 @@ import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import logoImg from '../assets/img/ammulus-kitchen-logo.jpg';
 import apiClient from '../services/api';
+import { resolveImagePath } from './FoodCard';
 
 const Navbar = () => {
   const { cartItems, cartTotal, cartCount, removeFromCart, isCartAnimating } = useCart();
@@ -597,13 +598,20 @@ const Navbar = () => {
                             justifyContent: 'center',
                             fontSize: '1.2rem',
                             marginRight: '15px',
-                            float: 'left'
-                          }}>ðŸ¶</div>
+                            float: 'left',
+                            overflow: 'hidden'
+                          }}>
+                            {item.image ? (
+                              <img src={resolveImagePath(item.image)} alt={item.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                            ) : (
+                              <i className="fa-solid fa-utensils" style={{ color: '#aaa', fontSize: '20px' }}></i>
+                            )}
+                          </div>
                           {item.name}
                         </a>
                         <span className="quantity">
-                          {item.quantity} Ã— <span className="woocommerce-Price-amount amount">
-                            <span className="woocommerce-Price-currencySymbol">â‚¹</span>{item.price.toFixed(2)}
+                          {item.quantity} x <span className="woocommerce-Price-amount amount">
+                            <span className="woocommerce-Price-currencySymbol">Rs. </span>{item.price.toFixed(2)}
                           </span>
                         </span>
                       </li>
@@ -612,7 +620,7 @@ const Navbar = () => {
                   <p className="woocommerce-mini-cart__total total">
                     <strong>Basket Subtotal:</strong>
                     <span className="woocommerce-Price-amount amount">
-                      <span className="woocommerce-Price-currencySymbol">â‚¹</span>{cartTotal.toFixed(2)}
+                      <span className="woocommerce-Price-currencySymbol">Rs. </span>{cartTotal.toFixed(2)}
                     </span>
                   </p>
                   <p className="woocommerce-mini-cart__buttons buttons">

@@ -77,7 +77,7 @@ const DishDetailsModal = ({ dish, onClose, resolveImagePath }) => {
                   {dish.name}
                 </h2>
                 <div style={{ fontSize: '18px', fontWeight: '800', color: 'var(--text-dark)' }}>
-                  ₹{dish.price}
+                  Rs. {dish.price}
                   {dish.unit && <span style={{ fontSize: '13px', color: 'var(--text-muted)', fontWeight: 600, marginLeft: '4px' }}>/ {dish.unit}</span>}
                 </div>
               </div>

@@ -315,7 +315,7 @@ const SearchBar = ({ value, onChange, placeholder = "Search for warm dishes or b
                       }}>🍛</div>
                       <div>
                         <div style={{ fontWeight: '500', fontSize: '0.9rem', color: 'var(--text-dark)' }}>{p.name}</div>
-                        <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>₹{p.price.toFixed(2)}</div>
+                        <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Rs. {p.price.toFixed(2)}</div>
                       </div>
                     </div>
                   ))

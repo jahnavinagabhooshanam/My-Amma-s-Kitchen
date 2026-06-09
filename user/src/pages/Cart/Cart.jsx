@@ -49,7 +49,7 @@ const Cart = () => {
         setSuccessMsg(`Saved ${couponData.discount_value}% on this order.`);
       } else {
         setDiscount(couponData.discount_value);
-        setSuccessMsg(`Saved ₹${couponData.discount_value} on this order.`);
+        setSuccessMsg(`Saved Rs. ${couponData.discount_value} on this order.`);
       }
     } catch (err) {
       setErrorMsg(err.response?.data?.error || 'Invalid coupon.');
@@ -115,7 +115,7 @@ const Cart = () => {
                   {/* Details */}
                   <div style={{ flex: 1 }}>
                     <h4 style={{ margin: '0 0 4px 0', fontSize: 15, fontWeight: 700, color: 'var(--text-dark)' }}>{item.name}</h4>
-                    <div style={{ fontSize: 14, fontWeight: 800, color: 'var(--text-dark)', marginBottom: 8 }}>₹{item.price}</div>
+                    <div style={{ fontSize: 14, fontWeight: 800, color: 'var(--text-dark)', marginBottom: 8 }}>Rs. {item.price}</div>
                     
                     <div style={{ display: 'flex', gap: 10 }}>
                       <button onClick={() => removeFromCart(item.id)} style={{ background: 'none', border: 'none', fontSize: 11, color: 'var(--text-muted)', fontWeight: 600, display: 'flex', alignItems: 'center', gap: 4, padding: 0 }}>
@@ -183,28 +183,28 @@ const Cart = () => {
           <div style={{ display: 'flex', flexDirection: 'column', gap: 12, fontSize: 14, color: 'var(--text-muted)' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
               <span>Item Total</span>
-              <span style={{ color: 'var(--text-dark)', fontWeight: 600 }}>₹{cartTotal.toFixed(2)}</span>
+              <span style={{ color: 'var(--text-dark)', fontWeight: 600 }}>Rs. {cartTotal.toFixed(2)}</span>
             </div>
             {discount > 0 && (
               <div style={{ display: 'flex', justifyContent: 'space-between', color: 'var(--primary-color)', fontWeight: 600 }}>
                 <span>Item Discount</span>
-                <span>- ₹{discount.toFixed(2)}</span>
+                <span>- Rs. {discount.toFixed(2)}</span>
               </div>
             )}
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
               <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}>Packing Charge</span>
-              <span style={{ color: 'var(--text-dark)', fontWeight: 600 }}>₹{packingCharge.toFixed(2)}</span>
+              <span style={{ color: 'var(--text-dark)', fontWeight: 600 }}>Rs. {packingCharge.toFixed(2)}</span>
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
               <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}>Delivery Fee <Info size={12}/></span>
               <span style={{ color: deliveryFee === 0 ? 'var(--primary-color)' : 'var(--text-dark)', fontWeight: 600 }}>
-                {deliveryFee === 0 ? 'FREE' : `₹${deliveryFee.toFixed(2)}`}
+                {deliveryFee === 0 ? 'FREE' : `Rs. ${deliveryFee.toFixed(2)}`}
               </span>
             </div>
             <div style={{ height: 1, background: '#EAEAEA', margin: '4px 0' }}></div>
             <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 16, fontWeight: 800, color: 'var(--text-dark)' }}>
               <span>To Pay</span>
-              <span>₹{grandTotal.toFixed(2)}</span>
+              <span>Rs. {grandTotal.toFixed(2)}</span>
             </div>
           </div>
         </div>
@@ -213,7 +213,7 @@ const Cart = () => {
         <div className="checkout-bottom-bar">
           <div>
             <div style={{ fontSize: 12, color: 'var(--text-muted)', fontWeight: 600, textTransform: 'uppercase' }}>To Pay</div>
-            <div style={{ fontSize: 20, fontWeight: 800, color: 'var(--text-dark)' }}>₹{grandTotal.toFixed(2)}</div>
+            <div style={{ fontSize: 20, fontWeight: 800, color: 'var(--text-dark)' }}>Rs. {grandTotal.toFixed(2)}</div>
           </div>
           <button 
             onClick={proceedToCheckout} 

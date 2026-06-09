@@ -57,7 +57,7 @@ const OfferPopup = ({ offer }) => {
           
           {offer.discount_value && (
             <div className="offer-popup-discount">
-              Get {offer.discount_value}{offer.discount_type === 'percentage' ? '%' : '₹'} OFF
+              Get {offer.discount_value}{offer.discount_type === 'percentage' ? '%' : 'Rs. '} OFF
             </div>
           )}
           

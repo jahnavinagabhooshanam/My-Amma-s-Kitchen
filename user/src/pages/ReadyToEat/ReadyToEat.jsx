@@ -93,7 +93,7 @@ const PremiumRTECard = React.memo(({ product, onQuickView }) => {
         </div>
 
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 'auto' }}>
-          <span style={{ fontSize: '18px', fontWeight: 800, color: '#2C1A0E' }}>â‚¹{product.price}</span>
+          <span style={{ fontSize: '18px', fontWeight: 800, color: '#2C1A0E' }}>Rs. {product.price}</span>
           
           <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
             {isOutOfStock ? (
@@ -135,7 +135,7 @@ const QuickViewModal = ({ product, onClose }) => {
              <span style={{ padding: '6px 12px', background: '#F5F3ED', borderRadius: '20px', fontSize: '0.85rem' }}>Premium Ingredients</span>
           </div>
 
-          <div className="rte-modal-price" style={{fontSize: '22px', fontWeight: 800}}>â‚¹{product.price}</div>
+          <div className="rte-modal-price" style={{fontSize: '22px', fontWeight: 800}}>Rs. {product.price}</div>
           <button className="rte-modal-btn" onClick={() => { addToCart(product, 1); onClose(); }} style={{background: '#1A5D1A'}}>
             Add To Order
           </button>

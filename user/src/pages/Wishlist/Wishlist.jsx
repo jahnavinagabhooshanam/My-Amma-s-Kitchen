@@ -112,7 +112,7 @@ const Wishlist = () => {
                               </div>
                             </div>
                           </td>
-                          <td style={{ fontWeight: '700', fontSize: '1.05rem' }}>₹{item.price.toFixed(2)}</td>
+                          <td style={{ fontWeight: '700', fontSize: '1.05rem' }}>Rs. {item.price.toFixed(2)}</td>
                           <td>
                             <span className="status-badge status-delivered" style={{ padding: '4px 10px', fontSize: '11px' }}>
                               In Stock

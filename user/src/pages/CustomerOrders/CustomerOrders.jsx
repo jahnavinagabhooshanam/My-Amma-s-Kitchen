@@ -150,7 +150,7 @@ const CustomerOrders = () => {
           </div>
         ) : filteredOrders.length === 0 ? (
           <div style={{ textAlign: 'center', padding: '60px 20px', background: 'white', borderRadius: 20, boxShadow: '0 2px 10px rgba(0,0,0,0.02)' }}>
-            <div style={{ fontSize: 60, marginBottom: 20 }}>ðŸ½ï¸</div>
+            <div style={{ fontSize: 60, marginBottom: 20 }}>½ï¸</div>
             <h3 style={{ fontSize: 18, fontWeight: 800, color: 'var(--text-dark)', marginBottom: 10 }}>No {activeTab.toLowerCase()} orders</h3>
             <p style={{ fontSize: 14, color: 'var(--text-muted)', marginBottom: 20 }}>You haven't ordered any homestyle goodness from Ammulu's Kitchen yet.</p>
             <button onClick={() => navigate('/menu')} style={{ padding: '14px 30px', background: 'var(--primary-color)', color: 'white', border: 'none', borderRadius: 16, fontWeight: 700 }}>
@@ -187,7 +187,7 @@ const CustomerOrders = () => {
 
                   {/* Card Footer */}
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <div style={{ fontSize: 16, fontWeight: 800, color: 'var(--text-dark)' }}>â‚¹{order.total.toFixed(2)}</div>
+                    <div style={{ fontSize: 16, fontWeight: 800, color: 'var(--text-dark)' }}>Rs. {order.total.toFixed(2)}</div>
                     
                     <div style={{ display: 'flex', gap: 10 }}>
                       {isActive && (

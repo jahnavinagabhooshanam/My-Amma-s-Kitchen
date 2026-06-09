@@ -71,10 +71,10 @@ const Offers = () => {
                     </div>
                     <div style={{ flex: 1 }}>
                       <h3 style={{ fontSize: 16, fontWeight: 800, margin: '0 0 6px 0', color: 'var(--text-dark)' }}>
-                        {coupon.discount_type === 'percentage' ? `${coupon.discount_value}% OFF` : `Flat ₹${coupon.discount_value} OFF`}
+                        {coupon.discount_type === 'percentage' ? `${coupon.discount_value}% OFF` : `Flat Rs. ${coupon.discount_value} OFF`}
                       </h3>
                       <p style={{ fontSize: 13, color: 'var(--text-muted)', margin: 0, lineHeight: 1.4 }}>
-                        Save {coupon.discount_type === 'percentage' ? `${coupon.discount_value}%` : `₹${coupon.discount_value}`} on your order above ₹300.
+                        Save {coupon.discount_type === 'percentage' ? `${coupon.discount_value}%` : `Rs. ${coupon.discount_value}`} on your order above Rs. 300.
                       </p>
                     </div>
                   </div>

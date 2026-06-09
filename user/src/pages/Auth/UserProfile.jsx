@@ -220,7 +220,7 @@ const UserProfile = () => {
         </div>
         <div style={{ background: 'white', padding: 20, borderRadius: 20, textAlign: 'center', boxShadow: '0 2px 10px rgba(0,0,0,0.02)' }}>
           <CreditCard size={28} color="var(--primary-color)" style={{ margin: '0 auto 10px' }}/>
-          <div style={{ fontSize: 24, fontWeight: 800, color: 'var(--text-dark)' }}>₹{hub?.stats?.total_spent?.toLocaleString('en-IN') ?? '—'}</div>
+          <div style={{ fontSize: 24, fontWeight: 800, color: 'var(--text-dark)' }}>Rs. {hub?.stats?.total_spent?.toLocaleString('en-IN') ?? '—'}</div>
           <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--text-muted)' }}>Total Spent</div>
         </div>
         <div style={{ background: 'white', padding: 20, borderRadius: 20, textAlign: 'center', boxShadow: '0 2px 10px rgba(0,0,0,0.02)' }}>
@@ -262,7 +262,7 @@ const UserProfile = () => {
                   <img src={resolveImagePath(item.image)} alt={item.name} style={{ width: 60, height: 60, borderRadius: 10, objectFit: 'cover' }} />
                   <div style={{ flex: 1 }}>
                     <h4 style={{ margin: '0 0 4px 0', fontSize: 15, fontWeight: 700, color: 'var(--text-dark)' }}>{item.name}</h4>
-                    <div style={{ color: 'var(--primary-color)', fontWeight: 800, fontSize: 14 }}>₹{item.price}</div>
+                    <div style={{ color: 'var(--primary-color)', fontWeight: 800, fontSize: 14 }}>Rs. {item.price}</div>
                   </div>
                   <button onClick={() => {
                      addToCart(item, 1);

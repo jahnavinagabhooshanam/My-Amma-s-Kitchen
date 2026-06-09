@@ -114,7 +114,7 @@ const OrderReview = () => {
                   </div>
                   <span style={{ fontSize: 14, color: 'var(--text-dark)', fontWeight: 600 }}>{item.quantity} x {item.name}</span>
                 </div>
-                <span style={{ fontSize: 14, color: 'var(--text-dark)', fontWeight: 700 }}>₹{(item.price * item.quantity).toFixed(2)}</span>
+                <span style={{ fontSize: 14, color: 'var(--text-dark)', fontWeight: 700 }}>Rs. {(item.price * item.quantity).toFixed(2)}</span>
               </div>
             ))}
           </div>
@@ -124,20 +124,20 @@ const OrderReview = () => {
           <div style={{ display: 'flex', flexDirection: 'column', gap: 10, fontSize: 13, color: 'var(--text-muted)' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
               <span>Item Total</span>
-              <span style={{ color: 'var(--text-dark)', fontWeight: 600 }}>₹{cartTotal.toFixed(2)}</span>
+              <span style={{ color: 'var(--text-dark)', fontWeight: 600 }}>Rs. {cartTotal.toFixed(2)}</span>
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
               <span>Packing Charge</span>
-              <span style={{ color: 'var(--text-dark)', fontWeight: 600 }}>₹{checkoutData.packingCharge.toFixed(2)}</span>
+              <span style={{ color: 'var(--text-dark)', fontWeight: 600 }}>Rs. {checkoutData.packingCharge.toFixed(2)}</span>
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
               <span>Delivery Fee</span>
-              <span style={{ color: 'var(--text-dark)', fontWeight: 600 }}>{checkoutData.deliveryFee === 0 ? 'FREE' : `₹${checkoutData.deliveryFee.toFixed(2)}`}</span>
+              <span style={{ color: 'var(--text-dark)', fontWeight: 600 }}>{checkoutData.deliveryFee === 0 ? 'FREE' : `Rs. ${checkoutData.deliveryFee.toFixed(2)}`}</span>
             </div>
             {checkoutData.discount > 0 && (
               <div style={{ display: 'flex', justifyContent: 'space-between', color: 'var(--primary-color)' }}>
                 <span>Discount Applied</span>
-                <span style={{ fontWeight: 600 }}>- ₹{checkoutData.discount.toFixed(2)}</span>
+                <span style={{ fontWeight: 600 }}>- Rs. {checkoutData.discount.toFixed(2)}</span>
               </div>
             )}
           </div>
@@ -165,7 +165,7 @@ const OrderReview = () => {
       <div className="checkout-bottom-bar">
         <div>
           <div style={{ fontSize: 12, color: 'var(--text-muted)', fontWeight: 600, textTransform: 'uppercase' }}>Grand Total</div>
-          <div style={{ fontSize: 20, fontWeight: 800, color: 'var(--text-dark)' }}>₹{checkoutData.grandTotal.toFixed(2)}</div>
+          <div style={{ fontSize: 20, fontWeight: 800, color: 'var(--text-dark)' }}>Rs. {checkoutData.grandTotal.toFixed(2)}</div>
         </div>
         <button 
           onClick={handlePlaceOrder} 

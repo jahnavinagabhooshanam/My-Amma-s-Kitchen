@@ -156,7 +156,7 @@ const OrderDetails = () => {
                   </div>
                   <span style={{ fontSize: 14, color: 'var(--text-dark)', fontWeight: 600 }}>{item.quantity} x {item.product_name}</span>
                 </div>
-                <span style={{ fontSize: 14, color: 'var(--text-dark)', fontWeight: 700 }}>₹{(item.price * item.quantity).toFixed(2)}</span>
+                <span style={{ fontSize: 14, color: 'var(--text-dark)', fontWeight: 700 }}>Rs. {(item.price * item.quantity).toFixed(2)}</span>
               </div>
             ))}
           </div>
@@ -165,7 +165,7 @@ const OrderDetails = () => {
 
           <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 16, fontWeight: 800, color: 'var(--text-dark)', marginBottom: 8 }}>
             <span>Total Amount Paid</span>
-            <span>₹{order.total?.toFixed(2)}</span>
+            <span>Rs. {order.total?.toFixed(2)}</span>
           </div>
           <div style={{ fontSize: 12, color: 'var(--text-muted)', background: '#F5F5F0', padding: '8px 12px', borderRadius: 8, display: 'inline-block' }}>
             Payment Method: {order.payment_method || 'Cash On Delivery'}

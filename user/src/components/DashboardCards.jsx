@@ -24,7 +24,7 @@ const DashboardCards = ({ stats }) => {
   const defaultStats = [
     { icon: 'fa-solid fa-basket-shopping', trendValue: '12.5%', trendType: 'up', value: '520', label: 'Total Orders', colorClass: 'red' },
     { icon: 'fa-solid fa-pizza-slice', trendValue: '8.3%', trendType: 'up', value: '24', label: "Today's Orders", colorClass: 'orange' },
-    { icon: 'fa-solid fa-indian-rupee-sign', trendValue: '18.2%', trendType: 'up', value: '₹48,200', label: 'Revenue', colorClass: 'teal' },
+    { icon: 'fa-solid fa-indian-rupee-sign', trendValue: '18.2%', trendType: 'up', value: 'Rs. 48,200', label: 'Revenue', colorClass: 'teal' },
     { icon: 'fa-solid fa-user-group', trendValue: '4.1%', trendType: 'up', value: '320', label: 'Customers', colorClass: 'blue' },
   ];
 

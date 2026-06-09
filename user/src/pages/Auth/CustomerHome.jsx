@@ -272,7 +272,7 @@ const CustomerHome = () => {
               <div className="card-text-wrapper">
                 <div className="card-badge">MUST TRY</div>
                 <h4 className="card-title">{dish.name}</h4>
-                <div className="card-price">₹{dish.price}</div>
+                <div className="card-price">Rs. {dish.price}</div>
                 <div className="card-meta">
                   <span className="rating"><Star size={10} fill="var(--warning)" color="var(--warning)" /> {dish.rating || '4.5'}</span>
                   <span><Clock size={10} /> {dish.time || '20 mins'}</span>
@@ -310,7 +310,7 @@ const CustomerHome = () => {
               <div className="card-text-wrapper">
                 <div className="card-badge">RECOMMENDED</div>
                 <h4 className="card-title">{dish.name}</h4>
-                <div className="card-price">₹{dish.price}</div>
+                <div className="card-price">Rs. {dish.price}</div>
                 <p className="card-description">
                   {dish.description || 'Authentic south indian delicacy prepared with love and premium ingredients.'}
                 </p>

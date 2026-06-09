@@ -170,13 +170,13 @@ const TrackOrder = () => {
             {order.items.map((item, i) => (
               <div key={i} style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14 }}>
                 <span style={{ color: 'var(--text-dark)', fontWeight: 600 }}>{item.quantity} x {item.product_name}</span>
-                <span style={{ color: 'var(--text-muted)' }}>₹{item.price * item.quantity}</span>
+                <span style={{ color: 'var(--text-muted)' }}>Rs. {item.price * item.quantity}</span>
               </div>
             ))}
             <div style={{ height: 1, background: '#EAEAEA', margin: '10px 0' }}></div>
             <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 15, fontWeight: 800, color: 'var(--text-dark)' }}>
               <span>Total Amount</span>
-              <span>₹{order.total}</span>
+              <span>Rs. {order.total}</span>
             </div>
           </div>
         </div>

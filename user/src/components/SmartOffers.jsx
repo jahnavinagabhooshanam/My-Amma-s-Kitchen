@@ -4,7 +4,7 @@ import './SmartOffers.css';
 const SmartOffers = () => {
   const dummyOffers = [
     { id: 1, title: 'Flash Sale', desc: 'Flat 50% Off on Batters', code: 'FLASH50', type: 'flash', expiry: 'Ends in 2h' },
-    { id: 2, title: 'Weekend Offer', desc: 'Free Delivery on Orders above ₹500', code: 'FREEWEEKEND', type: 'weekend', expiry: 'Valid till Sun' },
+    { id: 2, title: 'Weekend Offer', desc: 'Free Delivery on Orders above Rs. 500', code: 'FREEWEEKEND', type: 'weekend', expiry: 'Valid till Sun' },
     { id: 3, title: 'Combo Offer', desc: 'Buy 2 Idli Batter, Get 1 Dosa Batter Free', code: 'B2G1', type: 'combo', expiry: 'Limited Time' }
   ];
 

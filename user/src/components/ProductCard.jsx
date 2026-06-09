@@ -26,7 +26,7 @@ const ProductCard = ({ product }) => {
           <p className="admin-food-desc">{product.description || product.unit}</p>
           <div className="admin-food-footer">
             <div className="price-block">
-              <span className="price">₹{product.price.toFixed(2)}</span>
+              <span className="price">Rs. {product.price.toFixed(2)}</span>
             </div>
             <div className="stock">Stock: {product.stock ?? product.stock_quantity ?? '—'}</div>
           </div>

@@ -49,7 +49,7 @@ const RTCProductCard = ({ product }) => {
         </div>
         
         <div className="rtc-card-footer">
-          <span className="rtc-card-price">₹{product.price.toFixed(2)}</span>
+          <span className="rtc-card-price">Rs. {product.price.toFixed(2)}</span>
           <button className="rtc-add-btn" onClick={(e) => { e.preventDefault(); addToCart(product, 1); }}>
             Add To Cart
           </button>
@@ -197,7 +197,7 @@ const ReadyToCook = () => {
                   <div className="rtc-featured-badge">⭐ Signature Product</div>
                   <h2 className="rtc-featured-title">{featuredProduct.name}</h2>
                   <p className="rtc-featured-highlight">Perfect for crispy restaurant-style dosas.</p>
-                  <div className="rtc-featured-price">₹{featuredProduct.price.toFixed(2)}</div>
+                  <div className="rtc-featured-price">Rs. {featuredProduct.price.toFixed(2)}</div>
                   <button className="rtc-featured-btn" onClick={() => addToCart(featuredProduct, 1)}>
                     Add To Cart
                   </button>
