@@ -9,6 +9,7 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   const logout = () => {
+    localStorage.removeItem('amma_admin_token');
     setToken(null);
     setUser(null);
   };

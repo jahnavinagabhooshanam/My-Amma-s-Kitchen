@@ -214,7 +214,7 @@ const AdminNavbar = () => {
     setShowLogoutConfirm(false);
     setIsProfileOpen(false);
     logout();
-    window.location.href = '/login';
+    navigate('/login');
   };
 
   const unreadMessagesCount = messages.filter(m => !m.read).length;

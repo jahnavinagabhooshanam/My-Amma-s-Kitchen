@@ -74,7 +74,7 @@ const AdminSidebar = () => {
   const handleLogout = (e) => {
     e.preventDefault();
     logout();
-    window.location.href = '/login';
+    navigate('/login');
   };
 
   return (
