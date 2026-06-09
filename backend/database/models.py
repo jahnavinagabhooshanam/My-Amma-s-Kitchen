@@ -497,6 +497,9 @@ class ContactInquiry(db.Model):
     status = db.Column(db.String(50), default='New', nullable=False) # 'New', 'In Progress', 'Resolved'
     created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
 
+    def __init__(self, **kwargs):
+        super(ContactInquiry, self).__init__(**kwargs)
+
     def to_dict(self):
         return {
             "id": self.id,

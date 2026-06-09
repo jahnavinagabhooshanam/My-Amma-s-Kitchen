@@ -50,6 +50,12 @@ const DeliveryManagement = lazy(() => import('../pages/DeliveryManagement/Delive
 const KitchenManagement = lazy(() => import('../pages/KitchenManagement/KitchenManagement'));
 const Offers = lazy(() => import('../pages/Offers/Offers'));
 
+// Profile & Activity
+const ViewProfile = lazy(() => import('../pages/Profile/ViewProfile'));
+const EditProfile = lazy(() => import('../pages/Profile/EditProfile'));
+const ChangePassword = lazy(() => import('../pages/Profile/ChangePassword'));
+const ActivityLogs = lazy(() => import('../pages/ActivityLogs/ActivityLogs'));
+
 const AdminRoutes = () => {
   const staffAndOps = ['admin', 'manager', 'kitchen_staff', 'delivery_staff'];
   const kitchenOps = ['admin', 'manager', 'kitchen_staff'];
@@ -59,6 +65,38 @@ const AdminRoutes = () => {
   return (
     <Suspense fallback={<AdminLoader />}>
       <Routes>
+        <Route 
+          path="profile/view" 
+          element={
+            <ProtectedRoute allowedRoles={staffAndOps}>
+              <ViewProfile />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="profile/edit" 
+          element={
+            <ProtectedRoute allowedRoles={staffAndOps}>
+              <EditProfile />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="profile/change-password" 
+          element={
+            <ProtectedRoute allowedRoles={staffAndOps}>
+              <ChangePassword />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="activity-logs" 
+          element={
+            <ProtectedRoute allowedRoles={['admin', 'manager']}>
+              <ActivityLogs />
+            </ProtectedRoute>
+          } 
+        />
         <Route 
           path="/dashboard" 
           element={

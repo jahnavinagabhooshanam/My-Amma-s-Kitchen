@@ -26,7 +26,12 @@ import {
   Phone, 
   Activity, 
   LogOut, 
-  HelpCircle 
+  HelpCircle,
+  Pencil,
+  PlusCircle,
+  Tag,
+  Users,
+  Globe
 } from 'lucide-react';
 
 const AdminNavbar = () => {
@@ -89,8 +94,8 @@ const AdminNavbar = () => {
 
     const playNotificationSound = () => {
       try {
-        // Base64 encoded short beep sound
-        const beepSound = new Audio('data:audio/mp3;base64,//NExAAAAANIAAAAAExBTUUzLjEwMKqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq//NExAAAAANIAAAAAExBTUUzLjEwMKqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq');
+        // Use a generic valid notification sound
+        const beepSound = new Audio('https://actions.google.com/sounds/v1/alarms/beep_short.ogg');
         beepSound.play().catch(e => console.log('Audio play failed (browser auto-play policy):', e));
       } catch(e) {}
     };
@@ -496,66 +501,8 @@ const AdminNavbar = () => {
               </div>
             </div>
 
-            {/* ACCOUNT SECTION */}
-            <div style={{ marginTop: '15px' }}>
-              <h5 className="section-title">Account Section</h5>
-              <div className="profile-links-list" style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                <Link to="/admin/settings?tab=business" className="profile-link-item" onClick={() => setIsProfileOpen(false)} style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px' }}>
-                  <User size={14} />
-                  <span>View Profile</span>
-                </Link>
-                <Link to="/admin/settings?tab=business" className="profile-link-item" onClick={() => setIsProfileOpen(false)} style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px' }}>
-                  <Settings size={14} />
-                  <span>Edit Profile</span>
-                </Link>
-                <Link to="/admin/settings?tab=security" className="profile-link-item" onClick={() => setIsProfileOpen(false)} style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px' }}>
-                  <Key size={14} />
-                  <span>Change Password</span>
-                </Link>
-              </div>
-            </div>
 
-            {/* BUSINESS SECTION */}
-            <div style={{ marginTop: '15px' }}>
-              <h5 className="section-title">Business Section</h5>
-              <div className="business-stats-summary" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '8px', marginTop: '6px' }}>
-                <div className="business-stat-card" onClick={() => { navigate('/admin/orders'); setIsProfileOpen(false); }} style={{ padding: '6px', textAlign: 'center', border: '1px solid #EAE6DB', borderRadius: '8px', cursor: 'pointer', transition: 'background-color 0.2s' }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#F5F5F5'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}>
-                  <span className="business-stat-val" style={{ display: 'block', fontWeight: '700', fontSize: '12px' }}>{stats.total_orders}</span>
-                  <span className="business-stat-lbl" style={{ fontSize: '9px', color: '#666' }}>Orders</span>
-                </div>
-                <div className="business-stat-card" onClick={() => { navigate('/admin/reports'); setIsProfileOpen(false); }} style={{ padding: '6px', textAlign: 'center', border: '1px solid #EAE6DB', borderRadius: '8px', cursor: 'pointer', transition: 'background-color 0.2s' }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#F5F5F5'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}>
-                  <span className="business-stat-val" style={{ display: 'block', fontWeight: '700', fontSize: '11px', whiteSpace: 'nowrap' }}>{Math.round(stats.total_revenue / 1000)}k</span>
-                  <span className="business-stat-lbl" style={{ fontSize: '9px', color: '#666' }}>Sales</span>
-                </div>
-                <div className="business-stat-card" onClick={() => { navigate('/admin/products'); setIsProfileOpen(false); }} style={{ padding: '6px', textAlign: 'center', border: '1px solid #EAE6DB', borderRadius: '8px', cursor: 'pointer', transition: 'background-color 0.2s' }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#F5F5F5'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}>
-                  <span className="business-stat-val" style={{ display: 'block', fontWeight: '700', fontSize: '12px' }}>{stats.total_products}</span>
-                  <span className="business-stat-lbl" style={{ fontSize: '9px', color: '#666' }}>Products</span>
-                </div>
-              </div>
-            </div>
 
-            {/* SYSTEM SECTION */}
-            <div style={{ marginTop: '15px' }}>
-              <h5 className="section-title">System Section</h5>
-              <div className="profile-links-list" style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                <Link to="/admin/settings?tab=system" className="profile-link-item" onClick={() => setIsProfileOpen(false)} style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px' }}>
-                  <Settings size={14} />
-                  <span>Settings</span>
-                </Link>
-                <Link to="/admin/settings?tab=security" className="profile-link-item" onClick={() => setIsProfileOpen(false)} style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px' }}>
-                  <Activity size={14} />
-                  <span>Activity Logs</span>
-                </Link>
-              </div>
-            </div>
-
-            {/* LOGOUT SECTION */}
-            <div className="border-top pt-2" style={{ borderTop: '1px solid var(--border-color)', marginTop: '15px', paddingTop: '10px' }}>
-              <button className="profile-logout-btn" onClick={handleConfirmLogout} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', width: '100%', padding: '8px', borderRadius: '8px', backgroundColor: '#78281F', color: '#fff', border: 'none', cursor: 'pointer', fontWeight: '600' }}>
-                <LogOut size={14} />
-                <span>Logout</span>
-              </button>
-            </div>
           </div>
         </div>
       )}
