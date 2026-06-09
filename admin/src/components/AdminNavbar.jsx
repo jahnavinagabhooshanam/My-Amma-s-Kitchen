@@ -283,7 +283,38 @@ const AdminNavbar = () => {
             </div>
           </div>
 
-          {/* User Profile Dropdown Removed per user request */}
+          {/* User Profile Dropdown wrapper */}
+          <div className="navbar-user-dropdown" ref={profileRef} onClick={() => {
+            setIsProfileOpen(!isProfileOpen);
+            setIsMailOpen(false);
+            setIsNotificationsOpen(false);
+          }} style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <div style={{
+              width: '36px',
+              height: '36px',
+              borderRadius: '50%',
+              backgroundColor: 'var(--theme-color)',
+              color: 'white',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontWeight: 'bold',
+              fontSize: '14px',
+              border: '2px solid var(--theme-color2)',
+              boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+            }}>
+              {(user?.name || 'A').charAt(0).toUpperCase()}
+            </div>
+            <div className="navbar-user-info d-none d-md-flex" style={{ display: 'flex', flexDirection: 'column' }}>
+              <span className="navbar-user-name" style={{ fontWeight: '600', color: 'var(--title-color)' }}>{user?.name || "Amma's User"}</span>
+              <span className="navbar-user-role" style={{ fontSize: '11px', color: '#666' }}>
+                {user?.role === 'admin' ? 'Super Admin' : user?.role === 'manager' ? 'Manager' : user?.role === 'kitchen_staff' ? 'Kitchen Staff' : 'Delivery Agent'}
+              </span>
+            </div>
+            <ChevronDown size={14} style={{ color: '#555' }} />
+
+
+          </div>
         </div>
       </div>
 
@@ -418,7 +449,116 @@ const AdminNavbar = () => {
         </div>
       )}
 
-      {/* Profile Modal Overlay Removed per user request */}
+      {/* Profile Modal Overlay */}
+      {isProfileOpen && (
+        <div className="admin-modal-overlay" onClick={() => setIsProfileOpen(false)} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: 'rgba(0,0,0,0.4)', backdropFilter: 'blur(4px)', position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, zIndex: 1050 }}>
+          <div className="profile-dropdown-card" onClick={(e) => e.stopPropagation()} style={{ position: 'relative', top: 'auto', right: 'auto', width: '330px', maxWidth: '90vw', padding: '20px', maxHeight: '90vh', overflowY: 'auto', boxShadow: '0 10px 30px rgba(0,0,0,0.2)' }}>
+            {/* PROFILE SECTION */}
+            <div>
+              <h5 className="section-title">Profile Section</h5>
+              <div className="profile-header-area" style={{ display: 'flex', alignItems: 'center', marginBottom: '15px' }}>
+                <div style={{
+                  width: '45px',
+                  height: '45px',
+                  borderRadius: '50%',
+                  backgroundColor: 'var(--theme-color)',
+                  color: 'white',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontWeight: 'bold',
+                  fontSize: '18px',
+                  border: '2px solid var(--theme-color2)',
+                  marginRight: '10px'
+                }}>
+                  {(user?.name || 'A').charAt(0).toUpperCase()}
+                </div>
+                <div className="profile-header-details" style={{ display: 'flex', flexDirection: 'column' }}>
+                  <span className="profile-header-name" style={{ fontWeight: '600' }}>{user?.name || "Amma's User"}</span>
+                  <span className="profile-header-role" style={{ fontSize: '11px', color: '#666' }}>
+                    {user?.role === 'admin' ? 'Super Admin' : user?.role === 'manager' ? 'Manager' : user?.role === 'kitchen_staff' ? 'Kitchen Staff' : 'Delivery Agent'}
+                  </span>
+                </div>
+              </div>
+              <div className="profile-info-list" style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                <div className="profile-info-item" style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '12px' }}>
+                  <Mail size={14} className="text-secondary" />
+                  <span>{user?.email || "ammuluskitchen57@gmail.com"}</span>
+                </div>
+                <div className="profile-info-item" style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '12px' }}>
+                  <Phone size={14} className="text-secondary" />
+                  <span>{user?.phone || "+91 98765 43210"}</span>
+                </div>
+                <div className="profile-info-item" style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '12px' }}>
+                  <Clock size={14} className="text-secondary" />
+                  <span>Last Login: Today, 10:30 AM</span>
+                </div>
+              </div>
+            </div>
+
+            {/* ACCOUNT SECTION */}
+            <div style={{ marginTop: '15px' }}>
+              <h5 className="section-title">Account Section</h5>
+              <div className="profile-links-list" style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                <Link to="/admin/settings?tab=business" className="profile-link-item" onClick={() => setIsProfileOpen(false)} style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px' }}>
+                  <User size={14} />
+                  <span>View Profile</span>
+                </Link>
+                <Link to="/admin/settings?tab=business" className="profile-link-item" onClick={() => setIsProfileOpen(false)} style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px' }}>
+                  <Settings size={14} />
+                  <span>Edit Profile</span>
+                </Link>
+                <Link to="/admin/settings?tab=security" className="profile-link-item" onClick={() => setIsProfileOpen(false)} style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px' }}>
+                  <Key size={14} />
+                  <span>Change Password</span>
+                </Link>
+              </div>
+            </div>
+
+            {/* BUSINESS SECTION */}
+            <div style={{ marginTop: '15px' }}>
+              <h5 className="section-title">Business Section</h5>
+              <div className="business-stats-summary" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '8px', marginTop: '6px' }}>
+                <div className="business-stat-card" onClick={() => { navigate('/admin/orders'); setIsProfileOpen(false); }} style={{ padding: '6px', textAlign: 'center', border: '1px solid #EAE6DB', borderRadius: '8px', cursor: 'pointer', transition: 'background-color 0.2s' }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#F5F5F5'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}>
+                  <span className="business-stat-val" style={{ display: 'block', fontWeight: '700', fontSize: '12px' }}>{stats.total_orders}</span>
+                  <span className="business-stat-lbl" style={{ fontSize: '9px', color: '#666' }}>Orders</span>
+                </div>
+                <div className="business-stat-card" onClick={() => { navigate('/admin/reports'); setIsProfileOpen(false); }} style={{ padding: '6px', textAlign: 'center', border: '1px solid #EAE6DB', borderRadius: '8px', cursor: 'pointer', transition: 'background-color 0.2s' }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#F5F5F5'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}>
+                  <span className="business-stat-val" style={{ display: 'block', fontWeight: '700', fontSize: '11px', whiteSpace: 'nowrap' }}>{Math.round(stats.total_revenue / 1000)}k</span>
+                  <span className="business-stat-lbl" style={{ fontSize: '9px', color: '#666' }}>Sales</span>
+                </div>
+                <div className="business-stat-card" onClick={() => { navigate('/admin/products'); setIsProfileOpen(false); }} style={{ padding: '6px', textAlign: 'center', border: '1px solid #EAE6DB', borderRadius: '8px', cursor: 'pointer', transition: 'background-color 0.2s' }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#F5F5F5'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}>
+                  <span className="business-stat-val" style={{ display: 'block', fontWeight: '700', fontSize: '12px' }}>{stats.total_products}</span>
+                  <span className="business-stat-lbl" style={{ fontSize: '9px', color: '#666' }}>Products</span>
+                </div>
+              </div>
+            </div>
+
+            {/* SYSTEM SECTION */}
+            <div style={{ marginTop: '15px' }}>
+              <h5 className="section-title">System Section</h5>
+              <div className="profile-links-list" style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                <Link to="/admin/settings?tab=system" className="profile-link-item" onClick={() => setIsProfileOpen(false)} style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px' }}>
+                  <Settings size={14} />
+                  <span>Settings</span>
+                </Link>
+                <Link to="/admin/settings?tab=security" className="profile-link-item" onClick={() => setIsProfileOpen(false)} style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px' }}>
+                  <Activity size={14} />
+                  <span>Activity Logs</span>
+                </Link>
+              </div>
+            </div>
+
+            {/* LOGOUT SECTION */}
+            <div className="border-top pt-2" style={{ borderTop: '1px solid var(--border-color)', marginTop: '15px', paddingTop: '10px' }}>
+              <button className="profile-logout-btn" onClick={handleConfirmLogout} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', width: '100%', padding: '8px', borderRadius: '8px', backgroundColor: '#78281F', color: '#fff', border: 'none', cursor: 'pointer', fontWeight: '600' }}>
+                <LogOut size={14} />
+                <span>Logout</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Message Reader Modal */}
       {selectedMessage && (
