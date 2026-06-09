@@ -546,7 +546,7 @@ const AdminNavbar = () => {
 
             {/* LOGOUT SECTION */}
             <div className="border-top pt-2" style={{ borderTop: '1px solid var(--border-color)', marginTop: '15px', paddingTop: '10px' }}>
-              <button className="profile-logout-btn" onClick={() => setShowLogoutConfirm(true)} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', width: '100%', padding: '8px', borderRadius: '8px', backgroundColor: '#78281F', color: '#fff', border: 'none', cursor: 'pointer', fontWeight: '600' }}>
+              <button className="profile-logout-btn" onClick={handleConfirmLogout} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', width: '100%', padding: '8px', borderRadius: '8px', backgroundColor: '#78281F', color: '#fff', border: 'none', cursor: 'pointer', fontWeight: '600' }}>
                 <LogOut size={14} />
                 <span>Logout</span>
               </button>
