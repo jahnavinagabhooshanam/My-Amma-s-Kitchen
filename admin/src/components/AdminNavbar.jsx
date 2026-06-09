@@ -206,10 +206,15 @@ const AdminNavbar = () => {
     } catch(err) { console.error(err); }
   };
 
-  const handleConfirmLogout = () => {
+  const handleConfirmLogout = (e) => {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
     setShowLogoutConfirm(false);
+    setIsProfileOpen(false);
     logout();
-    navigate('/login');
+    window.location.href = '/login';
   };
 
   const unreadMessagesCount = messages.filter(m => !m.read).length;
