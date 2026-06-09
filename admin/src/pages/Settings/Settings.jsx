@@ -25,7 +25,7 @@ const Settings = () => {
 
   // General Settings
   const [generalConfig, setGeneralConfig] = useState({
-    business_name: "My Amma's Kitchen",
+    business_name: "Ammulu's Kitchen",
     business_email: "info@ammaskitchen.com",
     business_phone: "+91 98765 43210",
     business_address: "123 Food Street, Culinary District, FL 33021",
@@ -36,8 +36,8 @@ const Settings = () => {
 
   // Website Settings
   const [websiteConfig, setWebsiteConfig] = useState({
-    website_title: "My Amma's Kitchen - Authentic Homemade Food",
-    footer_text: "© 2026 My Amma's Kitchen. All rights reserved.",
+    website_title: "Ammulu's Kitchen - Authentic Homemade Food",
+    footer_text: "© 2026 Ammulu's Kitchen. All rights reserved.",
     maintenance_mode: false,
     logo_preview: null,
     favicon_preview: null

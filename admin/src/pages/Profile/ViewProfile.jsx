@@ -139,7 +139,7 @@ const ViewProfile = () => {
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', fontSize: '13px' }}>
                     <div style={{ display: 'grid', gridTemplateColumns: '120px 1fr', gap: '10px' }}>
                       <span style={{ color: '#888', fontWeight: '600' }}>Business Name</span>
-                      <span>My Amma's Kitchen</span>
+                      <span>Ammulu's Kitchen</span>
                     </div>
                     <div style={{ display: 'grid', gridTemplateColumns: '120px 1fr', gap: '10px' }}>
                       <span style={{ color: '#888', fontWeight: '600' }}>Business Email</span>

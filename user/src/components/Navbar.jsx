@@ -439,7 +439,7 @@ const Navbar = () => {
                    
                    {/* Amma's Text */}
                    <div style={{ color: '#FFFFFF', fontSize: '28px', fontFamily: "'Playfair Display', Georgia, serif", fontWeight: '700', lineHeight: '1', letterSpacing: '0px', marginBottom: '8px', textShadow: '0 2px 8px rgba(0,0,0,0.2)' }}>
-                     My Amma's
+                     Ammulu's
                    </div>
                    
                    {/* KITCHEN with lines */}

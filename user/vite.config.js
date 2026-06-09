@@ -1,4 +1,4 @@
-﻿import { defineConfig } from 'vite'
+import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import { VitePWA } from 'vite-plugin-pwa'
 
@@ -33,16 +33,9 @@ export default defineConfig({
     })
   ],
   server: {
-    open: true,
-    headers: {
-      "Cross-Origin-Opener-Policy": "same-origin-allow-popups"
-    }
+    open: true
   },
-  preview: {
-    headers: {
-      "Cross-Origin-Opener-Policy": "same-origin-allow-popups"
-    }
-  },
+  preview: {},
   build: {
     cssMinify: 'esbuild',
     minify: 'esbuild',
