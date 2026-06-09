@@ -589,8 +589,10 @@ const Navbar = () => {
                         </button>
                         <a href="#">
                           <div className="mini-cart-avatar" style={{
+                            position: 'relative',
                             width: '45px',
                             height: '45px',
+                            minWidth: '45px',
                             backgroundColor: '#F5F5F0',
                             borderRadius: '10px',
                             display: 'inline-flex',
@@ -602,7 +604,7 @@ const Navbar = () => {
                             overflow: 'hidden'
                           }}>
                             {item.image ? (
-                              <img src={resolveImagePath(item.image)} alt={item.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                              <img src={resolveImagePath(item.image)} alt={item.name} style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'cover', margin: 0, padding: 0, border: 'none' }} />
                             ) : (
                               <i className="fa-solid fa-utensils" style={{ color: '#aaa', fontSize: '20px' }}></i>
                             )}
