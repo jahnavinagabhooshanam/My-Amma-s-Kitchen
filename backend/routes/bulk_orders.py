@@ -63,8 +63,55 @@ def submit_bulk_order():
     db.session.add(new_bulk)
     db.session.commit()
     
+    # Send Notification to Admins
+    from database.models import Notification, User, ContactInquiry
+    admins = User.query.filter_by(role='admin').all()
+    for adm in admins:
+        admin_notif = Notification(
+            user_id=adm.id,
+            message=f"New bulk order request from {customer_name} for {event_date}",
+            type="Bulk Order"
+        )
+        db.session.add(admin_notif)
+
+    # Add Contact Inquiry so it shows in Admin Mail
+    contact_msg = ContactInquiry(
+        name=customer_name,
+        email=email,
+        phone=phone,
+        subject=f"Bulk Order Inquiry for {event_date}",
+        message=f"Guest Count: {data.get('guest_count') or data.get('expected_guests') or 0}\nEvent Type: {company}\nFood Package: {food_package}\nSpecial Requests: {items_requested}",
+        status='New'
+    )
+    db.session.add(contact_msg)
+        
+    # Send Notification to User if logged in
+    from routes.auth import decode_token
+    auth_header = request.headers.get('Authorization')
+    logged_in_user_id = decode_token(auth_header) if auth_header else None
+    
+    if logged_in_user_id:
+        user_notif = Notification(
+            user_id=logged_in_user_id,
+            message=f"Your bulk order request for {event_date} has been submitted successfully.",
+            type="Bulk Order"
+        )
+        db.session.add(user_notif)
+    else:
+        # Fallback to email if not logged in
+        user = User.query.filter_by(email=email).first()
+        if user:
+            user_notif = Notification(
+                user_id=user.id,
+                message=f"Your bulk order request for {event_date} has been submitted successfully.",
+                type="Bulk Order"
+            )
+            db.session.add(user_notif)
+        
+    db.session.commit()
+    
     return jsonify({
-        "message": "Bulk order request submitted successfully",
+        "message": "Bulk order request submitted successfully. A confirmation has been sent to your email.",
         "bulk_order": {
             "id": new_bulk.id,
             "customer_name": new_bulk.customer_name,

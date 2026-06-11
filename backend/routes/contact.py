@@ -27,6 +27,18 @@ def submit_contact():
     db.session.add(inquiry)
     db.session.commit()
     
+    # Notify admins about new contact inquiry
+    from database.models import Notification, User
+    admins = User.query.filter_by(role='admin').all()
+    for adm in admins:
+        admin_notif = Notification(
+            user_id=adm.id,
+            message=f"New message from {name} ({email}): {data.get('subject', 'General Inquiry')}",
+            type="Contact Inquiry"
+        )
+        db.session.add(admin_notif)
+    db.session.commit()
+    
     return jsonify({"message": "Inquiry submitted successfully", "inquiry": inquiry.to_dict()}), 201
 
 @contact_bp.route('/', methods=['GET'])

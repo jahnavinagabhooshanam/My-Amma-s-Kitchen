@@ -485,6 +485,25 @@ class Wishlist(db.Model):
             "created_at": self.created_at.isoformat() if self.created_at else None
         }
 
+class SavedForLater(db.Model):
+    __tablename__ = 'saved_for_later'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, nullable=False, index=True)
+    product_id = db.Column(db.Integer, nullable=False, index=True)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
+
+    def __init__(self, **kwargs):
+        super(SavedForLater, self).__init__(**kwargs)
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "user_id": self.user_id,
+            "product_id": self.product_id,
+            "created_at": self.created_at.isoformat() if self.created_at else None
+        }
+
 class ContactInquiry(db.Model):
     __tablename__ = 'contact_inquiries'
     
@@ -521,6 +540,9 @@ class Notification(db.Model):
     type = db.Column(db.String(100), default='info', nullable=False)
     is_read = db.Column(db.Boolean, default=False, nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
+
+    def __init__(self, **kwargs):
+        super(Notification, self).__init__(**kwargs)
 
     def to_dict(self):
         return {

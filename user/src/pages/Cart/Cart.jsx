@@ -4,6 +4,7 @@ import { useCart } from '../../context/CartContext';
 import { motion } from 'framer-motion';
 import { Trash2, Plus, Minus, Info, ChevronRight, Tag, MessageSquare, Bookmark } from 'lucide-react';
 import api from '../../services/api';
+import savedForLaterService from '../../services/savedForLaterService';
 import { resolveImagePath } from '../../components/FoodCard';
 
 const Cart = () => {
@@ -54,6 +55,20 @@ const Cart = () => {
     } catch (err) {
       setErrorMsg(err.response?.data?.error || 'Invalid coupon.');
       setDiscount(0);
+    }
+  };
+
+  const handleSaveForLater = async (item) => {
+    try {
+      await savedForLaterService.add({ product_id: item.id });
+      setSuccessMsg(`${item.name} saved for later!`);
+      removeFromCart(item.id);
+    } catch (err) {
+      if (err.response?.status === 401) {
+         setErrorMsg('Please login to save items for later.');
+      } else {
+         setErrorMsg(err.response?.data?.error || 'Failed to save item for later.');
+      }
     }
   };
 
@@ -121,7 +136,7 @@ const Cart = () => {
                       <button onClick={() => removeFromCart(item.id)} style={{ background: 'none', border: 'none', fontSize: 11, color: 'var(--text-muted)', fontWeight: 600, display: 'flex', alignItems: 'center', gap: 4, padding: 0 }}>
                         <Trash2 size={12}/> Remove
                       </button>
-                      <button style={{ background: 'none', border: 'none', fontSize: 11, color: 'var(--primary-color)', fontWeight: 600, display: 'flex', alignItems: 'center', gap: 4, padding: 0 }}>
+                      <button onClick={() => handleSaveForLater(item)} style={{ background: 'none', border: 'none', fontSize: 11, color: 'var(--primary-color)', fontWeight: 600, display: 'flex', alignItems: 'center', gap: 4, padding: 0, whiteSpace: 'nowrap' }}>
                         <Bookmark size={12}/> Save for later
                       </button>
                     </div>

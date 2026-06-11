@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import AdminSidebar from '../../components/AdminSidebar';
 import AdminNavbar from '../../components/AdminNavbar';
@@ -651,7 +651,7 @@ const DeliveryManagement = () => {
                     <input 
                       type="tel" 
                       required
-                      placeholder="e.g. +91 98765 43210"
+                      placeholder="e.g. +91 72009 42596"
                       value={newPartner.phone}
                       onChange={(e) => setNewPartner(prev => ({ ...prev, phone: e.target.value }))}
                       style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #EAE6DB' }}
@@ -693,29 +693,47 @@ const DeliveryManagement = () => {
                 <div className="admin-modal-body" style={{ padding: '20px' }}>
                   {pendingOrders.length > 0 ? (
                     <div className="form-field">
-                      <label>Select Active/Pending Order</label>
-                      <select 
-                        value={selectedOrderToAssign}
-                        onChange={(e) => setSelectedOrderToAssign(e.target.value)}
-                        style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #EAE6DB', backgroundColor: '#fff' }}
-                      >
+                      <label style={{ marginBottom: '10px', display: 'block', fontWeight: '600' }}>Select Active/Pending Order</label>
+                      <div style={{ maxHeight: '300px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '10px', paddingRight: '5px' }}>
                         {pendingOrders.map(o => (
-                          <option key={o.id} value={o.raw_id || o.id}>
-                            #{o.id} - {o.customer} ({o.amount.toFixed(2)} - {o.status})
-                          </option>
+                          <div 
+                            key={o.id} 
+                            onClick={() => setSelectedOrderToAssign(o.raw_id || o.id)}
+                            style={{
+                              padding: '12px',
+                              border: selectedOrderToAssign == (o.raw_id || o.id) ? '2px solid var(--primary-color)' : '1px solid #EAE6DB',
+                              borderRadius: '8px',
+                              cursor: 'pointer',
+                              backgroundColor: selectedOrderToAssign == (o.raw_id || o.id) ? '#FAF8F2' : '#fff',
+                              transition: 'all 0.2s'
+                            }}
+                          >
+                            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>
+                              <strong style={{ color: 'var(--title-color)', fontSize: '14px' }}>#{o.id} - {o.customer}</strong>
+                              <span style={{ fontWeight: 'bold', color: 'var(--primary-color)' }}>₹{o.amount.toFixed(2)}</span>
+                            </div>
+                            <div style={{ fontSize: '12px', color: '#666' }}>
+                              <span style={{ 
+                                padding: '2px 8px', borderRadius: '12px', fontSize: '10px', fontWeight: 'bold', 
+                                backgroundColor: '#EBF5FB', color: '#1B4F72' 
+                              }}>
+                                {o.status}
+                              </span>
+                            </div>
+                          </div>
                         ))}
-                      </select>
+                      </div>
                     </div>
                   ) : (
                     <div className="form-field">
                       <label>Select Active/Pending Order</label>
-                      <p style={{ color: '#888', fontStyle: 'italic' }}>No pending orders available to dispatch.</p>
+                      <p style={{ color: '#888', fontStyle: 'italic', marginBottom: '10px' }}>No pending orders available to dispatch.</p>
                       <input 
                         type="text"
                         placeholder="Enter Order ID manually (e.g. 1)"
                         value={selectedOrderToAssign}
                         onChange={(e) => setSelectedOrderToAssign(e.target.value)}
-                        style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #EAE6DB', marginTop: '10px' }}
+                        style={{ width: '100%', padding: '12px', borderRadius: '8px', border: '1px solid #EAE6DB' }}
                       />
                     </div>
                   )}

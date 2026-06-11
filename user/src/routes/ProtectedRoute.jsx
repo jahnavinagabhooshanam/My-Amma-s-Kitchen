@@ -32,10 +32,7 @@ const ProtectedRoute = ({ children, allowedRoles }) => {
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
-  // Logged in but profile not completed: redirect to /complete-profile
-  if (!user.profile_completed && location.pathname !== '/complete-profile') {
-    return <Navigate to="/complete-profile" replace />;
-  }
+  // Removed forced profile completion redirect. Users can browse the app normally.
 
   // Logged in and profile completed, but trying to go to /complete-profile: redirect to home
   if (user.profile_completed && location.pathname === '/complete-profile') {

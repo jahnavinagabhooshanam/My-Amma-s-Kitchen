@@ -31,7 +31,7 @@ def seed_database():
             admin = User(
                 name="Admin User",
                 email="ammuluskitchen57@gmail.com",
-                phone="9876543210",
+                phone="7200942596",
                 password_hash=generate_password_hash("Ammulus@7255"),
                 role="admin",
                 status="Active",
@@ -42,7 +42,7 @@ def seed_database():
         manager = User(
             name="Suresh Kumar",
             email="manager@ammaskitchen.com",
-            phone="+91 98840 98765",
+            phone="+91 72009 42596",
             password_hash=generate_password_hash("Manager@123"),
             role="manager",
             status="Active",
@@ -72,7 +72,7 @@ def seed_database():
         customer = User(
             name="Jane Doe",
             email="customer@test.com",
-            phone="+91 98765 43210",
+            phone="+91 72009 42596",
             password_hash=generate_password_hash("Customer@123"),
             role="customer",
             status="Active",
@@ -251,7 +251,7 @@ def seed_database():
         delivery_partners = [
             DeliveryPartner(name="Karthik S.", phone="+91 98840 12345", status="Available", assigned_orders=""),
             DeliveryPartner(name="Subramani K.", phone="+91 97740 54321", status="Assigned", assigned_orders="ORD-3, ORD-5"),
-            DeliveryPartner(name="Ranjith Kumar", phone="+91 96640 98765", status="Out For Delivery", assigned_orders="ORD-1"),
+            DeliveryPartner(name="Ranjith Kumar", phone="+91 72009 42596", status="Out For Delivery", assigned_orders="ORD-1"),
             DeliveryPartner(name="Selvam P.", phone="+91 95540 11223", status="Available", assigned_orders="")
         ]
         for dp in delivery_partners:
@@ -312,7 +312,7 @@ def seed_database():
         
         print("Seeding Bulk Catering Inquiries...")
         bulk_inquiries = [
-            BulkOrder(customer_name="Dr. Rajesh G.", mobile="+91 94440 98765", email="rajesh@clinical-research.in", event_type="Wedding", event_date=(today + timedelta(days=10)).strftime("%Y-%m-%d"), guest_count=350, location="Mylapore Sangeetha Mandapam", food_package="Premium South Indian Dinner Buffet", special_request="Live Masala Dosa counter and Ragi Batter counter setup requested.", status="Submitted"),
+            BulkOrder(customer_name="Dr. Rajesh G.", mobile="+91 72009 42596", email="rajesh@clinical-research.in", event_type="Wedding", event_date=(today + timedelta(days=10)).strftime("%Y-%m-%d"), guest_count=350, location="Mylapore Sangeetha Mandapam", food_package="Premium South Indian Dinner Buffet", special_request="Live Masala Dosa counter and Ragi Batter counter setup requested.", status="Submitted"),
             BulkOrder(customer_name="Sanjay Sen", mobile="+91 91234 56789", email="sanjay@sen-consulting.com", event_type="Corporate", event_date=(today + timedelta(days=5)).strftime("%Y-%m-%d"), guest_count=80, location="Tidel Park Sen Conference Hall", food_package="Executive Lunch Box combo", special_request="Ready-to-eat Parotta packages and Medu Vada included.", status="Approved", assigned_partner_id=2),
             BulkOrder(customer_name="Meenakshi Sundaram", mobile="+91 99887 76655", email="meenakshi@templetrust.org", event_type="Temple", event_date=(today + timedelta(days=15)).strftime("%Y-%m-%d"), guest_count=600, location="Kapaleeshwarar Sannidhi Hall", food_package="Traditional Sattvik Prasad Platter", special_request="Pure vegetarian food, no onion or garlic in recipes.", status="Approved"),
             BulkOrder(customer_name="Preethi Nair", mobile="+91 98401 54321", email="preethi@birthday-planners.com", event_type="Birthday", event_date=(today + timedelta(days=3)).strftime("%Y-%m-%d"), guest_count=45, location="Greenways Road Villa", food_package="Kids Special Mini Idli & Podi Dosa", special_request="Assorted desserts and kids friendly sweet vadas.", status="Rejected")

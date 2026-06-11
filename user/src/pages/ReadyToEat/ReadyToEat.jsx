@@ -1,149 +1,119 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useCart } from '../../context/CartContext';
 import { resolveImagePath } from '../../components/FoodCard';
-import { X, Sparkles, Star, Flame, Search, Filter, Heart, Clock, ShoppingCart, Home, Leaf, ShieldCheck, Bike, LayoutGrid } from 'lucide-react';
+import { Search, LayoutGrid, Plus, Minus, Star, Heart } from 'lucide-react';
 import apiClient from '../../services/api';
+import wishlistService from '../../services/wishlistService';
 import SEO from '../../components/SEO';
+import { motion } from 'framer-motion';
+import DishDetailsModal from '../Menu/DishDetailsModal';
+import OptimizedImage from '../../components/OptimizedImage';
+import '../Menu/Menu.css';
 import './ReadyToEat.css';
 
-const CATEGORY_ICONS = {
-  'All Items': <LayoutGrid size={16} />,
-  'Curries': '🍲',
-  'Combos': '🎁',
-  'Bestsellers': '⭐'
-};
-
-const CATEGORIES = ['All Items', 'Breakfast', 'Lunch', 'Snacks', 'Curries', 'Combos', 'Bestsellers'];
+const CATEGORIES = ['All Items', 'Tiffins', 'Combos', 'Meals'];
 
 const PremiumRTECard = React.memo(({ product, onQuickView }) => {
-  const { addToCart } = useCart();
-  const [isWishlisted, setIsWishlisted] = useState(false);
+  const { cartItems, addToCart, updateQuantity } = useCart();
+  const [wishlisted, setWishlisted] = useState(false);
 
-  useEffect(() => {
-    const saved = JSON.parse(localStorage.getItem('amma_wishlist') || '[]');
-    if (saved.some(item => item.id === product.id)) {
-      setIsWishlisted(true);
+  const handleWishlist = async (e) => {
+    e.stopPropagation();
+    try {
+      await wishlistService.add({ product_id: product.id });
+      setWishlisted(true);
+    } catch (err) {
+      console.error(err);
     }
-  }, [product.id]);
-  
-  // Dynamic Badges (Simulation based on ID/Name)
-  const isBestSeller = product.id === 'rte-1' || product.name.toLowerCase().includes('biryani') || product.name.toLowerCase().includes('mushroom') || product.name.toLowerCase().includes('chicken');
-  const isTrending = product.id === 'rte-2' || product.name.toLowerCase().includes('dosa') || product.name.toLowerCase().includes('sambar');
-  const isChefRec = product.id === 'rte-3' || product.name.toLowerCase().includes('kurma') || product.name.toLowerCase().includes('gobi');
-  const isFresh = product.id === 'rte-4' || product.name.toLowerCase().includes('paniyaram') || product.name.toLowerCase().includes('vada');
+  };
 
-  // Diet Icon
-  const isNonVegItem = product.type === 'Non-Veg' || product.diet_type === 'Non-Veg' || (['chicken', 'mutton', 'fish', 'egg', 'prawn', 'crab', 'beef', 'pork', 'meat', 'biriyani', 'prawns'].some(keyword => product.name.toLowerCase().includes(keyword)) && !product.name.toLowerCase().includes('veg bir'));
-  const isVeg = !isNonVegItem;
+  
+  const cartItem = cartItems.find(c => c.id === product.id);
+  const qty = cartItem ? cartItem.quantity : 0;
+  
+  const isNonVeg = product.type === 'Non-Veg' || product.diet_type === 'Non-Veg' || (['chicken', 'mutton', 'fish', 'egg', 'prawn', 'crab', 'beef', 'pork', 'meat', 'biriyani', 'prawns'].some(keyword => product.name.toLowerCase().includes(keyword)) && !product.name.toLowerCase().includes('veg bir'));
+  const isVeg = !isNonVeg;
 
   const isOutOfStock = product.stock === 0 || product.stock_count === 0 || product.is_available === false || product.in_stock === false;
+  const rating = product.rating || (Math.random() * 0.8 + 4.2).toFixed(1);
 
   return (
-    <div className={`rte-card ${isOutOfStock ? 'out-of-stock-card' : ''}`} style={{ background: 'white', borderRadius: '16px', overflow: 'hidden', boxShadow: '0 4px 15px rgba(0,0,0,0.03)', display: 'flex', flexDirection: 'column', ...(isOutOfStock ? { opacity: 0.6, filter: 'grayscale(0.5)' } : {}) }}>
-      <div style={{ position: 'relative', width: '100%', height: '180px', cursor: 'pointer' }} onClick={() => !isOutOfStock && onQuickView(product)}>
-        <img src={resolveImagePath(product.image)} alt={product.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-        
-        <div style={{ position: 'absolute', top: 12, left: 12, display: 'flex', flexDirection: 'column', gap: 6 }}>
-           {isTrending && <div style={{ background: '#E74C3C', color: 'white', fontSize: '11px', fontWeight: 700, padding: '5px 10px', borderRadius: '14px', display: 'flex', alignItems: 'center', gap: 4 }}><Flame size={12} fill="white" /> Trending</div>}
-           {isBestSeller && <div style={{ background: '#F39C12', color: 'white', fontSize: '11px', fontWeight: 700, padding: '5px 10px', borderRadius: '14px', display: 'flex', alignItems: 'center', gap: 4 }}><Star size={12} fill="white" /> Most Ordered</div>}
-           {isChefRec && <div style={{ background: '#27AE60', color: 'white', fontSize: '11px', fontWeight: 700, padding: '5px 10px', borderRadius: '14px', display: 'flex', alignItems: 'center', gap: 4 }}><Sparkles size={12} /> Healthy Choice</div>}
-           {isFresh && <div style={{ background: '#8BC34A', color: 'white', fontSize: '11px', fontWeight: 700, padding: '5px 10px', borderRadius: '14px', display: 'flex', alignItems: 'center', gap: 4 }}><Sparkles size={12} /> Freshly Made</div>}
-        </div>
-
-        <div 
-          onClick={(e) => { 
-            e.stopPropagation(); 
-            e.preventDefault();
-            const newState = !isWishlisted;
-            setIsWishlisted(newState); 
-            
-            let saved = JSON.parse(localStorage.getItem('amma_wishlist') || '[]');
-            if (newState) {
-              if (!saved.find(i => i.id === product.id)) {
-                saved.push(product);
-                localStorage.setItem('amma_wishlist', JSON.stringify(saved));
-              }
-            } else {
-              saved = saved.filter(i => i.id !== product.id);
-              localStorage.setItem('amma_wishlist', JSON.stringify(saved));
-            }
-          }} 
-          style={{ position: 'absolute', top: 12, right: 12, width: 30, height: 30, background: 'white', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 2px 5px rgba(0,0,0,0.1)', cursor: 'pointer', zIndex: 10 }}
+    <motion.div 
+      initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
+      className={`modern-menu-card ${isOutOfStock ? 'out-of-stock-card' : ''}`}
+      onClick={() => !isOutOfStock && onQuickView(product)}
+      style={isOutOfStock ? { opacity: 0.6, filter: 'grayscale(0.5)' } : {}}
+    >
+      <div className="card-image-section" style={{ position: 'relative' }}>
+        <OptimizedImage src={product.image} alt={product.name} className="menu-item-img" />
+        <button 
+          onClick={handleWishlist}
+          style={{
+            position: 'absolute',
+            top: '10px',
+            right: '10px',
+            background: 'white',
+            border: 'none',
+            borderRadius: '50%',
+            width: '32px',
+            height: '32px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            boxShadow: '0 2px 5px rgba(0,0,0,0.1)',
+            cursor: 'pointer',
+            zIndex: 10
+          }}
         >
-          <Heart size={16} color={isWishlisted ? "#e74c3c" : "#666"} fill={isWishlisted ? "#e74c3c" : "transparent"} />
+          <Heart size={18} fill={wishlisted ? '#DC143C' : 'none'} color={wishlisted ? '#DC143C' : '#666'} />
+        </button>
+        
+        {/* Badges */}
+        <div className="badge-container">
+          {product.is_bestseller && <span className="badge bestseller">Best Seller</span>}
+          <span className="badge fresh" style={{ background: '#34495E' }}>Prep Time: 0 mins</span>
         </div>
       </div>
-      
-      <div style={{ padding: '16px', display: 'flex', flexDirection: 'column', flex: 1 }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 10 }}>
-           <div style={{ width: 14, height: 14, border: `1px solid ${isVeg ? '#27AE60' : '#E74C3C'}`, display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: 2 }}>
-             <div style={{ width: 8, height: 8, background: isVeg ? '#27AE60' : '#E74C3C', borderRadius: '50%' }}></div>
-           </div>
-           <span style={{ fontSize: '12px', fontWeight: 700, color: isVeg ? '#27AE60' : '#E74C3C' }}>{isVeg ? 'Veg' : 'Non-Veg'}</span>
-        </div>
 
-        <h3 style={{ fontSize: '17px', fontWeight: 800, marginBottom: 8, color: '#2C1A0E' }}>{product.name}</h3>
-        <p style={{ fontSize: '13px', color: '#666', lineHeight: 1.5, marginBottom: 15, flex: 1, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
-          {product.description || "Authentic and delicious."}
-        </p>
+      <div className="card-info-section">
+        <div className="title-row">
+          <div className={`diet-indicator ${isVeg ? 'veg' : 'non-veg'}`}>
+            <div className="dot"></div>
+          </div>
+          <h4 className="item-name">{product.name}</h4>
+        </div>
         
-        <div style={{ display: 'flex', alignItems: 'center', gap: 15, fontSize: '12px', color: '#666', marginBottom: 18 }}>
-          <span style={{ display: 'flex', alignItems: 'center', gap: 4, fontWeight: 700, color: '#F39C12' }}><Star size={14} fill="#F39C12" /> 4.8 <span style={{color: '#999', fontWeight: 400}}>(128)</span></span>
-          <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}><Clock size={14} /> 20-30 mins</span>
+        <p className="item-desc">
+          {product.description || 'Authentic south indian delicacy prepared with premium ingredients.'}
+        </p>
+
+        <div className="meta-row">
+          <div className="rating">
+            <Star size={14} fill="#F5B941" color="#F5B941" /> 
+            <span>{rating} <span style={{ color: '#999', fontWeight: 400, marginLeft: 4 }}>(128)</span></span>
+          </div>
         </div>
 
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 'auto' }}>
-          <span style={{ fontSize: '18px', fontWeight: 800, color: '#2C1A0E' }}>Rs. {product.price}</span>
-          
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+        <div className="card-bottom-row" onClick={e => e.stopPropagation()}>
+          <div className="price">₹{product.price}</div>
+          <div className="action-container">
             {isOutOfStock ? (
-              <button disabled style={{ background: '#ccc', color: '#666', border: 'none', padding: '8px 20px', borderRadius: '20px', fontSize: '14px', fontWeight: 700, cursor: 'not-allowed' }}>Out of Stock</button>
+              <div className="btn-sold-out">SOLD OUT</div>
+            ) : qty > 0 ? (
+              <div className="qty-controls">
+                <button className="qty-btn" onClick={() => updateQuantity(product.id, qty - 1)}><Minus size={16}/></button>
+                <span className="qty-val">{qty}</span>
+                <button className="qty-btn" onClick={() => updateQuantity(product.id, qty + 1)}><Plus size={16}/></button>
+              </div>
             ) : (
-              <>
-                <button onClick={(e) => { e.stopPropagation(); e.preventDefault(); addToCart(product, 1); }} style={{ background: '#1A5D1A', color: 'white', border: 'none', padding: '8px 24px', borderRadius: '24px', fontSize: '14px', fontWeight: 700, cursor: 'pointer' }}>+ Add</button>
-                <button onClick={(e) => { e.stopPropagation(); e.preventDefault(); addToCart(product, 1); }} style={{ width: 36, height: 36, borderRadius: '50%', border: '1px solid #EAEAEA', background: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
-                  <ShoppingCart size={16} color="#1A5D1A" />
-                </button>
-              </>
+              <button className="btn-add" onClick={() => addToCart(product, 1)}>+ Add</button>
             )}
           </div>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 });
-
-const QuickViewModal = ({ product, onClose }) => {
-  const { addToCart } = useCart();
-  if (!product) return null;
-
-  return (
-    <div className="rte-modal-backdrop" onClick={onClose}>
-      <div className="rte-modal-content" onClick={e => e.stopPropagation()}>
-        <button className="rte-modal-close" onClick={onClose}><X size={20} /></button>
-        <img src={resolveImagePath(product.image)} alt={product.name} className="rte-modal-img" style={{borderTopLeftRadius: 16, borderTopRightRadius: 16}} />
-        <div className="rte-modal-details">
-          <div style={{ color: '#8B1A10', fontWeight: '700', letterSpacing: '2px', fontSize: '0.8rem', textTransform: 'uppercase', marginBottom: '10px' }}>
-            {product.category || 'Ready To Eat'}
-          </div>
-          <h2 className="rte-modal-title" style={{fontSize: '24px', fontWeight: 800}}>{product.name}</h2>
-          <p className="rte-modal-desc">{product.description || "Authentic South Indian flavor prepared fresh."}</p>
-          
-          <div style={{ display: 'flex', gap: '15px', marginBottom: '30px', flexWrap: 'wrap' }}>
-             <span style={{ padding: '6px 12px', background: '#F5F3ED', borderRadius: '20px', fontSize: '0.85rem' }}>Freshly Prepared</span>
-             <span style={{ padding: '6px 12px', background: '#F5F3ED', borderRadius: '20px', fontSize: '0.85rem' }}>Authentic Recipe</span>
-             <span style={{ padding: '6px 12px', background: '#F5F3ED', borderRadius: '20px', fontSize: '0.85rem' }}>Premium Ingredients</span>
-          </div>
-
-          <div className="rte-modal-price" style={{fontSize: '22px', fontWeight: 800}}>Rs. {product.price}</div>
-          <button className="rte-modal-btn" onClick={() => { addToCart(product, 1); onClose(); }} style={{background: '#1A5D1A'}}>
-            Add To Order
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-};
 
 const ReadyToEat = () => {
   const [search, setSearch] = useState('');
@@ -151,7 +121,7 @@ const ReadyToEat = () => {
   const [dietFilter, setDietFilter] = useState('All');
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [quickViewProduct, setQuickViewProduct] = useState(null);
+  const [quickViewProduct, setQuickViewProduct] = useState(null); // Keep modal if needed, but not required to rewrite
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -159,26 +129,17 @@ const ReadyToEat = () => {
         setLoading(true);
         const res = await apiClient.get('/products/', { params: { limit: 200 } });
         if (res.data && res.data.length > 0) {
-          // Filter to only ready_to_eat from all products since backend returns everything if limit is set
           let rteProducts = res.data.filter(p => p.category === 'ready_to_eat' || p.category === 'ready-to-eat' || p.category === 'Ready To Eat');
           if (rteProducts.length === 0) {
-             // Fallback if backend doesn't filter perfectly
              rteProducts = res.data.filter(p => !p.category || p.category.toLowerCase().includes('eat') || p.name.toLowerCase().includes('dosa') || p.name.toLowerCase().includes('chicken') || p.name.toLowerCase().includes('kurma'));
           }
           
           const mapped = rteProducts.map(p => {
-             // assign a dynamic category to simulate backend data mapping to these filters
-             let c = 'Bestsellers';
-             if(p.name.toLowerCase().includes('dosa') || p.name.toLowerCase().includes('idli') || p.name.toLowerCase().includes('vada')) c = 'Breakfast';
-             else if(p.name.toLowerCase().includes('biryani') || p.name.toLowerCase().includes('rice') || p.name.toLowerCase().includes('meal')) c = 'Lunch';
-             else if(p.name.toLowerCase().includes('samosa') || p.name.toLowerCase().includes('baji') || p.name.toLowerCase().includes('paniyaram')) c = 'Snacks';
-             else if(p.name.toLowerCase().includes('kurma') || p.name.toLowerCase().includes('sambar') || p.name.toLowerCase().includes('chicken')) c = 'Curries';
+             let c = 'Tiffins';
+             if(p.name.toLowerCase().includes('biryani') || p.name.toLowerCase().includes('meal') || p.name.toLowerCase().includes('rice')) c = 'Meals';
+             else if(p.name.toLowerCase().includes('combo')) c = 'Combos';
              
-             return {
-              ...p,
-              type: p.diet_type || 'Veg',
-              uiCategory: c
-             }
+             return { ...p, uiCategory: c }
           });
           setProducts(mapped);
         }
@@ -191,154 +152,87 @@ const ReadyToEat = () => {
     fetchProducts();
   }, []);
 
-  const filtered = products.filter(p => {
-    const matchesSearch = p.name.toLowerCase().includes(search.toLowerCase()) || 
-                          (p.description && p.description.toLowerCase().includes(search.toLowerCase()));
-    
-    let matchesCat = true;
-    if (category !== 'All Items') {
-      matchesCat = p.uiCategory === category;
-    }
+  const filtered = useMemo(() => {
+    return products.filter(p => {
+      const matchesSearch = p.name.toLowerCase().includes(search.toLowerCase());
+      const matchesCat = category === 'All Items' || p.uiCategory === category;
+      
+      const isNonVeg = p.type === 'Non-Veg' || p.diet_type === 'Non-Veg' || (['chicken', 'mutton', 'fish', 'egg', 'prawn', 'crab', 'beef', 'pork', 'meat', 'biriyani', 'prawns'].some(keyword => p.name.toLowerCase().includes(keyword)) && !p.name.toLowerCase().includes('veg bir'));
+      const isVeg = !isNonVeg;
+      
+      const matchesDiet = dietFilter === 'All' ? true : (dietFilter === 'Veg' ? isVeg : isNonVeg);
 
-    let matchesDiet = true;
-    const isNonVegItem = p.type === 'Non-Veg' || p.diet_type === 'Non-Veg' || (['chicken', 'mutton', 'fish', 'egg', 'prawn', 'crab', 'beef', 'pork', 'meat', 'biriyani', 'prawns'].some(keyword => p.name.toLowerCase().includes(keyword)) && !p.name.toLowerCase().includes('veg bir'));
-    
-    if (dietFilter === 'Veg') {
-      matchesDiet = !isNonVegItem;
-    } else if (dietFilter === 'Non-Veg') {
-      matchesDiet = isNonVegItem;
-    }
-
-    return matchesSearch && matchesCat && matchesDiet;
-  });
+      return matchesSearch && matchesCat && matchesDiet;
+    });
+  }, [products, search, category, dietFilter]);
 
   return (
-    <div className="rte-page" style={{ background: '#FAF9F5', minHeight: '100vh', paddingBottom: '60px' }}>
-      <SEO title="Ready To Eat | Ammulu's Kitchen" description="Delicious homemade meals, ready when you are." />
+    <div className="app-menu-container pb-20" style={{ background: '#FAF9F5', minHeight: '100vh' }}>
+      <SEO title="Ready To Eat | Ammulu's Kitchen" />
       
-      <div className="container" style={{ maxWidth: '1400px', paddingTop: '40px', paddingLeft: '40px', paddingRight: '40px' }}>
-        
-        {/* Header Section */}
-        <div style={{ display: 'flex', flexDirection: 'column', marginBottom: '30px' }}>
-          <div className="search-filter-row" style={{ display: 'flex', gap: 15, alignItems: 'center' }}>
-            <div className="search-input-col" style={{ flex: 1, position: 'relative', maxWidth: '600px' }}>
-              <Search size={20} color="#999" className="search-icon" style={{ position: 'absolute', left: 20, top: '50%', transform: 'translateY(-50%)' }} />
-              <input 
-                type="text" 
-                className="search-input-field"
-                placeholder="Search for idli, dosa, sambar..." 
-                value={search}
-                onChange={e => setSearch(e.target.value)}
-                style={{ width: '100%', padding: '16px 20px 16px 50px', borderRadius: '30px', border: '1px solid #EAEAEA', fontSize: '1rem', outline: 'none', background: 'white', boxShadow: '0 2px 10px rgba(0,0,0,0.02)' }}
-              />
-            </div>
-            <div className="filter-select-col" style={{ position: 'relative' }}>
-              <Filter size={18} color="#2C1A0E" className="filter-icon" style={{ position: 'absolute', left: 20, top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }} />
-              <select 
-                className="filter-select-field"
-                value={dietFilter} 
-                onChange={(e) => setDietFilter(e.target.value)}
-                style={{ appearance: 'none', padding: '16px 40px 16px 48px', borderRadius: '30px', border: '1px solid #EAEAEA', background: 'white', fontWeight: 600, color: '#2C1A0E', boxShadow: '0 2px 10px rgba(0,0,0,0.02)', cursor: 'pointer', outline: 'none' }}
-              >
-                <option value="All">All Diet</option>
-                <option value="Veg">Vegetarian 🥗</option>
-                <option value="Non-Veg">Non-Veg 🍗</option>
-              </select>
-              <div className="filter-arrow" style={{ position: 'absolute', right: 20, top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none', fontSize: '0.8rem', color: '#666' }}>▼</div>
-            </div>
-          </div>
+      {/* Search Bar */}
+      <div className="app-menu-search d-none d-lg-block">
+        <div className="search-bar-app">
+          <Search size={18} color="var(--text-muted)" />
+          <input 
+            type="text" 
+            placeholder="Search for tiffins, meals..." 
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
         </div>
-        
-        {/* Category Filters */}
-        <div style={{ display: 'flex', gap: 12, overflowX: 'auto', paddingBottom: 15, marginBottom: 30, scrollbarWidth: 'none' }}>
+      </div>
+
+      {/* Horizontal Filter Chips */}
+      <div className="app-menu-filters">
+        <div className="filter-scroll">
           {CATEGORIES.map(cat => (
             <button 
               key={cat}
               onClick={() => setCategory(cat)}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '8px',
-                padding: '12px 24px',
-                borderRadius: '30px',
-                border: category === cat ? 'none' : '1px solid #EAEAEA',
-                background: category === cat ? '#1A5D1A' : 'white',
-                color: category === cat ? 'white' : '#2C1A0E',
-                fontWeight: 600,
-                fontSize: '14px',
-                whiteSpace: 'nowrap',
-                transition: '0.2s ease',
-                cursor: 'pointer',
-                boxShadow: category === cat ? '0 4px 10px rgba(26, 93, 26, 0.2)' : '0 2px 5px rgba(0,0,0,0.02)'
-              }}
+              className={`filter-chip ${category === cat ? 'active' : ''}`}
             >
-              {cat === 'All Items' ? <LayoutGrid size={16} /> : (CATEGORY_ICONS[cat] && <span style={{fontSize: 16}}>{CATEGORY_ICONS[cat]}</span>)}
+              {cat === 'All Items' && <LayoutGrid size={14} />}
               {cat}
             </button>
           ))}
         </div>
-
-        {loading ? (
-          <div style={{ textAlign: 'center', padding: '100px', color: '#1A5D1A' }}>
-            <Sparkles className="fa-spin" size={32} />
-          </div>
-        ) : (
-          <>
-            {/* Main Menu Grid */}
-            {filtered.length > 0 ? (
-              <div className="rte-grid" style={{ gap: '25px' }}>
-                {filtered.map(product => (
-                  <PremiumRTECard key={product.id} product={product} onQuickView={setQuickViewProduct} />
-                ))}
-              </div>
-            ) : (
-              <div style={{ textAlign: 'center', padding: '60px', color: '#666', background: 'white', borderRadius: '20px', border: '1px dashed #EAE6DB' }}>
-                No dishes matched your search.
-              </div>
-            )}
-          </>
-        )}
-        
-        {/* Info Banner at Bottom */}
-        <div style={{ marginTop: '60px', padding: '30px 40px', background: '#F0EFE9', borderRadius: '16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 20 }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 15 }}>
-            <Home size={28} color="#1A5D1A" />
-            <div>
-              <div style={{ fontWeight: 800, fontSize: '15px', color: '#2C1A0E' }}>100% Homemade</div>
-              <div style={{ fontSize: '13px', color: '#666' }}>Just like Amma makes</div>
-            </div>
-          </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 15 }}>
-            <Leaf size={28} color="#1A5D1A" />
-            <div>
-              <div style={{ fontWeight: 800, fontSize: '15px', color: '#2C1A0E' }}>No Preservatives</div>
-              <div style={{ fontSize: '13px', color: '#666' }}>Pure & natural ingredients</div>
-            </div>
-          </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 15 }}>
-            <ShieldCheck size={28} color="#1A5D1A" />
-            <div>
-              <div style={{ fontWeight: 800, fontSize: '15px', color: '#2C1A0E' }}>Hygienically Prepared</div>
-              <div style={{ fontSize: '13px', color: '#666' }}>Clean kitchen, safe food</div>
-            </div>
-          </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 15 }}>
-            <Bike size={28} color="#1A5D1A" />
-            <div>
-              <div style={{ fontWeight: 800, fontSize: '15px', color: '#2C1A0E' }}>Delivered Fresh</div>
-              <div style={{ fontSize: '13px', color: '#666' }}>On time, every time</div>
-            </div>
-          </div>
-        </div>
-        
       </div>
 
-      {quickViewProduct && (
-        <QuickViewModal 
-          product={quickViewProduct} 
-          onClose={() => setQuickViewProduct(null)} 
-        />
-      )}
+      <div className="container" style={{ padding: '20px' }}>
+        <div className="mb-15" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+          <div>
+            <h2 className="section-title mb-0">Ready To Eat</h2>
+          </div>
+          <div style={{ display: 'flex', gap: '8px', background: 'white', padding: '4px', borderRadius: '12px', boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }}>
+            <button onClick={() => setDietFilter('All')} style={{ border: 'none', background: dietFilter === 'All' ? 'var(--primary-color)' : 'transparent', color: dietFilter === 'All' ? 'white' : '#666', padding: '6px 12px', borderRadius: '8px', fontSize: '13px', fontWeight: 600 }}>All</button>
+            <button onClick={() => setDietFilter('Veg')} style={{ border: 'none', background: dietFilter === 'Veg' ? '#2E8B57' : 'transparent', color: dietFilter === 'Veg' ? 'white' : '#666', padding: '6px 12px', borderRadius: '8px', fontSize: '13px', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '4px' }}><div className="diet-indicator veg" style={{ position: 'relative', width: 12, height: 12, margin: 0, padding: 0 }}><div className="dot" style={{ width: 6, height: 6 }}></div></div> Veg</button>
+            <button onClick={() => setDietFilter('Non-Veg')} style={{ border: 'none', background: dietFilter === 'Non-Veg' ? '#E74C3C' : 'transparent', color: dietFilter === 'Non-Veg' ? 'white' : '#666', padding: '6px 12px', borderRadius: '8px', fontSize: '13px', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '4px' }}><div className="diet-indicator non-veg" style={{ position: 'relative', width: 12, height: 12, margin: 0, padding: 0 }}><div className="dot" style={{ width: 6, height: 6 }}></div></div> Non-Veg</button>
+          </div>
+        </div>
+
+        {loading ? (
+          <div style={{ textAlign: 'center', padding: '50px 0' }}>
+            <div className="spinner-border text-primary" role="status"></div>
+          </div>
+        ) : filtered.length > 0 ? (
+          <div className="modern-menu-grid">
+            {filtered.map(product => (
+              <PremiumRTECard key={product.id} product={product} onQuickView={setQuickViewProduct} />
+            ))}
+          </div>
+        ) : (
+          <div style={{ textAlign: 'center', padding: '50px 0', color: '#666' }}>
+            No products found matching your criteria.
+          </div>
+        )}
+      </div>
+
+      <DishDetailsModal
+        dish={quickViewProduct}
+        onClose={() => setQuickViewProduct(null)}
+        resolveImagePath={resolveImagePath}
+      />
     </div>
   );
 };

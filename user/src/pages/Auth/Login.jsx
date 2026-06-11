@@ -44,7 +44,11 @@ const Login = () => {
         <button type="button" className="social-btn" onClick={async () => {
           const result = await loginWithGoogle();
           if (result.success) {
-            navigate('/');
+            if (result.user && result.user.profile_completed) {
+              navigate('/');
+            } else {
+              navigate('/complete-profile');
+            }
           } else {
             setError(result.error);
           }
@@ -60,7 +64,11 @@ const Login = () => {
         <button type="button" className="social-btn" onClick={async () => {
           const result = await loginWithFacebook();
           if (result.success) {
-            navigate('/');
+            if (result.user && result.user.profile_completed) {
+              navigate('/');
+            } else {
+              navigate('/complete-profile');
+            }
           } else {
             setError(result.error);
           }

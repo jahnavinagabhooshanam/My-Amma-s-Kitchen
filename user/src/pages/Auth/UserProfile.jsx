@@ -36,6 +36,29 @@ const UserProfile = () => {
     area: '', city: '', state: '', pincode: '', landmark: '',
   });
 
+  const [pwdForm, setPwdForm] = useState({ oldPassword: '', newPassword: '' });
+  const [pwdSaving, setPwdSaving] = useState(false);
+  const [pwdMsg, setPwdMsg] = useState('');
+
+  const handleChangePassword = async (e) => {
+    e.preventDefault();
+    setPwdSaving(true);
+    setPwdMsg('');
+    try {
+      await apiClient.post('/auth/change-password', {
+        current_password: pwdForm.oldPassword,
+        new_password: pwdForm.newPassword
+      });
+      setPwdMsg('Password updated successfully!');
+      setPwdForm({ oldPassword: '', newPassword: '' });
+      setTimeout(() => setActiveScreen('menu'), 2000);
+    } catch (err) {
+      setPwdMsg(err.response?.data?.error || 'Failed to update password.');
+    } finally {
+      setPwdSaving(false);
+    }
+  };
+
   useEffect(() => {
     const fetchHub = async () => {
       setLoading(true);
@@ -128,22 +151,13 @@ const UserProfile = () => {
             <ChevronRight size={18} color="var(--text-muted)" />
           </div>
 
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '16px 20px', borderBottom: '1px solid #EAEAEA', cursor: 'pointer' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 15, fontSize: 15, fontWeight: 600, color: 'var(--text-dark)' }}><Award size={20} color="var(--primary-color)" /> Rewards & Points</div>
-            <ChevronRight size={18} color="var(--text-muted)" />
-          </div>
 
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '16px 20px', borderBottom: '1px solid #EAEAEA', cursor: 'pointer' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 15, fontSize: 15, fontWeight: 600, color: 'var(--text-dark)' }}><Gift size={20} color="var(--primary-color)" /> Refer & Earn</div>
-            <ChevronRight size={18} color="var(--text-muted)" />
-          </div>
-
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '16px 20px', borderBottom: '1px solid #EAEAEA', cursor: 'pointer' }}>
+          <div onClick={() => setActiveScreen('notifications')} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '16px 20px', borderBottom: '1px solid #EAEAEA', cursor: 'pointer' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 15, fontSize: 15, fontWeight: 600, color: 'var(--text-dark)' }}><Bell size={20} color="var(--primary-color)" /> Notifications</div>
             <ChevronRight size={18} color="var(--text-muted)" />
           </div>
 
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '16px 20px', borderBottom: '1px solid #EAEAEA', cursor: 'pointer' }}>
+          <div onClick={() => navigate('/contact')} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '16px 20px', borderBottom: '1px solid #EAEAEA', cursor: 'pointer' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 15, fontSize: 15, fontWeight: 600, color: 'var(--text-dark)' }}><HelpCircle size={20} color="var(--primary-color)" /> Help & Support</div>
             <ChevronRight size={18} color="var(--text-muted)" />
           </div>
@@ -277,6 +291,18 @@ const UserProfile = () => {
             </div>
           )}
         </motion.div>}
+        {activeScreen === 'notifications' && <motion.div key="notifications" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 20 }} style={{ padding: '20px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 15, marginBottom: 20 }}>
+            <button onClick={() => setActiveScreen('menu')} style={{ background: 'white', border: '1px solid #EAEAEA', width: 40, height: 40, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-dark)' }}>
+              <ArrowLeft size={20} />
+            </button>
+            <h2 style={{ fontSize: 20, fontWeight: 800, margin: 0, color: 'var(--text-dark)' }}>Notifications</h2>
+          </div>
+          <div style={{ background: 'white', borderRadius: 20, padding: 40, textAlign: 'center', boxShadow: '0 2px 10px rgba(0,0,0,0.02)' }}>
+            <Bell size={48} color="var(--text-muted)" style={{ margin: '0 auto 15px' }} />
+            <p style={{ color: 'var(--text-muted)' }}>You have no new notifications.</p>
+          </div>
+        </motion.div>}
         {activeScreen === 'password' && <motion.div key="password" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 20 }} style={{ padding: '20px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 15, marginBottom: 20 }}>
             <button onClick={() => setActiveScreen('menu')} style={{ background: 'white', border: '1px solid #EAEAEA', width: 40, height: 40, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-dark)' }}>
@@ -284,8 +310,21 @@ const UserProfile = () => {
             </button>
             <h2 style={{ fontSize: 20, fontWeight: 800, margin: 0, color: 'var(--text-dark)' }}>Change Password</h2>
           </div>
-          <div style={{ background: 'white', borderRadius: 20, padding: 20 }}>
-            <p style={{ color: 'var(--text-muted)', fontSize: 14 }}>Please contact support to reset your password securely.</p>
+          <div style={{ background: 'white', borderRadius: 20, padding: 20, boxShadow: '0 2px 10px rgba(0,0,0,0.02)' }}>
+            <form onSubmit={handleChangePassword} style={{ display: 'flex', flexDirection: 'column', gap: 15 }}>
+              <div>
+                <label style={{ fontSize: 12, fontWeight: 700, color: 'var(--text-muted)', marginBottom: 6, display: 'block' }}>OLD PASSWORD</label>
+                <input type="password" value={pwdForm.oldPassword} onChange={(e) => setPwdForm({...pwdForm, oldPassword: e.target.value})} required style={{ width: '100%', padding: '12px 16px', background: '#F5F5F0', border: '1px solid #EAEAEA', borderRadius: 12, fontSize: 14 }} />
+              </div>
+              <div>
+                <label style={{ fontSize: 12, fontWeight: 700, color: 'var(--text-muted)', marginBottom: 6, display: 'block' }}>NEW PASSWORD</label>
+                <input type="password" value={pwdForm.newPassword} onChange={(e) => setPwdForm({...pwdForm, newPassword: e.target.value})} required style={{ width: '100%', padding: '12px 16px', background: '#F5F5F0', border: '1px solid #EAEAEA', borderRadius: 12, fontSize: 14 }} />
+              </div>
+              <button type="submit" disabled={pwdSaving} style={{ width: '100%', padding: '16px', background: 'var(--primary-color)', color: 'white', border: 'none', borderRadius: 16, fontWeight: 700, fontSize: 16, marginTop: 10 }}>
+                {pwdSaving ? 'Updating...' : 'Update Password'}
+              </button>
+              {pwdMsg && <div style={{ textAlign: 'center', fontSize: 13, fontWeight: 600, color: pwdMsg.includes('success') ? 'var(--success)' : 'var(--danger)' }}>{pwdMsg}</div>}
+            </form>
           </div>
         </motion.div>}
       </AnimatePresence>

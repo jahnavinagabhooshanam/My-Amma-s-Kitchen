@@ -26,7 +26,7 @@ from sockets import socketio
 socketio.init_app(app)
 
 # Import models to ensure they are registered for migrations
-from database.models import User, Product, BatterProduct, Order, OrderItem, CartItem, BulkOrder, Review, Coupon, Inventory, BatterProduction, DeliveryPartner, WebsiteActivity, KitchenStaff, HomepageConfig, Notification, Offer, RolePermission
+from database.models import User, Product, BatterProduct, Order, OrderItem, CartItem, BulkOrder, Review, Coupon, Inventory, BatterProduction, DeliveryPartner, WebsiteActivity, KitchenStaff, HomepageConfig, Notification, Offer, RolePermission, SavedForLater
 
 # Create upload folder if it doesn't exist
 if not os.path.exists(app.config['UPLOAD_FOLDER']):
@@ -53,6 +53,8 @@ from routes.wishlist import wishlist_bp
 from routes.contact import contact_bp
 from routes.notifications import notifications_bp
 from routes.offers import offers_bp
+from routes.saved_for_later import saved_for_later_bp
+from routes.sitemap import sitemap_bp
 
 # Register Blueprints under standard prefix /api
 app.register_blueprint(auth_bp, url_prefix='/api/auth')
@@ -75,6 +77,8 @@ app.register_blueprint(wishlist_bp, url_prefix='/api/wishlist')
 app.register_blueprint(contact_bp, url_prefix='/api/contact')
 app.register_blueprint(notifications_bp, url_prefix='/api/notifications')
 app.register_blueprint(offers_bp, url_prefix='/api/offers')
+app.register_blueprint(saved_for_later_bp, url_prefix='/api/saved_for_later')
+app.register_blueprint(sitemap_bp, url_prefix='/')
 
 @app.route('/api/health', methods=['GET'])
 def health_check():
@@ -91,13 +95,13 @@ def serve_upload(filename):
     upload_folder = app.config['UPLOAD_FOLDER']
     full_path = os.path.join(upload_folder, filename)
     if os.path.exists(full_path):
-        return send_from_directory(upload_folder, filename)
+        return send_from_directory(upload_folder, filename, max_age=31536000)
     base, ext = os.path.splitext(filename)
     if ext.lower() in ['.jpg', '.jpeg', '.png']:
         webp_filename = base + '.webp'
         if os.path.exists(os.path.join(upload_folder, webp_filename)):
-            return send_from_directory(upload_folder, webp_filename)
-    return send_from_directory(upload_folder, filename)
+            return send_from_directory(upload_folder, webp_filename, max_age=31536000)
+    return send_from_directory(upload_folder, filename, max_age=31536000)
 
 @app.route('/assets/<path:filename>')
 @app.route('/api/assets/<path:filename>')
@@ -106,13 +110,13 @@ def serve_assets(filename):
     admin_assets_dir = os.path.join(base_dir, '..', 'admin', 'src', 'assets')
     full_path = os.path.join(admin_assets_dir, filename)
     if os.path.exists(full_path):
-        return send_from_directory(admin_assets_dir, filename)
+        return send_from_directory(admin_assets_dir, filename, max_age=31536000)
     base, ext = os.path.splitext(filename)
     if ext.lower() in ['.jpg', '.jpeg', '.png']:
         webp_filename = base + '.webp'
         if os.path.exists(os.path.join(admin_assets_dir, webp_filename)):
-            return send_from_directory(admin_assets_dir, webp_filename)
-    return send_from_directory(admin_assets_dir, filename)
+            return send_from_directory(admin_assets_dir, webp_filename, max_age=31536000)
+    return send_from_directory(admin_assets_dir, filename, max_age=31536000)
 
 # Cache System
 APP_CACHE = {}

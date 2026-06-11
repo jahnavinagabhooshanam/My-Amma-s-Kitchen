@@ -3,8 +3,9 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { useCart } from '../../context/CartContext';
 import { motion } from 'framer-motion';
-import { Star, Clock, Gift, Package, CheckCircle, TrendingUp, ChevronRight, RefreshCw } from 'lucide-react';
+import { Star, Clock, Gift, Package, CheckCircle, TrendingUp, ChevronRight, RefreshCw, MapPin, X } from 'lucide-react';
 import apiClient from '../../services/api';
+import DishDetailsModal from '../Menu/DishDetailsModal';
 import './Dashboard.css';
 
 const DEFAULT_HOMEPAGE_CONFIG = {
@@ -17,14 +18,20 @@ const DEFAULT_HOMEPAGE_CONFIG = {
     { name: 'Onion Dosa', price: 110, img: '/assets/Food images/Veg/Onion Dosa.webp', rating: 4.8, time: '20-25 mins' },
     { name: 'Hyderabad Dum Biryani', price: 260, img: '/assets/Food images/Non-veg/Hyderabad Dum Biriyani.webp', rating: 4.9, time: '35-40 mins' },
     { name: 'Idli Vada', price: 110, img: '/assets/Food images/Veg/Edli Vada.webp', rating: 4.7, time: '15-20 mins' }
+  ],
+  amma_recommends: [
+    { name: 'Ghee Roast Dosa', price: 130, img: '/assets/Food images/Veg/Ghee Roast Dosa.webp' },
+    { name: 'Idli Sambar', price: 90, img: '/assets/Food images/Veg/Edli Sambar.webp' },
+    { name: 'Poori Dhal', price: 100, img: '/assets/Food images/Veg/Poori Dhal.webp' },
+    { name: 'Paneer Butter Masala', price: 220, img: '/assets/Food images/Veg/Paneer Pasanda.webp' }
   ]
 };
 
 const CATEGORIES = [
   { id: 1, name: 'Breakfast', img: '/assets/Food images/Veg/Podi Edli.webp', path: '/ready-to-eat' },
-  { id: 2, name: 'Lunch', img: '/assets/Food images/Veg/Veg Meals.webp', path: '/ready-to-eat' },
-  { id: 3, name: 'Dinner', img: '/assets/Food images/Veg/Ghee Roast Dosa.webp', path: '/ready-to-eat' },
-  { id: 4, name: 'Batters', img: '/assets/Food images/Batters/Idli Batter.webp', path: '/ready-to-cook' },
+  { id: 2, name: 'Batters', img: '/assets/Food images/Batters/Idli Batter.webp', path: '/ready-to-cook' },
+  { id: 3, name: 'Lunch', img: '/assets/Food images/Veg/Veg Meals.webp', path: '/ready-to-eat' },
+  { id: 4, name: 'Dinner', img: '/assets/Food images/Veg/Ghee Roast Dosa.webp', path: '/ready-to-eat' },
 ];
 
 const CustomerHome = () => {
@@ -37,6 +44,41 @@ const CustomerHome = () => {
   const [recommendedDishes, setRecommendedDishes] = useState([]);
   const [heroImageIndex, setHeroImageIndex] = useState(0);
   const [recentOrder, setRecentOrder] = useState(null);
+  const [quickViewProduct, setQuickViewProduct] = useState(null);
+  const [showLocationPrompt, setShowLocationPrompt] = useState(false);
+
+  useEffect(() => {
+    if (user && !localStorage.getItem('userLocationAsked')) {
+      const timer = setTimeout(() => setShowLocationPrompt(true), 1500);
+      return () => clearTimeout(timer);
+    }
+  }, [user]);
+
+  const requestLocation = () => {
+    localStorage.setItem('userLocationAsked', 'true');
+    setShowLocationPrompt(false);
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        async (position) => {
+          try {
+            const { latitude, longitude } = position.coords;
+            const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&zoom=18&addressdetails=1`);
+            const data = await res.json();
+            if (data && data.address) {
+              const road = data.address.road || data.address.suburb || data.address.neighbourhood || '';
+              const city = data.address.city || data.address.town || data.address.county || '';
+              const newLoc = road && city ? `${road}, ${city}` : (data.display_name.split(',').slice(0,2).join(','));
+              localStorage.setItem('userLocation', newLoc);
+              window.dispatchEvent(new Event('storage'));
+            }
+          } catch (e) {
+            console.error(e);
+          }
+        },
+        (err) => console.error(err)
+      );
+    }
+  };
 
   useEffect(() => {
     const fetchRecentOrder = async () => {
@@ -109,8 +151,6 @@ const CustomerHome = () => {
         const products = res.data;
         if (products && products.length > 0) {
           setAllProducts(products);
-          const shuffled = [...products].sort(() => 0.5 - Math.random());
-          setRecommendedDishes(shuffled.slice(0, 4).map(p => ({ ...p, img: resolveImagePath(p.image) })));
         }
       } catch (err) {
         console.error("Failed to load dashboard products", err);
@@ -122,8 +162,9 @@ const CustomerHome = () => {
   const attachProductDetails = (item) => {
     if (!item || item.id) return item;
     const match = allProducts.find((p) => p.name?.toLowerCase() === item.name?.toLowerCase());
-    if (!match) return item;
-    return { ...match, ...item, image: match.image, img: resolveImagePath(match.image) };
+    if (!match) return { ...item, image: item.img, in_stock: item.in_stock !== false };
+    const isOutOfStock = match.stock === 0 || match.stock_count === 0 || match.is_available === false || match.in_stock === false;
+    return { ...match, ...item, image: match.image || item.img, img: resolveImagePath(match.image || item.img), in_stock: !isOutOfStock };
   };
 
   const handleCardAction = (item) => {
@@ -135,13 +176,40 @@ const CustomerHome = () => {
     navigate('/menu');
   };
 
+  const handleCardClick = (item) => {
+    const product = attachProductDetails(item);
+    setQuickViewProduct(product);
+  };
+
   const hero = config.hero_banner || DEFAULT_HOMEPAGE_CONFIG.hero_banner;
   const trending = config.trending_today || DEFAULT_HOMEPAGE_CONFIG.trending_today;
+  const recommends = config.amma_recommends || DEFAULT_HOMEPAGE_CONFIG.amma_recommends;
 
   if (!user) return null;
 
   return (
     <div className="app-home-wrapper pb-4">
+      {/* Location Prompt Modal */}
+      {showLocationPrompt && (
+        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.6)', zIndex: 99999, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
+          <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} style={{ backgroundColor: 'white', borderRadius: '24px', padding: '25px', width: '100%', maxWidth: '350px', position: 'relative' }}>
+            <button onClick={() => { localStorage.setItem('userLocationAsked', 'true'); setShowLocationPrompt(false); }} style={{ position: 'absolute', top: 15, right: 15, background: 'none', border: 'none' }}><X size={20} color="#999" /></button>
+            <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '15px' }}><div style={{ width: 60, height: 60, borderRadius: '50%', background: 'rgba(46, 139, 87, 0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><MapPin size={30} color="var(--primary-color)" /></div></div>
+            <h3 style={{ textAlign: 'center', fontSize: '18px', fontWeight: 800, marginBottom: '10px' }}>Set Your Delivery Location</h3>
+            <p style={{ textAlign: 'center', color: 'var(--text-muted)', fontSize: '13px', marginBottom: '20px' }}>Allow location access to find the quickest delivery route to your doorstep.</p>
+            <button onClick={requestLocation} style={{ width: '100%', padding: '14px', background: 'var(--primary-color)', color: 'white', border: 'none', borderRadius: '12px', fontWeight: 700, fontSize: '14px', marginBottom: '10px' }}>Allow Location Access</button>
+            <button onClick={() => { localStorage.setItem('userLocationAsked', 'true'); setShowLocationPrompt(false); }} style={{ width: '100%', padding: '14px', background: 'transparent', color: 'var(--text-muted)', border: 'none', fontWeight: 600, fontSize: '14px' }}>Not Now</button>
+          </motion.div>
+        </div>
+      )}
+
+      {quickViewProduct && (
+        <DishDetailsModal 
+          dish={quickViewProduct} 
+          onClose={() => setQuickViewProduct(null)} 
+          resolveImagePath={resolveImagePath} 
+        />
+      )}
 
       {/* Horizontal Categories */}
       <div className="app-categories mt-2" style={{ paddingBottom: '5px' }}>
@@ -265,6 +333,8 @@ const CustomerHome = () => {
               key={i}
               initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.1 }}
               className="app-food-card-horizontal"
+              onClick={() => handleCardClick(dish)}
+              style={{ cursor: 'pointer' }}
             >
               <div className="card-image-wrapper">
                 <img src={resolveImagePath(dish.img)} alt={dish.name} />
@@ -280,7 +350,7 @@ const CustomerHome = () => {
               </div>
               <button
                 className="card-add-btn"
-                onClick={() => handleCardAction(dish)}
+                onClick={(e) => { e.stopPropagation(); handleCardAction(dish); }}
               >
                 ADD
               </button>
@@ -298,11 +368,13 @@ const CustomerHome = () => {
         </h3>
 
         <div className="app-food-list" style={{ display: 'flex', flexDirection: 'column', gap: 15 }}>
-          {recommendedDishes.map((dish, i) => (
+          {recommends.map((dish, i) => (
             <motion.div
               key={i}
               initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.1 }}
               className="app-food-card-horizontal"
+              onClick={() => handleCardClick(dish)}
+              style={{ cursor: 'pointer' }}
             >
               <div className="card-image-wrapper">
                 <img src={resolveImagePath(dish.img)} alt={dish.name} />
@@ -317,7 +389,7 @@ const CustomerHome = () => {
               </div>
               <button
                 className="card-add-btn"
-                onClick={() => handleCardAction(dish)}
+                onClick={(e) => { e.stopPropagation(); handleCardAction(dish); }}
               >
                 ADD
               </button>

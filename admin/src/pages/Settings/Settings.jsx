@@ -27,7 +27,7 @@ const Settings = () => {
   const [generalConfig, setGeneralConfig] = useState({
     business_name: "Ammulu's Kitchen",
     business_email: "info@ammaskitchen.com",
-    business_phone: "+91 98765 43210",
+    business_phone: "+91 72009 42596",
     business_address: "123 Food Street, Culinary District, FL 33021",
     currency: 'INR',
     tax_rate: 5.0,
@@ -86,8 +86,6 @@ const Settings = () => {
   const [formData, setFormData] = useState({ name: '', email: '', phone: '', role: 'manager', password: '', status: 'Active' });
   const [newPassword, setNewPassword] = useState('');
 
-  // Tab: Backup simulated state
-  const [backupFile, setBackupFile] = useState(null);
 
   useEffect(() => {
     setActiveTab(activeTabParam);
@@ -102,7 +100,7 @@ const Settings = () => {
     } catch (err) {
       console.error("Failed to load users:", err);
       setUsers([
-        { id: 1, name: 'Admin User', email: 'ammuluskitchen57@gmail.com', phone: '9876543210', role: 'admin', status: 'Active' },
+        { id: 1, name: 'Admin User', email: 'ammuluskitchen57@gmail.com', phone: '7200942596', role: 'admin', status: 'Active' },
         { id: 2, name: 'John Manager', email: 'john@example.com', phone: '1234567890', role: 'manager', status: 'Active' }
       ]);
     } finally {
@@ -190,16 +188,6 @@ const Settings = () => {
     }
   };
 
-  // Backup & Restore
-  const triggerBackupDownload = () => {
-    showSuccess("System database JSON snapshot backup downloaded successfully.");
-  };
-
-  const handleRestoreSimulation = (e) => {
-    e.preventDefault();
-    showSuccess("Simulated restore successful! Database state reset back to backup timestamp.");
-    setBackupFile(null);
-  };
 
   // Render Tabs Navigation
   const tabs = [
@@ -210,13 +198,13 @@ const Settings = () => {
     { id: 'payment', label: 'Payment', icon: CreditCard },
     { id: 'security', label: 'Security', icon: Shield },
     { id: 'staff', label: 'Staff Management', icon: UserPlus },
-    { id: 'rbac', label: 'Role Management', icon: Key },
-    { id: 'backup', label: 'Backup & Restore', icon: Server }
+    { id: 'rbac', label: 'Role Management', icon: Key }
   ];
 
   return (
-    <div className="admin-wrapper">
-      <AdminSidebar />
+    <>
+      <div className="admin-wrapper">
+        <AdminSidebar />
       <div className="admin-container">
         <AdminNavbar />
 
@@ -600,8 +588,21 @@ const Settings = () => {
                             <td data-label="Email">{u.email}</td>
                             <td data-label="Role"><span style={{ padding: '4px 8px', borderRadius: '12px', fontSize: '11px', backgroundColor: '#EBF5FB', color: '#1B4F72' }}>{u.role.toUpperCase()}</span></td>
                             <td data-label="Status">{u.status}</td>
-                            <td data-label="Actions">
-                               <button className="btn-secondary" style={{ padding: '4px 8px' }}>Manage</button>
+                            <td data-label="Actions" style={{ position: 'relative' }}>
+                               <button 
+                                 className="btn-secondary" 
+                                 style={{ padding: '4px 8px' }}
+                                 onClick={() => setActiveDropdown(activeDropdown === u.id ? null : u.id)}
+                               >
+                                 Manage
+                               </button>
+                               {activeDropdown === u.id && (
+                                 <div style={{ position: 'absolute', top: '35px', right: '10px', background: 'white', border: '1px solid #eee', borderRadius: '8px', boxShadow: '0 4px 12px rgba(0,0,0,0.15)', zIndex: 50, width: '160px', overflow: 'hidden' }}>
+                                   <button onClick={() => { setSelectedUser(u); setFormData({...u}); setIsEditOpen(true); setActiveDropdown(null); }} style={{ display: 'flex', alignItems: 'center', gap: '8px', width: '100%', padding: '10px', background: 'none', border: 'none', borderBottom: '1px solid #eee', cursor: 'pointer', fontSize: '13px', textAlign: 'left' }}><Pencil size={14}/> Edit Details</button>
+                                   <button onClick={() => { setSelectedUser(u); setNewPassword(''); setIsResetOpen(true); setActiveDropdown(null); }} style={{ display: 'flex', alignItems: 'center', gap: '8px', width: '100%', padding: '10px', background: 'none', border: 'none', borderBottom: '1px solid #eee', cursor: 'pointer', fontSize: '13px', textAlign: 'left' }}><Key size={14}/> Reset Pass</button>
+                                   <button onClick={() => { handleDeleteStaff(u.id); setActiveDropdown(null); }} style={{ display: 'flex', alignItems: 'center', gap: '8px', width: '100%', padding: '10px', background: 'none', border: 'none', color: 'var(--danger-color)', cursor: 'pointer', fontSize: '13px', textAlign: 'left' }}><Trash2 size={14}/> Delete</button>
+                                 </div>
+                               )}
                             </td>
                           </tr>
                         ))}
@@ -631,23 +632,145 @@ const Settings = () => {
                 </>
               )}
 
-              {/* Backup */}
-              {activeTab === 'backup' && (
-                <>
-                  <h3 style={{ fontSize: '18px', borderBottom: '1px solid var(--border-color)', paddingBottom: '10px', marginBottom: '20px', color: 'var(--title-color)' }}>
-                    Database Backup
-                  </h3>
-                  <div style={{ display: 'flex', gap: '20px' }}>
-                    <button onClick={triggerBackupDownload} className="page-action-btn" style={{ padding: '10px 22px' }}><Download size={16} /> Download Backup</button>
-                  </div>
-                </>
-              )}
 
             </div>
           </div>
         </div>
       </div>
     </div>
+
+      {/* Edit Staff Modal */}
+      {isEditOpen && selectedUser && (
+        <div className="modal-overlay" style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1050 }}>
+          <div className="modal-content" style={{ backgroundColor: '#fff', borderRadius: '12px', padding: '30px', width: '100%', maxWidth: '500px', boxShadow: '0 10px 30px rgba(0,0,0,0.2)' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+              <h3 style={{ margin: 0, display: 'flex', alignItems: 'center', gap: '8px' }}><Pencil size={20} /> Edit Staff Details</h3>
+              <button onClick={() => setIsEditOpen(false)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#888' }}><X size={20} /></button>
+            </div>
+            
+            <form onSubmit={handleEditStaffSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
+              <div className="form-grid">
+                <div className="form-field">
+                  <label>Full Name</label>
+                  <input type="text" value={selectedUser.name} onChange={(e) => setSelectedUser({...selectedUser, name: e.target.value})} required style={{ padding: '10px', borderRadius: '8px', border: '1px solid #EAE6DB' }} />
+                </div>
+                <div className="form-field">
+                  <label>Email Address</label>
+                  <input type="email" value={selectedUser.email} onChange={(e) => setSelectedUser({...selectedUser, email: e.target.value})} required style={{ padding: '10px', borderRadius: '8px', border: '1px solid #EAE6DB' }} />
+                </div>
+              </div>
+              
+              <div className="form-grid">
+                <div className="form-field">
+                  <label>Phone Number</label>
+                  <input type="text" value={selectedUser.phone} onChange={(e) => setSelectedUser({...selectedUser, phone: e.target.value})} required style={{ padding: '10px', borderRadius: '8px', border: '1px solid #EAE6DB' }} />
+                </div>
+                <div className="form-field">
+                  <label>Role</label>
+                  <select value={selectedUser.role} onChange={(e) => setSelectedUser({...selectedUser, role: e.target.value})} style={{ padding: '10px', borderRadius: '8px', border: '1px solid #EAE6DB' }}>
+                    <option value="admin">Admin</option>
+                    <option value="manager">Manager</option>
+                    <option value="kitchen_staff">Kitchen Staff</option>
+                    <option value="delivery_staff">Delivery Staff</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="form-field">
+                  <label>Account Status</label>
+                  <select value={selectedUser.status} onChange={(e) => setSelectedUser({...selectedUser, status: e.target.value})} style={{ padding: '10px', borderRadius: '8px', border: '1px solid #EAE6DB' }}>
+                    <option value="Active">Active</option>
+                    <option value="Suspended">Suspended</option>
+                  </select>
+              </div>
+
+              <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px', marginTop: '10px' }}>
+                <button type="button" onClick={() => setIsEditOpen(false)} style={{ padding: '10px 20px', borderRadius: '8px', border: '1px solid #ccc', background: '#f5f5f5', cursor: 'pointer' }}>Cancel</button>
+                <button type="submit" className="page-action-btn" style={{ padding: '10px 20px', borderRadius: '8px' }}>Save Changes</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Reset Password Modal */}
+      {isResetOpen && selectedUser && (
+        <div className="modal-overlay" style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1050 }}>
+          <div className="modal-content" style={{ backgroundColor: '#fff', borderRadius: '12px', padding: '30px', width: '100%', maxWidth: '400px', boxShadow: '0 10px 30px rgba(0,0,0,0.2)' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+              <h3 style={{ margin: 0, display: 'flex', alignItems: 'center', gap: '8px' }}><Key size={20} /> Reset Password</h3>
+              <button onClick={() => setIsResetOpen(false)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#888' }}><X size={20} /></button>
+            </div>
+            
+            <p style={{ fontSize: '14px', color: '#666', marginBottom: '20px' }}>
+              Set a new password for <strong>{selectedUser.name}</strong>. They will need to use this new password on their next login.
+            </p>
+
+            <form onSubmit={handleResetSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
+              <div className="form-field">
+                <label>New Password</label>
+                <input type="password" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} required style={{ padding: '10px', borderRadius: '8px', border: '1px solid #EAE6DB', width: '100%' }} />
+              </div>
+
+              <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px', marginTop: '10px' }}>
+                <button type="button" onClick={() => setIsResetOpen(false)} style={{ padding: '10px 20px', borderRadius: '8px', border: '1px solid #ccc', background: '#f5f5f5', cursor: 'pointer' }}>Cancel</button>
+                <button type="submit" className="page-action-btn" style={{ padding: '10px 20px', borderRadius: '8px' }}>Reset Password</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Add Staff Modal */}
+      {isAddOpen && (
+        <div className="modal-overlay" style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1050 }}>
+          <div className="modal-content" style={{ backgroundColor: '#fff', borderRadius: '12px', padding: '30px', width: '100%', maxWidth: '500px', boxShadow: '0 10px 30px rgba(0,0,0,0.2)' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+              <h3 style={{ margin: 0, display: 'flex', alignItems: 'center', gap: '8px' }}><UserPlus size={20} /> Add New Staff</h3>
+              <button onClick={() => setIsAddOpen(false)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#888' }}><X size={20} /></button>
+            </div>
+            
+            <form onSubmit={handleAddStaffSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
+              <div className="form-grid">
+                <div className="form-field">
+                  <label>Full Name</label>
+                  <input type="text" value={formData.name} onChange={(e) => setFormData({...formData, name: e.target.value})} required style={{ padding: '10px', borderRadius: '8px', border: '1px solid #EAE6DB' }} />
+                </div>
+                <div className="form-field">
+                  <label>Email Address</label>
+                  <input type="email" value={formData.email} onChange={(e) => setFormData({...formData, email: e.target.value})} required style={{ padding: '10px', borderRadius: '8px', border: '1px solid #EAE6DB' }} />
+                </div>
+              </div>
+              
+              <div className="form-grid">
+                <div className="form-field">
+                  <label>Phone Number</label>
+                  <input type="text" value={formData.phone} onChange={(e) => setFormData({...formData, phone: e.target.value})} required style={{ padding: '10px', borderRadius: '8px', border: '1px solid #EAE6DB' }} />
+                </div>
+                <div className="form-field">
+                  <label>Role</label>
+                  <select value={formData.role} onChange={(e) => setFormData({...formData, role: e.target.value})} style={{ padding: '10px', borderRadius: '8px', border: '1px solid #EAE6DB' }}>
+                    <option value="manager">Manager</option>
+                    <option value="kitchen_staff">Kitchen Staff</option>
+                    <option value="delivery_staff">Delivery Staff</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="form-field">
+                <label>Temporary Password</label>
+                <input type="password" value={formData.password} onChange={(e) => setFormData({...formData, password: e.target.value})} required style={{ padding: '10px', borderRadius: '8px', border: '1px solid #EAE6DB' }} />
+              </div>
+
+              <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px', marginTop: '10px' }}>
+                <button type="button" onClick={() => setIsAddOpen(false)} style={{ padding: '10px 20px', borderRadius: '8px', border: '1px solid #ccc', background: '#f5f5f5', cursor: 'pointer' }}>Cancel</button>
+                <button type="submit" className="page-action-btn" style={{ padding: '10px 20px', borderRadius: '8px' }}>Add Staff</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+    </>
   );
 };
 

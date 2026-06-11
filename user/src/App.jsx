@@ -6,8 +6,10 @@ import AppRoutes from './routes/AppRoutes';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import BottomNav from './components/BottomNav';
+import StickyCartSummary from './components/StickyCartSummary';
 import ModalHost from './components/ModalHost';
 import OfferPopup from './components/OfferPopup';
+import ErrorBoundary from './components/ErrorBoundary';
 import './App.css';
 import './premium.css';
 import './responsive.css';
@@ -27,9 +29,12 @@ function AppContent() {
     <div className="app-shell">
       {showMainLayout && <Navbar />}
       <main className="main-content">
-        <AppRoutes />
+        <ErrorBoundary>
+          <AppRoutes />
+        </ErrorBoundary>
       </main>
       {showFooter && <Footer />}
+      {showMainLayout && <StickyCartSummary />}
       {showMainLayout && <BottomNav />}
       {showMainLayout && <ModalHost />}
       {showMainLayout && <OfferPopup />}

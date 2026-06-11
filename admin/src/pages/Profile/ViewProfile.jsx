@@ -147,7 +147,7 @@ const ViewProfile = () => {
                     </div>
                     <div style={{ display: 'grid', gridTemplateColumns: '120px 1fr', gap: '10px' }}>
                       <span style={{ color: '#888', fontWeight: '600' }}>Business Phone</span>
-                      <span>+91 98765 43210</span>
+                      <span>+91 72009 42596</span>
                     </div>
                     <div style={{ display: 'grid', gridTemplateColumns: '120px 1fr', gap: '10px' }}>
                       <span style={{ color: '#888', fontWeight: '600' }}>Address</span>

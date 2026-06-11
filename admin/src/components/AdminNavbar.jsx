@@ -31,7 +31,9 @@ import {
   PlusCircle,
   Tag,
   Users,
-  Globe
+  Globe,
+  Volume2,
+  VolumeX
 } from 'lucide-react';
 
 const AdminNavbar = () => {
@@ -87,17 +89,34 @@ const AdminNavbar = () => {
     fetchStats();
   }, []);
 
+  const isFirstFetch = useRef(true);
+  const prevUnreadNotifs = useRef(0);
+  const prevUnreadMsgs = useRef(0);
+
   // Polling API for notifications and messages
   useEffect(() => {
-    let prevUnreadNotifs = 0;
-    let prevUnreadMsgs = 0;
 
     const playNotificationSound = () => {
       try {
-        // Use a generic valid notification sound
-        const beepSound = new Audio('https://actions.google.com/sounds/v1/alarms/beep_short.ogg');
-        beepSound.play().catch(e => console.log('Audio play failed (browser auto-play policy):', e));
-      } catch(e) {}
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const oscillator = audioCtx.createOscillator();
+        const gainNode = audioCtx.createGain();
+        
+        oscillator.type = 'sine';
+        oscillator.frequency.setValueAtTime(880, audioCtx.currentTime); // A5
+        oscillator.frequency.exponentialRampToValueAtTime(1760, audioCtx.currentTime + 0.1);
+        
+        gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.3);
+        
+        oscillator.connect(gainNode);
+        gainNode.connect(audioCtx.destination);
+        
+        oscillator.start();
+        oscillator.stop(audioCtx.currentTime + 0.3);
+      } catch(e) {
+        console.error('Audio play failed:', e);
+      }
     };
 
     const fetchInbox = async () => {
@@ -114,10 +133,10 @@ const AdminNavbar = () => {
           setNotifications(fetchedNotifs);
           
           const currentUnread = fetchedNotifs.filter(n => !n.read).length;
-          if (currentUnread > prevUnreadNotifs) {
+          if (!isFirstFetch.current && currentUnread > prevUnreadNotifs.current) {
             playNotificationSound();
           }
-          prevUnreadNotifs = currentUnread;
+          prevUnreadNotifs.current = currentUnread;
         }
 
         const msgRes = await apiClient.get('/contact');
@@ -133,11 +152,13 @@ const AdminNavbar = () => {
           setMessages(fetchedMsgs);
 
           const currentUnreadMsg = fetchedMsgs.filter(m => !m.read).length;
-          if (currentUnreadMsg > prevUnreadMsgs) {
+          if (!isFirstFetch.current && currentUnreadMsg > prevUnreadMsgs.current) {
             playNotificationSound();
           }
-          prevUnreadMsgs = currentUnreadMsg;
+          prevUnreadMsgs.current = currentUnreadMsg;
         }
+        
+        isFirstFetch.current = false;
       } catch (err) {
         console.error("Failed to fetch inbox:", err);
       }
@@ -192,6 +213,27 @@ const AdminNavbar = () => {
   };
 
   // Notification functions
+  const handleNotificationClick = async (notif, e) => {
+    try {
+      if (!notif.read) {
+        await apiClient.put(`/notifications/${notif.id}/read`);
+        setNotifications(prev => prev.map(n => n.id === notif.id ? { ...n, read: true } : n));
+      }
+    } catch(err) { console.error("Error marking read:", err); }
+
+    setIsNotificationsOpen(false);
+    
+    const msgLower = notif.message ? notif.message.toLowerCase() : "";
+    
+    if (notif.type === "Bulk Order Requests" || msgLower.includes("bulk order")) {
+      window.location.href = '/admin/bulk-orders';
+    } else if (notif.type === "New Orders" || msgLower.includes("new order")) {
+      window.location.href = '/admin/orders';
+    } else if (msgLower.includes("message") || msgLower.includes("contact")) {
+      setIsMessagesOpen(true);
+    }
+  };
+
   const handleMarkNotificationRead = async (id, e) => {
     if (e) e.stopPropagation();
     try {
@@ -200,14 +242,19 @@ const AdminNavbar = () => {
     } catch(err) { console.error(err); }
   };
 
-  const handleMarkAllNotificationsRead = () => {
+  const handleMarkAllNotificationsRead = async () => {
+    setIsNotificationsOpen(false);
     setNotifications(prev => prev.map(n => ({ ...n, read: true })));
+    try {
+      await apiClient.put('/notifications/mark-all-read');
+    } catch(err) { console.error(err); }
   };
 
   const handleClearNotifications = async () => {
+    setIsNotificationsOpen(false);
+    setNotifications([]);
     try {
       await apiClient.delete('/notifications/clear');
-      setNotifications([]);
     } catch(err) { console.error(err); }
   };
 
@@ -367,12 +414,12 @@ const AdminNavbar = () => {
                 </div>
               )}
             </div>
-            <div className="dropdown-panel-footer">
-              <span>Inbox Operations</span>
+            <div className="dropdown-panel-footer" style={{ display: 'flex', justifyContent: 'center' }}>
               <button className="dropdown-footer-btn" onClick={async () => {
+                setIsMessagesOpen(false);
+                setMessages([]);
                 try {
                   await apiClient.delete('/contact/clear');
-                  setMessages([]);
                 } catch(err) { console.error(err); }
               }}>Clear Inbox</button>
             </div>
@@ -423,8 +470,8 @@ const AdminNavbar = () => {
                     <div 
                       key={notif.id} 
                       className={`notification-item ${!notif.read ? 'unread' : ''}`}
-                      onClick={() => handleMarkNotificationRead(notif.id)}
-                      style={{ display: 'flex', gap: '12px', padding: '12px' }}
+                      onClick={(e) => handleNotificationClick(notif, e)}
+                      style={{ display: 'flex', gap: '12px', padding: '12px', cursor: 'pointer' }}
                     >
                       <div className="notif-icon" style={{ backgroundColor: bgClass, display: 'flex', alignItems: 'center', justifyContent: 'center', width: '32px', height: '32px', borderRadius: '50%', flexShrink: 0 }}>
                         <IconComponent size={14} style={{ color: iconColor }} />
@@ -443,12 +490,9 @@ const AdminNavbar = () => {
                 </div>
               )}
             </div>
-            <div className="dropdown-panel-footer" style={{ display: 'flex', justifyContent: 'space-between' }}>
+            <div className="dropdown-panel-footer" style={{ display: 'flex', justifyContent: 'center', gap: '15px' }}>
               <button className="dropdown-footer-btn" onClick={handleMarkAllNotificationsRead}>Mark as Read</button>
-              <button className="dropdown-footer-btn" onClick={handleClearNotifications}>Clear</button>
-              <Link to="/admin/notifications" className="dropdown-footer-btn" onClick={() => setIsNotificationsOpen(false)}>
-                View All
-              </Link>
+              <button className="dropdown-footer-btn" onClick={handleClearNotifications}>Clear All</button>
             </div>
           </div>
         </div>
@@ -492,7 +536,7 @@ const AdminNavbar = () => {
                 </div>
                 <div className="profile-info-item" style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '12px' }}>
                   <Phone size={14} className="text-secondary" />
-                  <span>{user?.phone || "+91 98765 43210"}</span>
+                  <span>{user?.phone || "+91 72009 42596"}</span>
                 </div>
                 <div className="profile-info-item" style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '12px' }}>
                   <Clock size={14} className="text-secondary" />
@@ -566,10 +610,6 @@ const AdminNavbar = () => {
         </div>
       )}
 
-      {/* Global Mobile FAB (Floating Action Button) */}
-      <Link to="/admin/orders" className="mobile-fab mobile-only" title="Quick POS Entry">
-        <ShoppingCart size={24} />
-      </Link>
 
       {/* Global Search Modal for Mobile */}
       <GlobalSearchModal isOpen={isSearchModalOpen} onClose={() => setIsSearchModalOpen(false)} />

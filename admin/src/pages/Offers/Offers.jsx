@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Plus, Edit2, Trash2, Tag, Gift, Copy, EyeOff, Save, X, BarChart3, TrendingUp, Filter } from 'lucide-react';
-import { Chart } from 'chart.js/auto';
 import apiClient from '../../services/api';
 import './Offers.css';
 import '../../assets/styles/tables.css';
@@ -35,9 +34,6 @@ const Offers = () => {
   };
   const [couponFormData, setCouponFormData] = useState(initialCouponForm);
 
-  // Chart Ref
-  const analyticsCanvasRef = useRef(null);
-  const analyticsChartInstanceRef = useRef(null);
 
   useEffect(() => {
     fetchData();
@@ -61,49 +57,6 @@ const Offers = () => {
     }
   };
 
-  // Build Charts when switching to Offers tab if data exists
-  useEffect(() => {
-    if (activeTab === 'OFFERS' && !loading && analyticsCanvasRef.current) {
-      if (analyticsChartInstanceRef.current) analyticsChartInstanceRef.current.destroy();
-      const ctx = analyticsCanvasRef.current.getContext('2d');
-      
-      const labels = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-      const views = [120, 150, 180, 140, 210, 250, 300];
-      const conversions = [12, 18, 25, 15, 30, 45, 50];
-
-      analyticsChartInstanceRef.current = new Chart(ctx, {
-        type: 'bar',
-        data: {
-          labels,
-          datasets: [
-            {
-              label: 'Offer Views',
-              data: views,
-              backgroundColor: '#C9AB81',
-              borderRadius: 4
-            },
-            {
-              label: 'Conversions',
-              data: conversions,
-              backgroundColor: '#3F9065',
-              borderRadius: 4
-            }
-          ]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: { legend: { position: 'top' } }
-        }
-      });
-    }
-    return () => {
-      if (analyticsChartInstanceRef.current) {
-        analyticsChartInstanceRef.current.destroy();
-        analyticsChartInstanceRef.current = null;
-      }
-    };
-  }, [activeTab, loading, offers]);
 
   // --- OFFER MODAL HANDLERS ---
   const handleOpenOfferModal = (offer = null) => {
@@ -289,13 +242,6 @@ const Offers = () => {
                 </div>
               </div>
 
-              {/* Offers Analytics Chart */}
-              <div className="premium-card">
-                <div className="premium-card-title"><BarChart3 size={18} /> Offer Analytics</div>
-                <div className="chart-container" style={{ height: '250px' }}>
-                  <canvas ref={analyticsCanvasRef}></canvas>
-                </div>
-              </div>
 
               {/* Offers Table */}
               <div className="premium-card" style={{ marginTop: '20px' }}>

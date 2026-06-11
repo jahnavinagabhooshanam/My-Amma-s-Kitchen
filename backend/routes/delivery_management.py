@@ -68,6 +68,21 @@ def update_delivery_partner(partner_id):
         "partner": partner.to_dict()
     }), 200
 
+@delivery_management_bp.route('/<int:partner_id>', methods=['DELETE'])
+def delete_delivery_partner(partner_id):
+    auth_header = request.headers.get('Authorization')
+    if not check_role_auth(auth_header, ['admin', 'manager']):
+        return jsonify({"error": "Admin or Manager access required"}), 403
+
+    partner = DeliveryPartner.query.get(partner_id)
+    if not partner:
+        return jsonify({"error": "Delivery partner not found"}), 404
+
+    db.session.delete(partner)
+    db.session.commit()
+
+    return jsonify({"message": "Delivery partner unregistered successfully"}), 200
+
 @delivery_management_bp.route('/<int:partner_id>/assign', methods=['PUT'])
 def assign_order_to_partner(partner_id):
     auth_header = request.headers.get('Authorization')

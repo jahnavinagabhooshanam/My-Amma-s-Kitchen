@@ -52,6 +52,7 @@ const Contact = lazy(() => import('../pages/Contact/Contact'));
 const Certificates = lazy(() => import('../pages/Certificates/Certificates'));
 const Cart = lazy(() => import('../pages/Cart/Cart'));
 const Wishlist = lazy(() => import('../pages/Wishlist/Wishlist'));
+const SavedForLater = lazy(() => import('../pages/SavedForLater/SavedForLater'));
 const CustomerOrders = lazy(() => import('../pages/CustomerOrders/CustomerOrders'));
 const Menu = lazy(() => import('../pages/Menu/Menu'));
 const Offers = lazy(() => import('../pages/Offers/Offers'));
@@ -71,15 +72,19 @@ const AppRoutes = () => {
         <Route path="/forgot-password" element={<PublicRoute><ForgotPassword /></PublicRoute>} />
         <Route path="/verify-otp" element={<PublicRoute><OTPVerification /></PublicRoute>} />
 
+        {/* Public Customer Routes */}
+        <Route path="/" element={<CustomerHome />} />
+        <Route path="/home" element={<Navigate to="/" replace />} />
+        <Route path="/menu" element={<Menu />} />
+        <Route path="/ready-to-eat" element={<ReadyToEat />} />
+        <Route path="/ready-to-cook" element={<ReadyToCook />} />
+        <Route path="/batter-products" element={<BatterProducts />} />
+        <Route path="/bulk-orders" element={<BulkOrders />} />
+        <Route path="/certificates" element={<Certificates />} />
+        <Route path="/contact" element={<Contact />} />
+        <Route path="/offers" element={<Offers />} />
+
         {/* Protected Customer Routes */}
-        <Route path="/" element={<ProtectedRoute><CustomerHome /></ProtectedRoute>} />
-        <Route path="/home" element={<ProtectedRoute><Navigate to="/" replace /></ProtectedRoute>} />
-        <Route path="/menu" element={<ProtectedRoute><Menu /></ProtectedRoute>} />
-        <Route path="/ready-to-eat" element={<ProtectedRoute><ReadyToEat /></ProtectedRoute>} />
-        <Route path="/ready-to-cook" element={<ProtectedRoute><ReadyToCook /></ProtectedRoute>} />
-        <Route path="/bulk-orders" element={<ProtectedRoute><BulkOrders /></ProtectedRoute>} />
-        <Route path="/certificates" element={<ProtectedRoute><Certificates /></ProtectedRoute>} />
-        <Route path="/contact" element={<ProtectedRoute><Contact /></ProtectedRoute>} />
         <Route path="/cart" element={<ProtectedRoute><Cart /></ProtectedRoute>} />
         <Route path="/checkout/address" element={<ProtectedRoute><CheckoutAddress /></ProtectedRoute>} />
         <Route path="/checkout/review" element={<ProtectedRoute><OrderReview /></ProtectedRoute>} />
@@ -87,8 +92,7 @@ const AppRoutes = () => {
         <Route path="/track-order/:id" element={<ProtectedRoute><TrackOrder /></ProtectedRoute>} />
         <Route path="/order/:id" element={<ProtectedRoute><OrderDetails /></ProtectedRoute>} />
         <Route path="/wishlist" element={<ProtectedRoute><Wishlist /></ProtectedRoute>} />
-        <Route path="/offers" element={<ProtectedRoute><Offers /></ProtectedRoute>} />
-        
+        <Route path="/saved-for-later" element={<ProtectedRoute><SavedForLater /></ProtectedRoute>} />
         <Route path="/complete-profile" element={<ProtectedRoute><CompleteProfile /></ProtectedRoute>} />
         <Route path="/account" element={<ProtectedRoute><UserProfile /></ProtectedRoute>} />
         <Route path="/profile" element={<ProtectedRoute><Navigate to="/account" replace /></ProtectedRoute>} />
@@ -103,8 +107,7 @@ const AppRoutes = () => {
         />
 
         {/* Fallback route */}
-        {/* Fallback route */}
-        <Route path="*" element={<ProtectedRoute><CustomerHome /></ProtectedRoute>} />
+        <Route path="*" element={<CustomerHome />} />
       </Routes>
     </Suspense>
   );

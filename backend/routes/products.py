@@ -242,7 +242,7 @@ import os
 from flask import current_app
 from werkzeug.utils import secure_filename
 
-ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'svg'}
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'svg', 'webp'}
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
@@ -251,13 +251,16 @@ def allowed_file(filename):
 def upload_product_image():
     auth_header = request.headers.get('Authorization')
     if not check_admin_auth(auth_header):
+        print("UPLOAD FAILED: Admin access required")
         return jsonify({"error": "Admin access required"}), 403
 
     if 'file' not in request.files:
+        print("UPLOAD FAILED: No file part in request. Files received:", list(request.files.keys()))
         return jsonify({"error": "No file part in request"}), 400
 
     file = request.files['file']
     if file.filename == '':
+        print("UPLOAD FAILED: No selected file")
         return jsonify({"error": "No selected file"}), 400
 
     if file and allowed_file(file.filename):
@@ -273,7 +276,8 @@ def upload_product_image():
                 new_size = (1000, int(img.height * ratio))
                 img = img.resize(new_size, Image.Resampling.LANCZOS)
             img.save(upload_path, 'WEBP', quality=85)
-        except Exception:
+        except Exception as e:
+            print("UPLOAD PILLOW CONVERSION EXCEPTION:", e)
             file.seek(0)
             file.save(upload_path)
 
@@ -284,6 +288,7 @@ def upload_product_image():
             "image_url": image_url
         }), 200
 
+    print("UPLOAD FAILED: File extension not allowed for file:", file.filename)
     return jsonify({"error": "File extension not allowed"}), 400
 
 # Batter Product Variant CRUD

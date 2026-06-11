@@ -16,7 +16,7 @@ const EditProfile = () => {
     phone: '',
     role: '',
     business_email: 'info@ammaskitchen.com',
-    business_phone: '+91 98765 43210',
+    business_phone: '+91 72009 42596',
     business_address: '123 Food Street, Culinary District, FL 33021'
   });
   

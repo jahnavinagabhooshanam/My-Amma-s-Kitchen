@@ -22,7 +22,7 @@ with app.app_context():
         admin = User(
             name='Admin User',
             email='ammuluskitchen57@gmail.com',
-            phone='9876543210',
+            phone='7200942596',
             password_hash=generate_password_hash('Ammulus@7255'),
             role='admin',
             status='Active',

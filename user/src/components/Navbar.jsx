@@ -23,10 +23,11 @@ const Navbar = () => {
     social_facebook: "https://www.facebook.com/profile.php?id=61590451811686",
     social_instagram: "https://www.instagram.com/ammuluskitchen_?igsh=MzE1dHRqNGQ2MGZx",
     social_twitter: "https://x.com/ammuluskitchen",
-    whatsapp_number: "+919876543210"
+    whatsapp_number: "+917200942596"
   });
 
   const [notifications, setNotifications] = useState([]);
+  const [showNotifications, setShowNotifications] = useState(false);
   const [activeBannerOffer, setActiveBannerOffer] = useState(null);
   
   // Location States
@@ -130,6 +131,15 @@ const Navbar = () => {
   const handleToggleCart = () => setCartOpen(!cartOpen);
   const handleToggleMobileMenu = () => setMobileMenuOpen(!mobileMenuOpen);
 
+  const handleNotificationClick = async (id) => {
+    try {
+      await apiClient.put(`/notifications/${id}/read`);
+      setNotifications(prev => prev.map(n => n.id === id ? { ...n, is_read: true } : n));
+    } catch (err) {
+      console.error("Failed to mark notification as read:", err);
+    }
+  };
+
   const handleCheckoutClick = () => {
     setCartOpen(false);
     navigate('/cart');
@@ -185,6 +195,7 @@ const Navbar = () => {
       else if (path === '/certificates') title = "Certificates";
       else if (path === '/contact') title = "Contact";
       else if (path === '/wishlist') title = "Wishlist";
+      else if (path === '/saved-for-later') title = "Saved For Later";
       else if (path === '/login') title = "Login";
       else if (path === '/register') title = "Register";
 
@@ -301,19 +312,24 @@ const Navbar = () => {
                       {user ? (
                         <>
                           <div className="dropdown me-3">
-                            <button className="premium-user-action" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <button className="premium-user-action" type="button" onClick={() => setShowNotifications(!showNotifications)}>
                               <span className="badge bg-danger" style={{ position: 'absolute', top: -5, right: -5, fontSize: '10px' }}>
                                 {notifications.filter(n => !n.is_read).length > 0 ? notifications.filter(n => !n.is_read).length : ''}
                               </span>
                               <i className="fa-regular fa-bell"></i>
                             </button>
-                            <ul className="dropdown-menu dropdown-menu-end p-2" style={{ width: '300px', maxHeight: '400px', overflowY: 'auto' }}>
+                            <ul className={`dropdown-menu dropdown-menu-end p-2 ${showNotifications ? 'show' : ''}`} style={{ width: '300px', maxHeight: '400px', overflowY: 'auto', position: 'absolute', top: '100%', right: '0' }}>
                               <h6 className="dropdown-header">Notifications</h6>
                               {notifications.length === 0 ? (
                                 <li className="text-center p-3 text-muted">No notifications</li>
                               ) : (
                                 notifications.map(notif => (
-                                  <li key={notif.id} className="border-bottom p-2" style={{ fontSize: '13px', backgroundColor: notif.is_read ? '#fff' : '#f8f9fa' }}>
+                                  <li 
+                                    key={notif.id} 
+                                    className="border-bottom p-2" 
+                                    style={{ fontSize: '13px', backgroundColor: notif.is_read ? '#fff' : '#f8f9fa', cursor: 'pointer' }}
+                                    onClick={() => handleNotificationClick(notif.id)}
+                                  >
                                     <div className="fw-bold text-primary">{notif.type.toUpperCase()}</div>
                                     <div>{notif.message}</div>
                                     <div className="text-muted" style={{ fontSize: '11px' }}>{new Date(notif.created_at).toLocaleString()}</div>
@@ -437,16 +453,9 @@ const Navbar = () => {
                      </svg>
                    </div>
                    
-                   {/* Amma's Text */}
-                   <div style={{ color: '#FFFFFF', fontSize: '28px', fontFamily: "'Playfair Display', Georgia, serif", fontWeight: '700', lineHeight: '1', letterSpacing: '0px', marginBottom: '8px', textShadow: '0 2px 8px rgba(0,0,0,0.2)' }}>
-                     Ammulu's
-                   </div>
-                   
-                   {/* KITCHEN with lines */}
-                   <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '10px' }}>
-                     <div style={{ width: '20px', height: '1px', background: 'rgba(245, 185, 65, 0.5)' }}></div>
-                     <div style={{ color: '#F5B941', fontSize: '10px', fontFamily: "'Inter', sans-serif", fontWeight: '800', letterSpacing: '4px', transform: 'translateX(2px)' }}>KITCHEN</div>
-                     <div style={{ width: '20px', height: '1px', background: 'rgba(245, 185, 65, 0.5)' }}></div>
+                   {/* Ammulu's Text */}
+                   <div style={{ color: '#FFFFFF', fontSize: '26px', fontFamily: "'Playfair Display', Georgia, serif", fontWeight: '700', lineHeight: '1', letterSpacing: '0px', marginBottom: '16px', textShadow: '0 2px 8px rgba(0,0,0,0.2)' }}>
+                     Ammulu's Kitchen
                    </div>
                    
                    {/* Tagline */}
@@ -496,9 +505,8 @@ const Navbar = () => {
                     })}
 
                     {user && [
-                      { to: '/account', icon: 'fas fa-user', text: 'PROFILE', color: '#4B0082', bg: 'rgba(75, 0, 130, 0.1)' },
-                      { to: '/orders', icon: 'fas fa-clipboard-list', text: 'MY ORDERS', color: '#1E90FF', bg: 'rgba(30, 144, 255, 0.1)' },
                       { to: '/wishlist', icon: 'fas fa-heart', text: 'WISHLIST', color: '#DC143C', bg: 'rgba(220, 20, 60, 0.1)' },
+                      { to: '/saved-for-later', icon: 'fas fa-bookmark', text: 'SAVE FOR LATER', color: '#2E8B57', bg: 'rgba(46, 139, 87, 0.1)' },
                     ].map((item, idx) => {
                       const active = location.pathname === item.to;
                       return (

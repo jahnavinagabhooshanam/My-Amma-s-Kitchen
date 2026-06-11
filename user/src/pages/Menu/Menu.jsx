@@ -1,9 +1,12 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { motion } from 'framer-motion';
-import { Star, Clock, Plus, Search, LayoutGrid } from 'lucide-react';
+import { Star, Clock, Plus, Minus, Search, LayoutGrid, Heart } from 'lucide-react';
 import apiClient from '../../services/api';
 import { useCart } from '../../context/CartContext';
+import wishlistService from '../../services/wishlistService';
 import DishDetailsModal from './DishDetailsModal';
+import OptimizedImage from '../../components/OptimizedImage';
+import SEO from '../../components/SEO';
 import './Menu.css';
 
 const resolveImg = (path) => {
@@ -46,13 +49,32 @@ const CATEGORY_ICONS = {
 };
 
 const Menu = () => {
-  const { addToCart } = useCart();
+  const { cartItems, addToCart, updateQuantity } = useCart();
   
   const [loading, setLoading] = useState(true);
   const [allProducts, setAllProducts] = useState([]);
   const [activeCategory, setActiveCategory] = useState('All');
   const [selectedDish, setSelectedDish] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
+  const [dietFilter, setDietFilter] = useState('All');
+  const [wishlistedItems, setWishlistedItems] = useState(new Set());
+
+  const handleWishlist = async (e, item) => {
+    e.stopPropagation();
+    try {
+      await wishlistService.add({ product_id: item.id });
+      setWishlistedItems(prev => new Set([...prev, item.id]));
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  // Extract query param if any
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const q = params.get('search');
+    if (q) setSearchQuery(q);
+  }, []);
 
   useEffect(() => {
     const load = async () => {
@@ -103,15 +125,23 @@ const Menu = () => {
         p.name?.toLowerCase().includes(q) || p.description?.toLowerCase().includes(q)
       );
     }
+    if (dietFilter !== 'All') {
+      filtered = filtered.filter(p => {
+        const type = (p.diet_type || '').toLowerCase();
+        if (dietFilter === 'Veg') return type === 'veg' || type === 'vegetarian';
+        if (dietFilter === 'Non-Veg') return type === 'non-veg' || type === 'non-vegetarian';
+        return true;
+      });
+    }
     return filtered;
-  }, [allProducts, activeCategory, searchQuery]);
+  }, [allProducts, activeCategory, searchQuery, dietFilter]);
 
   return (
-    <div className="app-menu-container pb-5 mb-5" style={{ background: '#FAF9F5', minHeight: '100vh' }}>
+    <div className="app-menu-container pb-20" style={{ background: '#FAF9F5', minHeight: '100vh' }}>
       
-      {/* Search Bar - visible only on desktop since mobile has header search, but let's keep a functional one */}
-      <div className="app-menu-search d-none d-lg-block" style={{ padding: '20px', background: 'white' }}>
-        <div className="search-bar-app" style={{ maxWidth: '600px', margin: '0 auto' }}>
+      {/* Search Bar */}
+      <div className="app-menu-search d-none d-lg-block">
+        <div className="search-bar-app">
           <Search size={18} color="var(--text-muted)" />
           <input 
             type="text" 
@@ -122,37 +152,30 @@ const Menu = () => {
         </div>
       </div>
 
-      {/* Horizontal Filter Chips */}
-      <div className="app-menu-filters" style={{ background: 'white', padding: '15px 20px', position: 'sticky', top: 0, zIndex: 100, borderBottom: '1px solid #EAEAEA' }}>
-        <div style={{ display: 'flex', gap: 12, overflowX: 'auto', scrollbarWidth: 'none', paddingBottom: 5 }}>
-          {categories.map(cat => (
-            <button
-              key={cat}
-              onClick={() => setActiveCategory(cat)}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '6px',
-                padding: '8px 20px',
-                borderRadius: '20px',
-                border: activeCategory === cat ? 'none' : '1px solid #EAEAEA',
-                background: activeCategory === cat ? 'var(--primary-color)' : 'white',
-                color: activeCategory === cat ? 'white' : 'var(--text-dark)',
-                fontWeight: 600,
-                fontSize: 13,
-                whiteSpace: 'nowrap',
-                transition: '0.2s ease'
-              }}
-            >
-              {cat === 'All' ? <LayoutGrid size={14} /> : (CATEGORY_ICONS[cat] && <span style={{fontSize: 14}}>{CATEGORY_ICONS[cat]}</span>)}
-              {cat}
-            </button>
-          ))}
-        </div>
+
+      <SEO title="Our Menu | Ammulu's Kitchen" description="Explore our extensive menu of authentic South Indian vegetarian dishes, fresh batters, and ready-to-eat meals." />
+      
+      {/* Filters Sidebar for Desktop */}
+      <div className="diet-filters-container" style={{ padding: '0 20px', marginTop: '10px', display: 'flex', gap: '10px' }}>
+        <button 
+          onClick={() => setDietFilter('All')} 
+          style={{ padding: '6px 16px', borderRadius: '20px', border: dietFilter === 'All' ? 'none' : '1px solid #ddd', background: dietFilter === 'All' ? '#2E8B57' : 'white', color: dietFilter === 'All' ? 'white' : '#666', fontSize: '13px', fontWeight: '600', transition: 'all 0.2s' }}>
+          All
+        </button>
+        <button 
+          onClick={() => setDietFilter('Veg')} 
+          style={{ padding: '6px 16px', borderRadius: '20px', border: dietFilter === 'Veg' ? 'none' : '1px solid #ddd', background: dietFilter === 'Veg' ? '#2E8B57' : 'white', color: dietFilter === 'Veg' ? 'white' : '#666', fontSize: '13px', fontWeight: '600', display: 'flex', alignItems: 'center', gap: '6px', transition: 'all 0.2s' }}>
+          <div className={`diet-indicator veg ${dietFilter === 'Veg' ? 'active-filter' : ''}`} style={{ position: 'relative', margin: 0, transform: 'scale(0.8)', borderColor: dietFilter === 'Veg' ? 'white' : '' }}><div className="dot" style={{ backgroundColor: dietFilter === 'Veg' ? 'white' : '' }}></div></div> Veg
+        </button>
+        <button 
+          onClick={() => setDietFilter('Non-Veg')} 
+          style={{ padding: '6px 16px', borderRadius: '20px', border: dietFilter === 'Non-Veg' ? 'none' : '1px solid #ddd', background: dietFilter === 'Non-Veg' ? '#E84C3D' : 'white', color: dietFilter === 'Non-Veg' ? 'white' : '#666', fontSize: '13px', fontWeight: '600', display: 'flex', alignItems: 'center', gap: '6px', transition: 'all 0.2s' }}>
+          <div className={`diet-indicator non-veg ${dietFilter === 'Non-Veg' ? 'active-filter' : ''}`} style={{ position: 'relative', margin: 0, transform: 'scale(0.8)', borderColor: dietFilter === 'Non-Veg' ? 'white' : '' }}><div className="dot" style={{ backgroundColor: dietFilter === 'Non-Veg' ? 'white' : '' }}></div></div> Non-Veg
+        </button>
       </div>
 
       {/* Product List */}
-      <div className="app-menu-list desktop-container" style={{ padding: '20px', margin: '0 auto' }}>
+      <div className="container" style={{ padding: '20px' }}>
         {loading ? (
           <div style={{ textAlign: 'center', padding: '50px 0' }}>
             <div className="spinner-border text-primary" role="status"></div>
@@ -163,51 +186,91 @@ const Menu = () => {
             <p className="text-muted">No dishes found matching your criteria.</p>
           </div>
         ) : (
-          <div className="app-food-list" style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
-            {filteredProducts.map((item, i) => (
-              <motion.div 
-                key={item.id || i}
-                initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}
-                className="app-food-card-horizontal" 
-                style={{ display: 'flex', flexDirection: 'row-reverse', gap: 15, padding: 15, background: 'white', borderRadius: 16, border: '1px solid #EAEAEA', boxShadow: '0 2px 8px rgba(0,0,0,0.02)' }}
-                onClick={() => setSelectedDish(item)}
-              >
-                <div className="menu-desktop-img" style={{ position: 'relative', width: 130, height: 130, flexShrink: 0 }}>
-                  <img src={resolveImg(item.image)} alt={item.name} style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: 12 }} />
-                  <button 
-                    onClick={(e) => { e.stopPropagation(); addToCart(item); }}
-                    disabled={item.in_stock === false}
-                    style={{ 
-                      position: 'absolute', bottom: -12, left: '50%', transform: 'translateX(-50%)', 
-                      background: 'white', color: item.in_stock === false ? 'gray' : 'var(--primary-color)', 
-                      border: '1px solid #EAEAEA', borderRadius: 8, padding: '6px 24px', 
-                      fontSize: 13, fontWeight: 800, boxShadow: '0 4px 10px rgba(0,0,0,0.1)',
-                      whiteSpace: 'nowrap'
-                    }}
-                  >
-                    {item.in_stock === false ? 'SOLD OUT' : 'ADD +'}
-                  </button>
-                </div>
+          <div className="modern-menu-grid">
+            {filteredProducts.map((item, i) => {
+              const cartItem = cartItems.find(c => c.id === item.id);
+              const qty = cartItem ? cartItem.quantity : 0;
+              const isNonVeg = item.diet_type?.toLowerCase() === 'non-veg';
+              // Randomly assign rating between 4.2 and 5.0 for demonstration if not provided
+              const rating = item.rating || (Math.random() * 0.8 + 4.2).toFixed(1);
 
-                <div className="menu-desktop-text" style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6 }}>
-                    <div className={`diet-dot ${item.diet_type?.toLowerCase() === 'non-veg' ? 'nonveg' : 'veg'}`} style={{ width: 12, height: 12, border: `1px solid ${item.diet_type?.toLowerCase() === 'non-veg' ? '#E74C3C' : '#27AE60'}`, padding: 2, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                      <div style={{ width: 6, height: 6, borderRadius: '50%', background: item.diet_type?.toLowerCase() === 'non-veg' ? '#E74C3C' : '#27AE60' }}></div>
+              return (
+                <motion.div 
+                  key={item.id || i}
+                  initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}
+                  className="modern-menu-card" 
+                  onClick={() => setSelectedDish(item)}
+                >
+                  <div className="card-image-section" style={{ position: 'relative' }}>
+                    <OptimizedImage src={item.image} alt={item.name} className="menu-item-img" />
+                    <button 
+                      onClick={(e) => handleWishlist(e, item)}
+                      style={{
+                        position: 'absolute',
+                        top: '10px',
+                        right: '10px',
+                        background: 'white',
+                        border: 'none',
+                        borderRadius: '50%',
+                        width: '32px',
+                        height: '32px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        boxShadow: '0 2px 5px rgba(0,0,0,0.1)',
+                        cursor: 'pointer',
+                        zIndex: 10
+                      }}
+                    >
+                      <Heart size={18} fill={wishlistedItems.has(item.id) ? '#DC143C' : 'none'} color={wishlistedItems.has(item.id) ? '#DC143C' : '#666'} />
+                    </button>
+                    
+                    {/* Badges */}
+                    <div className="badge-container">
+                      {item.is_bestseller && <span className="badge bestseller">Best Seller</span>}
+                      {Math.random() > 0.7 && <span className="badge fresh">Fresh Today</span>}
                     </div>
-                    {item.is_bestseller && <span style={{ fontSize: 10, color: '#E84C3D', fontWeight: 700, background: '#FDF2F0', padding: '2px 6px', borderRadius: 4 }}>BESTSELLER</span>}
                   </div>
-                  <h4 style={{ fontSize: 16, fontWeight: 700, marginBottom: 4, color: 'var(--text-dark)' }}>{item.name}</h4>
-                  <div style={{ fontSize: 15, fontWeight: 600, color: 'var(--text-dark)', marginBottom: 8 }}>Rs. {item.price}</div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: 11, color: 'var(--text-muted)', marginBottom: 8 }}>
-                    <span style={{ display: 'flex', alignItems: 'center', gap: 2, background: '#F5F5F0', padding: '2px 6px', borderRadius: 4 }}><Star size={10} fill="var(--warning)" color="var(--warning)"/> 4.5</span>
-                    <span><Clock size={10}/> 20-30 mins</span>
+
+                  <div className="card-info-section">
+                    <div className="title-row">
+                      <div className={`diet-indicator ${isNonVeg ? 'non-veg' : 'veg'}`}>
+                        <div className="dot"></div>
+                      </div>
+                      <h4 className="item-name">{item.name}</h4>
+                    </div>
+                    
+                    <p className="item-desc">
+                      {item.description || 'Authentic south indian delicacy prepared with premium ingredients.'}
+                    </p>
+
+                    <div className="meta-row">
+                      <div className="rating">
+                        <Star size={14} fill="#F5B941" color="#F5B941" /> 
+                        <span>{rating} <span style={{ color: '#999', fontWeight: 400, marginLeft: 4 }}>(128)</span></span>
+                      </div>
+                    </div>
+
+                    <div className="card-bottom-row" onClick={e => e.stopPropagation()}>
+                      <div className="price">₹{item.price}</div>
+                      <div className="action-container">
+                        {item.in_stock === false ? (
+                          <div className="btn-sold-out">SOLD OUT</div>
+                        ) : qty > 0 ? (
+                          <div className="qty-controls">
+                            <button className="qty-btn" onClick={() => updateQuantity(item.id, qty - 1)}><Minus size={16}/></button>
+                            <span className="qty-val">{qty}</span>
+                            <button className="qty-btn" onClick={() => updateQuantity(item.id, qty + 1)}><Plus size={16}/></button>
+                          </div>
+                        ) : (
+                          <button className="btn-add" onClick={() => addToCart(item, 1)}>+ Add</button>
+                        )}
+                      </div>
+                    </div>
                   </div>
-                  <p style={{ fontSize: 12, color: 'var(--text-muted)', lineHeight: 1.4, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
-                    {item.description || 'Authentic south indian delicacy prepared with love and premium ingredients.'}
-                  </p>
-                </div>
-              </motion.div>
-            ))}
+                </motion.div>
+              );
+            })}
           </div>
         )}
       </div>

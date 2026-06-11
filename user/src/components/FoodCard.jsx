@@ -1,9 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
+import { Heart } from 'lucide-react';
+import wishlistService from '../services/wishlistService';
 import maskBg from '../assets/img/bg/food-6-mask-bg.png';
 
-const resolveImagePath = (path) => {
+export const resolveImagePath = (path) => {
   if (!path) return '';
   let clean = path;
 
@@ -34,16 +36,50 @@ const resolveImagePath = (path) => {
 
 const FoodCard = ({ product }) => {
   const { addToCart } = useCart();
+  const [wishlisted, setWishlisted] = useState(false);
 
   const handleAdd = (e) => {
     e.preventDefault();
     addToCart(product, 1);
   };
 
+  const handleWishlist = async (e) => {
+    e.preventDefault();
+    try {
+      await wishlistService.add({ product_id: product.id });
+      setWishlisted(true);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   return (
     <div className="product-card-wrapper" style={{ height: '100%' }}>
       <div className="premium-product-card mobile-compact-card">
-        <img src={resolveImagePath(product.image)} alt={product.name} className="premium-product-img mobile-compact-img" />
+        <div style={{ position: 'relative' }}>
+          <img src={resolveImagePath(product.image)} alt={product.name} className="premium-product-img mobile-compact-img" />
+          <button 
+            onClick={handleWishlist}
+            style={{
+              position: 'absolute',
+              top: '10px',
+              right: '10px',
+              background: 'white',
+              border: 'none',
+              borderRadius: '50%',
+              width: '32px',
+              height: '32px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              boxShadow: '0 2px 5px rgba(0,0,0,0.1)',
+              cursor: 'pointer',
+              zIndex: 10
+            }}
+          >
+            <Heart size={18} fill={wishlisted ? '#DC143C' : 'none'} color={wishlisted ? '#DC143C' : '#666'} />
+          </button>
+        </div>
         <div className="premium-product-rating">
           <i className="fas fa-star"></i>
           <i className="fas fa-star"></i>
@@ -79,4 +115,3 @@ const FoodCard = ({ product }) => {
 
 const MemoizedFoodCard = React.memo(FoodCard);
 export default MemoizedFoodCard;
-export { resolveImagePath };

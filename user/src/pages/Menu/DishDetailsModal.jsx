@@ -1,26 +1,41 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Star, Heart, CheckCircle, Clock, Info } from 'lucide-react';
 import { useCart } from '../../context/CartContext';
+import SEO from '../../components/SEO';
 
 const DishDetailsModal = ({ dish, onClose, resolveImagePath }) => {
   const { addToCart } = useCart();
+  const [mounted, setMounted] = useState(false);
 
-  if (!dish) return null;
+  useEffect(() => {
+    setMounted(true);
+    return () => setMounted(false);
+  }, []);
 
-  return (
+  if (!mounted) return null;
+
+  return createPortal(
     <AnimatePresence>
-      <motion.div 
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        onClick={onClose}
-        style={{
-          position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
-          background: 'rgba(0,0,0, 0.6)', backdropFilter: 'blur(3px)',
-          zIndex: 9999, display: 'flex', alignItems: 'flex-end', justifyContent: 'center'
-        }}
-      >
+      {dish && (
+        <motion.div 
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          onClick={onClose}
+          style={{
+            position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
+            background: 'rgba(0,0,0, 0.6)', backdropFilter: 'blur(3px)',
+            zIndex: 999999, display: 'flex', alignItems: 'flex-end', justifyContent: 'center'
+          }}
+        >
+        <SEO 
+          schemaType="Product" 
+          schemaData={dish} 
+          title={dish.name} 
+          description={dish.description} 
+        />
         <motion.div 
           initial={{ y: '100%' }}
           animate={{ y: 0 }}
@@ -129,8 +144,10 @@ const DishDetailsModal = ({ dish, onClose, resolveImagePath }) => {
             </div>
           </div>
         </motion.div>
-      </motion.div>
-    </AnimatePresence>
+        </motion.div>
+      )}
+    </AnimatePresence>,
+    document.body
   );
 };
 

@@ -53,23 +53,7 @@ const CompleteProfile = () => {
     }
   }, [user]);
 
-  // Prevent back navigation if profile is not completed
-  useEffect(() => {
-    if (user && !user.profile_completed) {
-      window.history.pushState(null, '', window.location.href);
-      
-      const handlePopState = () => {
-        window.history.pushState(null, '', window.location.href);
-        setError("Please complete your profile to continue.");
-      };
-      
-      window.addEventListener('popstate', handlePopState);
-      
-      return () => {
-        window.removeEventListener('popstate', handlePopState);
-      };
-    }
-  }, [user]);
+  // Removed history trap to allow back navigation
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -105,13 +89,10 @@ const CompleteProfile = () => {
     setError('');
     
     // Validate mandatory fields
-    const requiredFields = [
-      'name', 'email', 'phone', 
-      'door_number', 'street_name', 'area', 'city', 'state', 'pincode'
-    ];
+    const requiredFields = ['name', 'email', 'phone'];
     for (const field of requiredFields) {
       if (!formData[field]) {
-        setError(`Please fill out all mandatory fields. Missing: ${field.replace('_', ' ')}`);
+        setError(`Please fill out ${field}.`);
         return;
       }
     }
@@ -216,7 +197,7 @@ const CompleteProfile = () => {
 
           <div className="auth-flex-row">
             <div className="form-group-single" style={{ flex: '1' }}>
-              <label style={{ fontSize: '0.85rem', color: 'rgba(255, 255, 255, 0.9)', fontWeight: '600', display: 'block', marginBottom: '6px' }}>Door Number *</label>
+              <label style={{ fontSize: '0.85rem', color: 'rgba(255, 255, 255, 0.9)', fontWeight: '600', display: 'block', marginBottom: '6px' }}>Door Number</label>
               <input 
                 type="text" 
                 name="door_number"
@@ -226,7 +207,7 @@ const CompleteProfile = () => {
               />
             </div>
             <div className="form-group-single" style={{ flex: '2' }}>
-              <label style={{ fontSize: '0.85rem', color: 'rgba(255, 255, 255, 0.9)', fontWeight: '600', display: 'block', marginBottom: '6px' }}>Street Name *</label>
+              <label style={{ fontSize: '0.85rem', color: 'rgba(255, 255, 255, 0.9)', fontWeight: '600', display: 'block', marginBottom: '6px' }}>Street Name</label>
               <input 
                 type="text" 
                 name="street_name"
@@ -239,7 +220,7 @@ const CompleteProfile = () => {
 
           <div className="auth-flex-row">
             <div className="form-group-single" style={{ flex: '1' }}>
-              <label style={{ fontSize: '0.85rem', color: 'rgba(255, 255, 255, 0.9)', fontWeight: '600', display: 'block', marginBottom: '6px' }}>Area / Locality *</label>
+              <label style={{ fontSize: '0.85rem', color: 'rgba(255, 255, 255, 0.9)', fontWeight: '600', display: 'block', marginBottom: '6px' }}>Area / Locality</label>
               <input 
                 type="text" 
                 name="area"
@@ -249,7 +230,7 @@ const CompleteProfile = () => {
               />
             </div>
             <div className="form-group-single" style={{ flex: '1' }}>
-              <label style={{ fontSize: '0.85rem', color: 'rgba(255, 255, 255, 0.9)', fontWeight: '600', display: 'block', marginBottom: '6px' }}>City *</label>
+              <label style={{ fontSize: '0.85rem', color: 'rgba(255, 255, 255, 0.9)', fontWeight: '600', display: 'block', marginBottom: '6px' }}>City</label>
               <input 
                 type="text" 
                 name="city"
@@ -262,7 +243,7 @@ const CompleteProfile = () => {
 
           <div className="auth-flex-row">
             <div className="form-group-single" style={{ flex: '1' }}>
-              <label style={{ fontSize: '0.85rem', color: 'rgba(255, 255, 255, 0.9)', fontWeight: '600', display: 'block', marginBottom: '6px' }}>State *</label>
+              <label style={{ fontSize: '0.85rem', color: 'rgba(255, 255, 255, 0.9)', fontWeight: '600', display: 'block', marginBottom: '6px' }}>State</label>
               <input 
                 type="text" 
                 name="state"
@@ -272,7 +253,7 @@ const CompleteProfile = () => {
               />
             </div>
             <div className="form-group-single" style={{ flex: '1' }}>
-              <label style={{ fontSize: '0.85rem', color: 'rgba(255, 255, 255, 0.9)', fontWeight: '600', display: 'block', marginBottom: '6px' }}>Pincode *</label>
+              <label style={{ fontSize: '0.85rem', color: 'rgba(255, 255, 255, 0.9)', fontWeight: '600', display: 'block', marginBottom: '6px' }}>Pincode</label>
               <input 
                 type="text" 
                 name="pincode"
@@ -356,9 +337,14 @@ const CompleteProfile = () => {
           </div>
         </div>
 
-        <button type="submit" className="auth-submit-btn" disabled={submitting || uploading} style={{ marginBottom: '10px' }}>
-          {submitting ? 'Saving details...' : 'Save & Continue'}
-        </button>
+        <div style={{ display: 'flex', gap: '15px', marginBottom: '10px' }}>
+          <button type="button" onClick={() => navigate(-1)} className="auth-submit-btn" style={{ flex: '1', backgroundColor: '#EAEAEA', color: 'var(--text-dark)' }}>
+            Back
+          </button>
+          <button type="submit" className="auth-submit-btn" disabled={submitting || uploading} style={{ flex: '2' }}>
+            {submitting ? 'Saving details...' : 'Save & Continue'}
+          </button>
+        </div>
       </form>
     </AuthLayout>
   );

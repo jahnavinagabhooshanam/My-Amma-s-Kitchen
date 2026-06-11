@@ -10,7 +10,7 @@ auth_bp = Blueprint('auth', __name__)
 
 def generate_token(user):
     payload = {
-        'exp': datetime.datetime.utcnow() + datetime.timedelta(days=7),
+        'exp': datetime.datetime.utcnow() + datetime.timedelta(days=30),
         'iat': datetime.datetime.utcnow(),
         'sub': user.id,
         'role': user.role
@@ -452,7 +452,7 @@ def exchange_firebase_token():
     if not user:
         # Create a lightweight user record for this Firebase account
         placeholder_pw = generate_password_hash(firebase_uid or '')
-        user = User(name=name or email, email=email, password_hash=placeholder_pw, role='customer', is_verified=True)
+        user = User(name=name or email, email=email, password_hash=placeholder_pw, role='customer', is_verified=True, profile_completed=False)
         db.session.add(user)
         db.session.commit()
 

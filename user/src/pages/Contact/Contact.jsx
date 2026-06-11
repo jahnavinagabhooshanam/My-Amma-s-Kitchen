@@ -32,8 +32,8 @@ const Contact = () => {
         
         {/* Minimized Hero */}
         <div className="contact-hero">
-          <span className="sub-title">Connect with Amma</span>
-          <h1 className="sec-title">We'd Love to Hear From You</h1>
+          <span className="sub-title">Connect with Ammulu</span>
+          <h1 className="sec-title">Connect with Ammulu</h1>
           <p>Have feedback on our slow stone-ground batter or homestyle breakfast? Reach our kitchen team directly.</p>
         </div>
 
@@ -50,7 +50,7 @@ const Contact = () => {
                   </div>
                   <div className="contact-card-info">
                     <h4>Kitchen Address</h4>
-                    <p>45, Temple Car Street, Mylapore, Chennai</p>
+                    <p>2nd Cross, Gopalappa Nagar, Near KCC Nagar, Hosur 635109</p>
                   </div>
                 </div>
                 <div className="contact-action-btn">
@@ -58,20 +58,20 @@ const Contact = () => {
                 </div>
               </a>
 
-              <a href="tel:+919876543210" className="contact-action-card">
+              <a href="tel:+917200942596" className="contact-action-card">
                 <div className="contact-card-left">
                   <div className="contact-card-icon icon-phone">
                     <Phone size={24} />
                   </div>
                   <div className="contact-card-info">
                     <h4>Call Support</h4>
-                    <p>+91 98765 43210 / 044-24641020</p>
+                    <p>+91 72009 42596</p>
                   </div>
                 </div>
                 <div className="contact-action-btn">Call Now</div>
               </a>
 
-              <a href="https://wa.me/919876543210" target="_blank" rel="noreferrer" className="contact-action-card">
+              <a href="https://wa.me/917200942596" target="_blank" rel="noreferrer" className="contact-action-card">
                 <div className="contact-card-left">
                   <div className="contact-card-icon icon-whatsapp">
                     <MessageCircle size={24} />
@@ -123,8 +123,8 @@ const Contact = () => {
                     
                     {/* Quick Contact Pills */}
                     <div className="quick-contact-pills">
-                      <a href="tel:+919876543210" className="quick-pill"><Phone size={14}/> Call Us</a>
-                      <a href="https://wa.me/919876543210" target="_blank" rel="noreferrer" className="quick-pill"><MessageCircle size={14}/> WhatsApp Us</a>
+                      <a href="tel:+917200942596" className="quick-pill"><Phone size={14}/> Call Us</a>
+                      <a href="https://wa.me/917200942596" target="_blank" rel="noreferrer" className="quick-pill"><MessageCircle size={14}/> WhatsApp Us</a>
                       <a href="mailto:ammuluskitchen57@gmail.com" className="quick-pill"><Mail size={14}/> Email Us</a>
                     </div>
                   </div>

@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Package, Clock, Calendar, Star, CheckCircle, Truck, ArrowLeft, RefreshCw, XCircle } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -150,7 +150,7 @@ const CustomerOrders = () => {
           </div>
         ) : filteredOrders.length === 0 ? (
           <div style={{ textAlign: 'center', padding: '60px 20px', background: 'white', borderRadius: 20, boxShadow: '0 2px 10px rgba(0,0,0,0.02)' }}>
-            <div style={{ fontSize: 60, marginBottom: 20 }}>½ï¸</div>
+            <div style={{ fontSize: 60, marginBottom: 20, color: 'var(--text-muted)' }}><Package size={60} /></div>
             <h3 style={{ fontSize: 18, fontWeight: 800, color: 'var(--text-dark)', marginBottom: 10 }}>No {activeTab.toLowerCase()} orders</h3>
             <p style={{ fontSize: 14, color: 'var(--text-muted)', marginBottom: 20 }}>You haven't ordered any homestyle goodness from Ammulu's Kitchen yet.</p>
             <button onClick={() => navigate('/menu')} style={{ padding: '14px 30px', background: 'var(--primary-color)', color: 'white', border: 'none', borderRadius: 16, fontWeight: 700 }}>
@@ -229,11 +229,11 @@ const CustomerOrders = () => {
                 <div style={{ marginBottom: 15 }}>
                   <label style={{ fontSize: 12, fontWeight: 700, color: 'var(--text-muted)', marginBottom: 6, display: 'block' }}>RATING</label>
                   <select value={reviewData.rating} onChange={(e) => setReviewData({...reviewData, rating: Number(e.target.value)})} required style={{ width: '100%', padding: '12px', background: '#F5F5F0', border: '1px solid #EAEAEA', borderRadius: 12, fontSize: 14 }}>
-                    <option value="5">â­â­â­â­â­ Awesome</option>
-                    <option value="4">â­â­â­â­ Good</option>
-                    <option value="3">â­â­â­ Okay</option>
-                    <option value="2">â­â­ Bad</option>
-                    <option value="1">â­ Terrible</option>
+                    <option value="5">5 - Awesome</option>
+                    <option value="4">4 - Good</option>
+                    <option value="3">3 - Okay</option>
+                    <option value="2">2 - Bad</option>
+                    <option value="1">1 - Terrible</option>
                   </select>
                 </div>
                 <div style={{ marginBottom: 20 }}>

@@ -29,7 +29,7 @@
 .cert-card h3 { margin: 0; font-size: 1.2rem; display:flex; align-items:center; gap:10px }
 .cert-card .verified { background: #50C878; color: white; padding: 4px 8px; border-radius: 12px; font-size: 0.75rem; }
 .cert-desc { color: var(--text-muted); margin: 0 0 8px 0; }
-.cert-actions { display:flex; gap: 12px; margin-top: auto; }
+.cert-actions { display:flex; gap: 12px; margin-top: auto; justify-content: center; width: 100%; }
 .btn { padding: 10px 16px; border-radius: 10px; font-weight: 600; cursor: pointer; border: none; }
 .btn.view { background: var(--primary-color); color: white; }
 .btn.download { background: transparent; border: 1px solid var(--border-color); color: var(--text-dark); }

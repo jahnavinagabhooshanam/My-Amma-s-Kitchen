@@ -17,7 +17,7 @@ const Footer = () => {
     social_instagram: 'https://www.instagram.com/ammuluskitchen_?igsh=MzE1dHRqNGQ2MGZx',
     social_twitter: 'https://x.com/ammuluskitchen',
     contact_email: 'ammuluskitchen57@gmail.com',
-    whatsapp_number: '+919876543210'
+    whatsapp_number: '+917200942596'
   });
   const [isOpen, setIsOpen] = useState(isBusinessOpen());
   const [openAccordion, setOpenAccordion] = useState(null);
@@ -121,7 +121,7 @@ const Footer = () => {
                 
                 <div className="pf-contact-block">
                   <div className="pf-contact-label"><i className="fas fa-phone-alt"></i> PHONE</div>
-                  <div className="pf-contact-text">+91 98765 43210</div>
+                  <div className="pf-contact-text">+91 72009 42596</div>
                 </div>
 
                 <div className="pf-contact-block">

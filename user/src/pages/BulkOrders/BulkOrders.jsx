@@ -153,7 +153,7 @@ const BulkOrders = () => {
                   </div>
                   <div className="form-group col-md-6">
                     <label className="form-label" style={{ fontWeight: '600' }}>Phone Number *</label>
-                    <input type="tel" className="form-control" required value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} placeholder="e.g. 9876543210" />
+                    <input type="tel" className="form-control" required value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} placeholder="e.g. 7200942596" />
                   </div>
                 </div>
 
@@ -243,14 +243,14 @@ const BulkOrders = () => {
                               </label>
                             </div>
                             {selectedItems[p.id] && (
-                              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                <span style={{ fontSize: '12px', color: '#666' }}>Qty:</span>
+                              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', minWidth: '120px', justifyContent: 'flex-end' }}>
+                                <span style={{ fontSize: '13px', color: '#555', fontWeight: '600' }}>Servings:</span>
                                 <input 
                                   type="number" 
                                   min="1"
                                   value={selectedItems[p.id].quantity}
                                   onChange={(e) => handleQuantityChange(p.id, parseInt(e.target.value) || 1)}
-                                  style={{ width: '70px', padding: '5px', borderRadius: '4px', border: '1px solid #ccc', textAlign: 'center' }}
+                                  style={{ width: '80px', padding: '6px', borderRadius: '6px', border: '1px solid #ccc', textAlign: 'center', fontSize: '14px', fontWeight: 'bold', color: '#333' }}
                                 />
                               </div>
                             )}
@@ -315,23 +315,7 @@ const BulkOrders = () => {
       </div>
 
 
-      {/* Testimonials */}
-      <div className="bulk-section" style={{ paddingBottom: '40px', paddingTop: '40px' }}>
-        <h2 className="bulk-section-title">What Our Guests Say</h2>
-        <p className="bulk-section-subtitle">Real experiences from our catered events</p>
-        
-        <div className="bulk-testimonials">
-          <div className="bulk-test-card">
-            <div className="bulk-test-quote">"The banana leaf service at our wedding was flawlessly executed. The food tasted exactly like authentic home cooking."</div>
-            <div className="bulk-test-author">
-              <div className="bulk-test-avatar">K</div>
-              <div>
-                <strong>Karthik & Priya</strong><br/><span style={{fontSize: '0.85rem', color: '#666'}}>Wedding Ceremony</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+
 
     </div>
   );

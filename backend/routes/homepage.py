@@ -4,6 +4,7 @@ from database.models import HomepageConfig, User
 from functools import wraps
 import jwt
 from config import Config
+from routes.auth import check_admin_auth
 
 homepage_bp = Blueprint('homepage', __name__)
 
@@ -37,30 +38,20 @@ DEFAULT_HOMEPAGE_CONFIG = {
         "btn_text": "Preview Menu",
         "is_active": True
     },
-    "amma_recommends": {
-        "breakfast_title": "Popular today in your area",
-        "lunch_title": "Based on homestyle lunch favorites",
-        "dinner_title": "Light and freshly prepared"
-    }
+    "amma_recommends": [
+        {"name": "Ghee Roast Dosa", "price": 130, "img": "/assets/Food images/Veg/Ghee Roast Dosa.webp"},
+        {"name": "Idli Sambar", "price": 90, "img": "/assets/Food images/Veg/Edli Sambar.webp"},
+        {"name": "Poori Dhal", "price": 100, "img": "/assets/Food images/Veg/Poori Dhal.webp"},
+        {"name": "Paneer Butter Masala", "price": 220, "img": "/assets/Food images/Veg/Paneer Pasanda.webp"}
+    ]
 }
 
 def admin_required(f):
     @wraps(f)
     def decorated(*args, **kwargs):
-        token = None
-        if 'Authorization' in request.headers:
-            token = request.headers['Authorization'].split(" ")[1]
-        
-        if not token:
-            return jsonify({"message": "Token is missing"}), 401
-            
-        try:
-            data = jwt.decode(token, Config.SECRET_KEY, algorithms=["HS256"])
-            user = User.query.get(data['user_id'])
-            if not user or user.role != 'admin':
-                return jsonify({"message": "Admin privileges required"}), 403
-        except Exception as e:
-            return jsonify({"message": "Token is invalid"}), 401
+        auth_header = request.headers.get('Authorization')
+        if not check_admin_auth(auth_header):
+            return jsonify({"message": "Admin privileges required or Token is invalid"}), 401
             
         return f(*args, **kwargs)
     return decorated

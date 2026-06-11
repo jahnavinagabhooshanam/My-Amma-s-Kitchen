@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import AdminSidebar from '../../components/AdminSidebar';
 import AdminNavbar from '../../components/AdminNavbar';
 import apiClient from '../../services/api';
@@ -23,6 +23,10 @@ const resolveImagePath = (path) => {
 
   if (clean.startsWith('http')) return clean;
 
+  const backendUrl = import.meta.env.VITE_API_BASE_URL 
+    ? import.meta.env.VITE_API_BASE_URL.replace('/api', '') 
+    : 'http://127.0.0.1:5000';
+
   // Route backend-provided admin assets or local relative assets to the backend server
   if (clean.startsWith('/assets/') || clean.startsWith('assets/') || clean.startsWith('/api/assets/')) {
     if (clean.startsWith('/api/assets/')) {
@@ -32,13 +36,13 @@ const resolveImagePath = (path) => {
     } else if (clean.startsWith('/assets/')) {
       clean = clean.substring(8);
     }
-    return `http://127.0.0.1:5000/assets/${clean}`;
+    return `${backendUrl}/assets/${clean}`;
   }
 
   // Handle uploaded files
   if (clean.startsWith('/uploads/') || clean.startsWith('uploads/')) {
     if (clean.startsWith('/')) clean = clean.substring(1);
-    return `http://127.0.0.1:5000/${clean}`;
+    return `${backendUrl}/${clean}`;
   }
 
   return clean;
