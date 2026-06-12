@@ -36,8 +36,8 @@ const Login = () => {
   return (
     <AuthLayout isSingle={true}>
       <div className="auth-single-header">
-        <h1 className="auth-title">Log in to your Account</h1>
-        <p className="auth-subtitle">Welcome back! Select method to log in</p>
+        <h1 className="auth-title">Welcome <span style={{ color: '#16A34A' }}>Back</span></h1>
+        <p className="auth-subtitle">Please login to your account to continue</p>
       </div>
 
       <div className="social-login-single">

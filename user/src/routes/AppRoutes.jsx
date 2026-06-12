@@ -61,6 +61,8 @@ const OrderReview = lazy(() => import('../pages/Checkout/OrderReview'));
 const OrderSuccess = lazy(() => import('../pages/Checkout/OrderSuccess'));
 const TrackOrder = lazy(() => import('../pages/Orders/TrackOrder'));
 const OrderDetails = lazy(() => import('../pages/Orders/OrderDetails'));
+const NotFound = lazy(() => import('../pages/NotFound/NotFound'));
+const ProductDetail = lazy(() => import('../pages/ProductDetail/ProductDetail'));
 
 const AppRoutes = () => {
   return (
@@ -83,6 +85,7 @@ const AppRoutes = () => {
         <Route path="/certificates" element={<Certificates />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/offers" element={<Offers />} />
+        <Route path="/product/:id" element={<ProductDetail />} />
 
         {/* Protected Customer Routes */}
         <Route path="/cart" element={<ProtectedRoute><Cart /></ProtectedRoute>} />
@@ -106,8 +109,8 @@ const AppRoutes = () => {
           } 
         />
 
-        {/* Fallback route */}
-        <Route path="*" element={<CustomerHome />} />
+        {/* Fallback route - 404 */}
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </Suspense>
   );

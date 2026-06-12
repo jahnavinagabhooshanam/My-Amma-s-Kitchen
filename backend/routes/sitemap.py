@@ -16,6 +16,8 @@ def sitemap():
         "/contact"
     ]
     
+    from database.models import Product
+    
     xml = ['<?xml version="1.0" encoding="UTF-8"?>']
     xml.append('<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">')
     
@@ -25,6 +27,17 @@ def sitemap():
         xml.append(f'    <changefreq>daily</changefreq>')
         xml.append(f'    <priority>0.8</priority>')
         xml.append(f'  </url>')
+        
+    try:
+        products = Product.query.filter_by(is_available=True).all()
+        for p in products:
+            xml.append(f'  <url>')
+            xml.append(f'    <loc>{base_url}/product/{p.id}</loc>')
+            xml.append(f'    <changefreq>weekly</changefreq>')
+            xml.append(f'    <priority>0.7</priority>')
+            xml.append(f'  </url>')
+    except Exception as e:
+        print(f"Error fetching products for sitemap: {e}")
         
     xml.append('</urlset>')
     

@@ -153,12 +153,12 @@ const Navbar = () => {
       return (
         <div className="app-header-home d-lg-none">
           <div className="app-header-row" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '15px' }}>
-            <button onClick={handleToggleMobileMenu} style={{ background: 'none', border: 'none', padding: 0, fontSize: '20px', color: 'var(--text-dark)' }}>
-              <i className="fas fa-bars"></i>
+            <button onClick={handleToggleMobileMenu} aria-label="Toggle Navigation Menu" style={{ background: 'none', border: 'none', padding: 0, fontSize: '20px', color: 'var(--text-dark)' }}>
+              <i className="fas fa-bars" aria-hidden="true"></i>
             </button>
-            <img src={logoImg} alt="Ammulu's Kitchen" className="app-logo" style={{ height: '60px', objectFit: 'contain' }} />
-            <Link to="/cart" className={`cart-btn-app ${isCartAnimating ? 'cart-bump' : ''}`} style={{ position: 'relative', fontSize: '22px', color: 'var(--text-dark)', textDecoration: 'none' }}>
-              <i className="fa-regular fa-cart-shopping"></i>
+            <img src={logoImg} alt="Ammulu's Kitchen Logo" className="app-logo" style={{ height: '60px', objectFit: 'contain' }} />
+            <Link to="/cart" aria-label={`View Shopping Cart, ${cartCount} items`} className={`cart-btn-app ${isCartAnimating ? 'cart-bump' : ''}`} style={{ position: 'relative', fontSize: '22px', color: 'var(--text-dark)', textDecoration: 'none' }}>
+              <i className="fa-regular fa-cart-shopping" aria-hidden="true"></i>
               {cartCount > 0 && <span className="badge" style={{ position: 'absolute', top: '-6px', right: '-8px', background: 'var(--danger)', color: 'white', fontSize: '10px', minWidth: '18px', height: '18px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 0 }}>{cartCount}</span>}
             </Link>
           </div>
@@ -174,11 +174,11 @@ const Navbar = () => {
             </div>
           </div>
           <div className="app-search-row">
-            <div className="search-bar-app" onClick={() => navigate('/menu')}>
-              <i className="fas fa-search"></i>
-              <input type="text" placeholder="Search 'Idli, Dosa, Meals...'" readOnly />
-              <i className="fas fa-microphone" style={{ color: '#2E8B57' }}></i>
-            </div>
+            <button className="search-bar-app" aria-label="Search Menu" onClick={() => navigate('/menu')} style={{ width: '100%', display: 'flex', alignItems: 'center', background: 'none', border: 'none', padding: 0, textAlign: 'left', cursor: 'text' }}>
+              <i className="fas fa-search" aria-hidden="true"></i>
+              <input type="text" placeholder="Search 'Idli, Dosa, Meals...'" readOnly aria-label="Search input" style={{ cursor: 'text' }} />
+              <i className="fas fa-microphone" aria-hidden="true" style={{ color: '#2E8B57' }}></i>
+            </button>
           </div>
         </div>
       );

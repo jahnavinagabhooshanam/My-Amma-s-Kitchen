@@ -101,9 +101,35 @@ const Home = () => {
     }
   };
 
+  const faqSchema = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Do you deliver to Bangalore and Hosur?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes! Ammulu's Kitchen delivers fresh batters, ready-to-cook, and ready-to-eat meals across Hosur, Bangalore, Electronic City, and Attibele."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is your Idli and Dosa batter stone-ground?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Absolutely. Our idli and dosa batters are 100% traditionally stone-ground to ensure authentic taste and perfect fermentation without any artificial preservatives."
+        }
+      }
+    ]
+  };
+
   return (
     <div className="home-modern pb-20">
-      <SEO title="Home | Authentic South Indian Food" />
+      <SEO 
+        title="Home | Authentic South Indian Food" 
+        additionalSchema={faqSchema}
+      />
       <OfferPopup offer={activePopupOffer} />
 
       {/* 1. Compact Hero */}

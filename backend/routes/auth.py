@@ -487,9 +487,22 @@ def upload_avatar():
         return jsonify({"error": "No selected file"}), 400
         
     if file and allowed_file(file.filename):
-        filename = secure_filename(f"avatar_{user_id}_{file.filename}")
+        base_name = os.path.splitext(secure_filename(file.filename))[0]
+        filename = f"avatar_{user_id}_{base_name}.webp"
         upload_path = os.path.join(current_app.config['UPLOAD_FOLDER'], filename)
-        file.save(upload_path)
+        
+        try:
+            from PIL import Image
+            img = Image.open(file)
+            if img.width > 500:
+                ratio = 500.0 / img.width
+                new_size = (500, int(img.height * ratio))
+                img = img.resize(new_size, Image.Resampling.LANCZOS)
+            img.save(upload_path, 'WEBP', quality=85)
+        except Exception as e:
+            print("AVATAR UPLOAD EXCEPTION:", e)
+            file.seek(0)
+            file.save(upload_path)
         
         # Save relative URL
         image_url = f"http://localhost:5000/uploads/{filename}"

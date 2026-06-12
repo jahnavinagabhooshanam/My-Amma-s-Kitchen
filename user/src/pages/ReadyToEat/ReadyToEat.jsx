@@ -5,9 +5,11 @@ import { Search, LayoutGrid, Plus, Minus, Star, Heart } from 'lucide-react';
 import apiClient from '../../services/api';
 import wishlistService from '../../services/wishlistService';
 import SEO from '../../components/SEO';
-import { motion } from 'framer-motion';
 import DishDetailsModal from '../Menu/DishDetailsModal';
 import OptimizedImage from '../../components/OptimizedImage';
+import { ProductGridSkeleton } from '../../components/ProductSkeleton';
+import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import '../Menu/Menu.css';
 import './ReadyToEat.css';
 
@@ -41,11 +43,12 @@ const PremiumRTECard = React.memo(({ product, onQuickView }) => {
     <motion.div 
       initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
       className={`modern-menu-card ${isOutOfStock ? 'out-of-stock-card' : ''}`}
-      onClick={() => !isOutOfStock && onQuickView(product)}
       style={isOutOfStock ? { opacity: 0.6, filter: 'grayscale(0.5)' } : {}}
     >
       <div className="card-image-section" style={{ position: 'relative' }}>
-        <OptimizedImage src={product.image} alt={product.name} className="menu-item-img" />
+        <Link to={`/product/${product.id}`} style={{ display: 'block', width: '100%', height: '100%' }} onClick={(e) => e.stopPropagation()}>
+          <OptimizedImage src={product.image} alt={product.name} className="menu-item-img" />
+        </Link>
         <button 
           onClick={handleWishlist}
           style={{
@@ -80,7 +83,9 @@ const PremiumRTECard = React.memo(({ product, onQuickView }) => {
           <div className={`diet-indicator ${isVeg ? 'veg' : 'non-veg'}`}>
             <div className="dot"></div>
           </div>
-          <h4 className="item-name">{product.name}</h4>
+          <Link to={`/product/${product.id}`} style={{ textDecoration: 'none', color: 'inherit' }} onClick={(e) => e.stopPropagation()}>
+            <h4 className="item-name">{product.name}</h4>
+          </Link>
         </div>
         
         <p className="item-desc">
@@ -202,7 +207,7 @@ const ReadyToEat = () => {
       <div className="container" style={{ padding: '20px' }}>
         <div className="mb-15" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
           <div>
-            <h2 className="section-title mb-0">Ready To Eat</h2>
+            <h1 className="section-title mb-0">Ready To Eat</h1>
           </div>
           <div style={{ display: 'flex', gap: '8px', background: 'white', padding: '4px', borderRadius: '12px', boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }}>
             <button onClick={() => setDietFilter('All')} style={{ border: 'none', background: dietFilter === 'All' ? 'var(--primary-color)' : 'transparent', color: dietFilter === 'All' ? 'white' : '#666', padding: '6px 12px', borderRadius: '8px', fontSize: '13px', fontWeight: 600 }}>All</button>
@@ -212,9 +217,7 @@ const ReadyToEat = () => {
         </div>
 
         {loading ? (
-          <div style={{ textAlign: 'center', padding: '50px 0' }}>
-            <div className="spinner-border text-primary" role="status"></div>
-          </div>
+          <ProductGridSkeleton count={8} />
         ) : filtered.length > 0 ? (
           <div className="modern-menu-grid">
             {filtered.map(product => (

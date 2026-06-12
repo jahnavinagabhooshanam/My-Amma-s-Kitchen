@@ -20,6 +20,18 @@ def get_notifications():
     notifications = Notification.query.filter_by(user_id=user_id).order_by(Notification.created_at.desc()).all()
     return jsonify([n.to_dict() for n in notifications]), 200
 
+@notifications_bp.route('/<int:notif_id>', methods=['GET'])
+def get_notification(notif_id):
+    user_id = get_current_user_id()
+    if not user_id:
+        return jsonify({"error": "Unauthorized"}), 401
+    
+    notification = Notification.query.filter_by(id=notif_id, user_id=user_id).first()
+    if not notification:
+        return jsonify({"error": "Notification not found"}), 404
+        
+    return jsonify(notification.to_dict()), 200
+
 @notifications_bp.route('/<int:notif_id>/read', methods=['PUT'])
 def mark_as_read(notif_id):
     user_id = get_current_user_id()

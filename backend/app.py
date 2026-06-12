@@ -17,6 +17,15 @@ CORS(app, resources={r"/*": {
     "expose_headers": ["X-Total-Count", "X-Total-Pages", "X-Current-Page", "X-Limit"]
 }})
 
+@app.after_request
+def apply_caching_and_security(response):
+    # Security Headers
+    response.headers["X-Content-Type-Options"] = "nosniff"
+    response.headers["X-Frame-Options"] = "SAMEORIGIN"
+    response.headers["X-XSS-Protection"] = "1; mode=block"
+    response.headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains"
+    return response
+
 # Initialize database and migrations
 db.init_app(app)
 migrate.init_app(app, db)

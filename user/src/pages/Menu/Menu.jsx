@@ -6,7 +6,9 @@ import { useCart } from '../../context/CartContext';
 import wishlistService from '../../services/wishlistService';
 import DishDetailsModal from './DishDetailsModal';
 import OptimizedImage from '../../components/OptimizedImage';
+import { ProductGridSkeleton } from '../../components/ProductSkeleton';
 import SEO from '../../components/SEO';
+import { Link } from 'react-router-dom';
 import './Menu.css';
 
 const resolveImg = (path) => {
@@ -138,7 +140,7 @@ const Menu = () => {
 
   return (
     <div className="app-menu-container pb-20" style={{ background: '#FAF9F5', minHeight: '100vh' }}>
-      
+      <h1 className="visually-hidden" style={{ display: 'none' }}>Our Menu - Ammulu's Kitchen</h1>
       {/* Search Bar */}
       <div className="app-menu-search d-none d-lg-block">
         <div className="search-bar-app">
@@ -177,10 +179,7 @@ const Menu = () => {
       {/* Product List */}
       <div className="container" style={{ padding: '20px' }}>
         {loading ? (
-          <div style={{ textAlign: 'center', padding: '50px 0' }}>
-            <div className="spinner-border text-primary" role="status"></div>
-            <p className="mt-3 text-muted">Loading menu...</p>
-          </div>
+          <ProductGridSkeleton count={8} />
         ) : filteredProducts.length === 0 ? (
           <div style={{ textAlign: 'center', padding: '50px 0' }}>
             <p className="text-muted">No dishes found matching your criteria.</p>
@@ -199,10 +198,11 @@ const Menu = () => {
                   key={item.id || i}
                   initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}
                   className="modern-menu-card" 
-                  onClick={() => setSelectedDish(item)}
-                >
-                  <div className="card-image-section" style={{ position: 'relative' }}>
-                    <OptimizedImage src={item.image} alt={item.name} className="menu-item-img" />
+                  >
+                    <div className="card-image-section" style={{ position: 'relative' }}>
+                      <Link to={`/product/${item.id}`} style={{ display: 'block', width: '100%', height: '100%' }} onClick={(e) => e.stopPropagation()}>
+                        <OptimizedImage src={item.image} alt={item.name} className="menu-item-img" />
+                      </Link>
                     <button 
                       onClick={(e) => handleWishlist(e, item)}
                       style={{
@@ -237,7 +237,9 @@ const Menu = () => {
                       <div className={`diet-indicator ${isNonVeg ? 'non-veg' : 'veg'}`}>
                         <div className="dot"></div>
                       </div>
-                      <h4 className="item-name">{item.name}</h4>
+                      <Link to={`/product/${item.id}`} style={{ textDecoration: 'none', color: 'inherit' }} onClick={(e) => e.stopPropagation()}>
+                        <h4 className="item-name">{item.name}</h4>
+                      </Link>
                     </div>
                     
                     <p className="item-desc">

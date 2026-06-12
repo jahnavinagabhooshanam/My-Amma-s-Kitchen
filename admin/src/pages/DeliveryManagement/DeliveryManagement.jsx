@@ -114,7 +114,16 @@ const DeliveryManagement = () => {
 
   useEffect(() => {
     loadData();
-  }, [userRole]);
+    const interval = setInterval(() => {
+      if (isDriver) {
+        fetchDriverQueue();
+      } else {
+        fetchManagerData();
+        fetchDriverQueue();
+      }
+    }, 15000); // 15 seconds polling for sync logic
+    return () => clearInterval(interval);
+  }, [userRole, isDriver]);
 
   // Manager actions
   const handlePartnerStatusChange = async (partnerId, newStatus) => {

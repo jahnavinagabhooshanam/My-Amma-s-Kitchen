@@ -47,6 +47,19 @@ const AdminNavbar = () => {
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
   const [isSearchModalOpen, setIsSearchModalOpen] = useState(false);
 
+  // New Notification States
+  const [toast, setToast] = useState({ show: false, message: '', type: 'success' });
+  const [isClearing, setIsClearing] = useState(false);
+  const [isMarkingAllRead, setIsMarkingAllRead] = useState(false);
+  const [showClearNotifConfirm, setShowClearNotifConfirm] = useState(false);
+  const [selectedNotification, setSelectedNotification] = useState(null);
+
+  const showToast = (message, type = 'success') => {
+    setToast({ show: true, message, type });
+    setTimeout(() => setToast({ show: false, message: '', type: 'success' }), 3000);
+  };
+
+
   // Business metrics for profile card
   const [stats, setStats] = useState({
     total_orders: 1248,
@@ -212,53 +225,95 @@ const AdminNavbar = () => {
     }
   };
 
-  // Notification functions
+      // Notification functions
   const handleNotificationClick = async (notif, e) => {
-    try {
-      if (!notif.read) {
+    if (e) e.stopPropagation();
+    
+    // Optimistic UI update
+    if (!notif.read) {
+      setNotifications(prev => prev.map(n => n.id === notif.id ? { ...n, read: true } : n));
+      try {
         await apiClient.put(`/notifications/${notif.id}/read`);
-        setNotifications(prev => prev.map(n => n.id === notif.id ? { ...n, read: true } : n));
+      } catch(err) { 
+        console.error("Error marking read:", err);
+        setNotifications(prev => prev.map(n => n.id === notif.id ? { ...n, read: false } : n));
       }
-    } catch(err) { console.error("Error marking read:", err); }
+    }
 
     setIsNotificationsOpen(false);
     
     const msgLower = notif.message ? notif.message.toLowerCase() : "";
     
-    if (notif.type === "Bulk Order Requests" || msgLower.includes("bulk order")) {
-      window.location.href = '/admin/bulk-orders';
+    if (notif.action_url) {
+      navigate(notif.action_url);
+    } else if (notif.type === "Bulk Order Requests" || msgLower.includes("bulk order")) {
+      navigate('/admin/bulk-orders');
     } else if (notif.type === "New Orders" || msgLower.includes("new order")) {
-      window.location.href = '/admin/orders';
-    } else if (msgLower.includes("message") || msgLower.includes("contact")) {
-      setIsMessagesOpen(true);
+      navigate('/admin/orders');
+    } else if (notif.type === "Delivery Updates" || msgLower.includes("delivery")) {
+      navigate('/admin/delivery-management');
+    } else if (notif.type === "Customer Inquiries" || msgLower.includes("message") || msgLower.includes("contact")) {
+      setIsMailOpen(true);
+    } else {
+      // System Notification fallback - Open Details Modal
+      setSelectedNotification(notif);
     }
   };
 
   const handleMarkNotificationRead = async (id, e) => {
     if (e) e.stopPropagation();
+    
+    // Optimistic UI update
+    setNotifications(prev => prev.map(n => n.id === id ? { ...n, read: true } : n));
+    showToast('Notification marked as read');
+    
     try {
       await apiClient.put(`/notifications/${id}/read`);
-      setNotifications(prev => prev.map(n => n.id === id ? { ...n, read: true } : n));
-    } catch(err) { console.error(err); }
+    } catch(err) { 
+      console.error(err);
+      setNotifications(prev => prev.map(n => n.id === id ? { ...n, read: false } : n));
+      showToast('Failed to mark as read', 'error');
+    }
   };
 
   const handleMarkAllNotificationsRead = async () => {
-    setIsNotificationsOpen(false);
+    setIsMarkingAllRead(true);
+    const backup = [...notifications];
+    
     setNotifications(prev => prev.map(n => ({ ...n, read: true })));
+    setIsNotificationsOpen(false);
+    
     try {
       await apiClient.put('/notifications/mark-all-read');
-    } catch(err) { console.error(err); }
+      showToast('All notifications marked as read');
+    } catch(err) { 
+      console.error(err);
+      setNotifications(backup);
+      showToast('Failed to mark all as read', 'error');
+    } finally {
+      setIsMarkingAllRead(false);
+    }
   };
 
-  const handleClearNotifications = async () => {
-    setIsNotificationsOpen(false);
+  const handleClearNotificationsConfirm = async () => {
+    setIsClearing(true);
+    const backup = [...notifications];
+    
     setNotifications([]);
+    setShowClearNotifConfirm(false);
+    setIsNotificationsOpen(false);
+    
     try {
       await apiClient.delete('/notifications/clear');
-    } catch(err) { console.error(err); }
-  };
-
-  const handleConfirmLogout = (e) => {
+      showToast('All notifications cleared successfully');
+    } catch(err) { 
+      console.error(err);
+      setNotifications(backup);
+      showToast('Failed to clear notifications', 'error');
+    } finally {
+      setIsClearing(false);
+    }
+  };  const handleConfirmLogout = (e) => {
     if (e) {
       e.preventDefault();
       e.stopPropagation();
@@ -309,7 +364,7 @@ const AdminNavbar = () => {
                 style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
               >
                 <Mail size={18} strokeWidth={2.2} />
-                {unreadMessagesCount > 0 && <span className="badge">{unreadMessagesCount}</span>}
+                {unreadMessagesCount > 0 && <span className="badge" style={{ zIndex: 1 }}>{unreadMessagesCount}</span>}
               </button>
 
 
@@ -328,7 +383,7 @@ const AdminNavbar = () => {
                 style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
               >
                 <Bell size={18} strokeWidth={2.2} />
-                {unreadNotificationsCount > 0 && <span className="badge pulse" id="navNotificationCount">{unreadNotificationsCount}</span>}
+                {unreadNotificationsCount > 0 && <span className="badge pulse" style={{ zIndex: 1 }} id="navNotificationCount">{unreadNotificationsCount}</span>}
               </button>
 
 
@@ -416,7 +471,7 @@ const AdminNavbar = () => {
             </div>
             <div className="dropdown-panel-footer" style={{ display: 'flex', justifyContent: 'center' }}>
               <button className="dropdown-footer-btn" onClick={async () => {
-                setIsMessagesOpen(false);
+                setIsMailOpen(false);
                 setMessages([]);
                 try {
                   await apiClient.delete('/contact/clear');
@@ -490,9 +545,26 @@ const AdminNavbar = () => {
                 </div>
               )}
             </div>
-            <div className="dropdown-panel-footer" style={{ display: 'flex', justifyContent: 'center', gap: '15px' }}>
-              <button className="dropdown-footer-btn" onClick={handleMarkAllNotificationsRead}>Mark as Read</button>
-              <button className="dropdown-footer-btn" onClick={handleClearNotifications}>Clear All</button>
+                        <div className="dropdown-panel-footer" style={{ display: 'flex', justifyContent: 'center', gap: '15px' }}>
+              <button 
+                className="dropdown-footer-btn" 
+                onClick={handleMarkAllNotificationsRead}
+                disabled={isMarkingAllRead || unreadNotificationsCount === 0}
+                style={{ opacity: (isMarkingAllRead || unreadNotificationsCount === 0) ? 0.6 : 1 }}
+              >
+                {isMarkingAllRead ? 'Marking...' : 'Mark as Read'}
+              </button>
+              <button 
+                className="dropdown-footer-btn" 
+                onClick={() => {
+                  setIsNotificationsOpen(false);
+                  setShowClearNotifConfirm(true);
+                }}
+                disabled={isClearing || notifications.length === 0}
+                style={{ opacity: (isClearing || notifications.length === 0) ? 0.6 : 1 }}
+              >
+                {isClearing ? 'Clearing...' : 'Clear All'}
+              </button>
             </div>
           </div>
         </div>
@@ -613,6 +685,88 @@ const AdminNavbar = () => {
 
       {/* Global Search Modal for Mobile */}
       <GlobalSearchModal isOpen={isSearchModalOpen} onClose={() => setIsSearchModalOpen(false)} />
+
+      {/* Toast Notification */}
+      {toast.show && (
+        <div style={{
+          position: 'fixed',
+          bottom: '20px',
+          right: '20px',
+          backgroundColor: toast.type === 'error' ? '#e74c3c' : '#2ecc71',
+          color: 'white',
+          padding: '12px 24px',
+          borderRadius: '8px',
+          boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+          zIndex: 9999,
+          display: 'flex',
+          alignItems: 'center',
+          gap: '10px',
+          fontWeight: '500',
+          animation: 'slideUp 0.3s ease forwards'
+        }}>
+          {toast.type === 'error' ? <AlertTriangle size={18} /> : <Check size={18} />}
+          {toast.message}
+        </div>
+      )}
+
+      {/* Clear All Notifications Confirmation Modal */}
+      {showClearNotifConfirm && (
+        <div className="admin-modal show" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: 'rgba(0,0,0,0.4)', position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, zIndex: 1050 }}>
+          <div className="admin-modal-content" style={{ maxWidth: '400px', backgroundColor: '#fff', borderRadius: '12px', boxShadow: '0 8px 30px rgba(0,0,0,0.15)', padding: '25px', textAlign: 'center' }}>
+            <AlertTriangle size={48} style={{ color: '#e74c3c', marginBottom: '15px', margin: '0 auto' }} />
+            <h3 style={{ marginBottom: '10px', color: 'var(--title-color)' }}>Clear All Notifications?</h3>
+            <p style={{ color: '#666', marginBottom: '25px', fontSize: '14px' }}>This action cannot be undone. All your notifications will be permanently removed.</p>
+            <div style={{ display: 'flex', justifyContent: 'center', gap: '15px' }}>
+              <button 
+                className="btn-secondary" 
+                onClick={() => setShowClearNotifConfirm(false)} 
+                disabled={isClearing}
+                style={{ padding: '10px 20px', borderRadius: '8px', cursor: 'pointer', border: '1px solid #ddd', background: '#f8f9fa', color: '#333' }}
+              >
+                Cancel
+              </button>
+              <button 
+                onClick={handleClearNotificationsConfirm} 
+                disabled={isClearing}
+                style={{ padding: '10px 20px', borderRadius: '8px', cursor: 'pointer', border: 'none', background: '#e74c3c', color: 'white', fontWeight: '600' }}
+              >
+                {isClearing ? 'Clearing...' : 'Clear All'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* System Notification Details Modal */}
+      {selectedNotification && (
+        <div className="admin-modal show" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: 'rgba(0,0,0,0.4)', position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, zIndex: 1050 }}>
+          <div className="admin-modal-content" style={{ maxWidth: '450px', backgroundColor: '#fff', borderRadius: '12px', boxShadow: '0 8px 30px rgba(0,0,0,0.15)' }}>
+            <div className="admin-modal-header" style={{ backgroundColor: 'var(--theme-color)', padding: '15px 20px', color: '#fff', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTopLeftRadius: '12px', borderTopRightRadius: '12px' }}>
+              <h3 style={{ margin: 0, display: 'flex', alignItems: 'center', gap: '8px' }}><Bell size={18}/> Notification Details</h3>
+              <button onClick={() => setSelectedNotification(null)} style={{ background: 'none', border: 'none', color: '#fff', cursor: 'pointer' }}>
+                <X size={20} />
+              </button>
+            </div>
+            <div className="admin-modal-body" style={{ padding: '25px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '15px', paddingBottom: '15px', borderBottom: '1px solid #eee' }}>
+                <strong style={{ color: 'var(--theme-color)', fontSize: '14px' }}>{selectedNotification.title || selectedNotification.type || 'System Alert'}</strong>
+                <span style={{ fontSize: '12px', color: '#888' }}>{selectedNotification.date}</span>
+              </div>
+              <p style={{ fontSize: '14px', lineHeight: '1.6', color: '#444' }}>
+                {selectedNotification.message}
+              </p>
+            </div>
+            <div className="admin-modal-footer" style={{ padding: '15px 20px', borderTop: '1px solid #eee', display: 'flex', justifyContent: 'flex-end' }}>
+              <button 
+                onClick={() => setSelectedNotification(null)} 
+                style={{ padding: '8px 20px', borderRadius: '8px', cursor: 'pointer', border: 'none', background: 'var(--theme-color)', color: 'white' }}
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 };

@@ -33,10 +33,7 @@ export default defineConfig({
     })
   ],
   server: {
-    open: true,
-    headers: {
-      'Cross-Origin-Opener-Policy': 'same-origin-allow-popups'
-    }
+    open: true
   },
   preview: {},
   build: {

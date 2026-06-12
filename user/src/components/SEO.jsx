@@ -8,7 +8,8 @@ const SEO = ({
   image = "/src/assets/img/ammulus-kitchen-logo.jpg", 
   canonical = "http://localhost:5173",
   schemaType = null,
-  schemaData = null
+  schemaData = null,
+  additionalSchema = null
 }) => {
   const formattedTitle = title ? `${title} | Hotel Ammulu's Kitchen` : "Hotel Ammulu's Kitchen - Authentic South Indian Food & Batters";
   const finalImage = image.startsWith('http') ? image : `http://localhost:5173${image}`;
@@ -35,11 +36,31 @@ const SEO = ({
       "postalCode": "600004",
       "addressCountry": "IN"
     },
+    "areaServed": [
+      { "@type": "City", "name": "Hosur" },
+      { "@type": "City", "name": "Bangalore" },
+      { "@type": "City", "name": "Bengaluru" },
+      { "@type": "Place", "name": "Electronic City" },
+      { "@type": "Place", "name": "Attibele" }
+    ],
     "openingHoursSpecification": {
       "@type": "OpeningHoursSpecification",
       "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
       "opens": "06:00",
       "closes": "22:00"
+    }
+  });
+
+  // Website Schema for Sitelinks Search Box
+  schemas.push({
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "Hotel Ammulu's Kitchen",
+    "url": "http://localhost:5173",
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": "http://localhost:5173/menu?search={search_term_string}",
+      "query-input": "required name=search_term_string"
     }
   });
 
@@ -92,6 +113,11 @@ const SEO = ({
     });
   }
 
+  // Inject any explicitly passed extra schemas (like FAQPage)
+  if (additionalSchema) {
+    schemas.push(additionalSchema);
+  }
+
   return (
     <Helmet>
       {/* 1. Title */}
@@ -100,6 +126,7 @@ const SEO = ({
       {/* 2. Standard Metadata */}
       <meta name="description" content={description} />
       <meta name="keywords" content={keywords} />
+      <meta name="robots" content="index, follow, max-image-preview:large" />
 
       {/* 3. Open Graph */}
       <meta property="og:title" content={formattedTitle} />
